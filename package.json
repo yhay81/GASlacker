@@ -1,0 +1,49 @@
+{
+  "name": "GASlack",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "tslint --fix src/**/*.ts",
+    "test": "jest",
+    "build":
+      "npm run lint && npm run test && rimraf dist && webpack && cpx src/appsscript.json dist",
+    "deploy": "npm run build && clasp push"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yhay81/GASlack.git"
+  },
+  "keywords": ["gas", "google-apps-script", "clasp", "slack"],
+  "author": "Yusuke Hayashi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yhay81/GASlack/issues"
+  },
+  "homepage": "https://github.com/yhay81/GASlack#readme",
+  "devDependencies": {
+    "@types/google-apps-script": "0.0.21",
+    "@types/jest": "^22.2.0",
+    "cpx": "^1.5.0",
+    "gas-webpack-plugin": "^0.2.1",
+    "jest": "^22.4.2",
+    "prettier": "^1.11.1",
+    "rimraf": "^2.6.2",
+    "ts-jest": "^22.4.1",
+    "ts-loader": "^4.0.1",
+    "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.10.0",
+    "tslint-plugin-prettier": "^1.3.0",
+    "typescript": "^2.7.2",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12",
+    "ajv": "^6.0.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(src/.+(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+  }
+}

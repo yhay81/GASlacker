@@ -21,7 +21,10 @@ class BaseAPI {
 
   post(api, data = {}) {
     const url = `${BaseAPI.API_ENDPOINT}${api}`;
-    const payload = this.token ? extend({ token: this.token }, data) : data;
+    const payload = extend({ token: this.token }, data);
+    for (let key in payload) {
+      if (payload[key] == null) delete payload[key];
+    }
     return this.fetch(url, { method: 'post', payload });
   }
 
@@ -51,7 +54,7 @@ class BaseAPI {
 
 class API extends BaseAPI {
   test(error = null, data = {}) {
-    if (error !== null) data['error'] = error;
+    data = extend({ error }, data);
     return this.post('api.test', data);
   }
 }
@@ -77,7 +80,7 @@ class Apps extends BaseAPI {
 
 class Auth extends BaseAPI {
   revoke(test = null) {
-    const params = test !== null ? { test } : {};
+    const params = { test };
     return this.get('auth.revoke', params);
   }
 
@@ -88,7 +91,7 @@ class Auth extends BaseAPI {
 
 class Bots extends BaseAPI {
   info(bot = null) {
-    const params = bot !== null ? { bot } : {};
+    const params = { bot };
     return this.get('bots.info', params);
   }
 }
@@ -142,8 +145,7 @@ class Channels extends BaseAPI {
   }
 
   list(cursor = null, exclude_archived = false, exclude_members = false, limit = 0) {
-    const params = { exclude_archived, exclude_members, limit };
-    if (cursor !== null) params['cursor'] = cursor;
+    const params = { cursor, exclude_archived, exclude_members, limit };
     return this.get('channels.list', params);
   }
 
@@ -153,8 +155,7 @@ class Channels extends BaseAPI {
   }
 
   rename(channel, name, validate = null) {
-    const params = { channel, name };
-    if (validate !== null) params['validate'] = validate;
+    const params = { validate, channel, name };
     return this.get('channels.rename');
   }
 
@@ -175,6 +176,96 @@ class Channels extends BaseAPI {
   unarchive(channel) {
     const data = { channel };
     return this.post('channels.unarchive', data);
+  }
+}
+
+class Chat extends BaseAPI {
+  delete_(channel, ts, as_user = false) {
+    const data = { channel, ts, as_user };
+    return this.post('chat.delete', data);
+  }
+
+  getPermalink(channel, massage_ts) {
+    const params = { name, massage_ts };
+    return this.get('chat.getPermalink', params);
+  }
+
+  meMessage(channel, text) {
+    const data = { channel, text };
+    return this.post('chat.meMessage', data);
+  }
+
+  postEphemeral(
+    channel,
+    text,
+    user,
+    as_user = false,
+    attachments = null,
+    link_names = false,
+    parse = 'none'
+  ) {
+    const data = { channel, text, user, as_user, attachments, link_names, parse };
+    return this.post('chat.postEphemeral', data);
+  }
+
+  postMessage(
+    channel,
+    text,
+    as_user = false,
+    attachments = null,
+    icon_emoji = null,
+    icon_url = null,
+    link_names = false,
+    mrkdwn = true,
+    parse = 'none',
+    reply_broadcast = false,
+    thread_ts = null,
+    unfurl_links = false,
+    unfurl_media = true,
+    username = null
+  ) {
+    const data = {
+      channel,
+      text,
+      as_user,
+      attachments,
+      icon_emoji,
+      icon_url,
+      link_names,
+      mrkdwn,
+      parse,
+      reply_broadcast,
+      thread_ts,
+      unfurl_links,
+      unfurl_media,
+      username
+    };
+    return this.post('chat.postMessage', data);
+  }
+
+  unfurl(
+    channel,
+    ts,
+    unfurls,
+    user_auth_message = null,
+    user_auth_required = false,
+    user_auth_url = null
+  ) {
+    const data = { channel, ts, unfurls, user_auth_message, user_auth_required, user_auth_url };
+    return this.post('chat.unfurl', data);
+  }
+
+  update(
+    channel,
+    text,
+    ts,
+    as_user = false,
+    attachments = null,
+    link_names = 'none',
+    parse = 'client'
+  ) {
+    const data = { channel, text, ts, as_user, attachments, link_names, parse };
+    return this.post('chat.update', data);
   }
 }
 
@@ -207,10 +298,10 @@ export class Methods {
   constructor(token, retries_limit = DEFAULT_RETRIES) {
     this.api = new API(token, retries_limit);
     this.apps = new Apps(token, retries_limit);
-    // this.auth = new Auth(token, retries_limit);
+    this.auth = new Auth(token, retries_limit);
     this.bots = new Bots(token, retries_limit);
-    // this.channels = new Channels(token, retries_limit);
-    // this.chat = new Chat(token, retries_limit);
+    this.channels = new Channels(token, retries_limit);
+    this.chat = new Chat(token, retries_limit);
     // this.conversations = new Conversations(token, retries_limit);
     // this.dialog = new Dialog(token, retries_limit);
     // this.dnd = new DND(token, retries_limit);

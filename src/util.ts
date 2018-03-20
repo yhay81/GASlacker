@@ -10,7 +10,7 @@ export const queryEncode = params => {
   // https://github.com/python/cpython/blob/3.6/Lib/urllib/parse.py
   const l = [];
   for (let key in params) {
-    l.push(`${key}=${params[key]}`);
+    if (params[key] !== null) l.push(`${key}=${params[key]}`);
   }
   return l.join('&');
 };

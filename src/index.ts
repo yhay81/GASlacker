@@ -41,3 +41,15 @@ global.testAppsPermissions = () => {
   result = slack.apps.permissions.request(['1', '2'], '3');
   Logger.log(result);
 };
+
+global.testChannels = () => {
+  const token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
+  const slack = global.slack(token);
+  let result = null;
+
+  result = slack.channels.list();
+  Logger.log(result);
+
+  result = slack.channels.info('C9SJ9SYPR');
+  Logger.log(result);
+};

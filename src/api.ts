@@ -269,6 +269,109 @@ class Chat extends BaseAPI {
   }
 }
 
+class Conversations extends BaseAPI {
+  archive(channel: string) {
+    const data = { channel };
+    return this.post('conversations.archive', data);
+  }
+
+  close(channel) {
+    const params = { channel };
+    return this.get('conversations.close', params);
+  }
+
+  create(name, is_private = false) {
+    const params = { name, is_private };
+    return this.get('conversations.create', params);
+  }
+
+  history(
+    channel: string,
+    count: number = 100,
+    inclusive = false,
+    latest = 'now',
+    oldest = 0,
+    unreads = false
+  ) {
+    const params = { channel, count, inclusive, latest, oldest, unreads };
+    return this.get('conversations.history', params);
+  }
+
+  info(channel, include_locale = false) {
+    const params = { channel, include_locale };
+    return this.get('conversations.info', params);
+  }
+
+  invite(channel, user) {
+    const data = { channel, user };
+    return this.post('conversations.invite', data);
+  }
+
+  join(name, validate = false) {
+    const data = { name, validate };
+    return this.post('conversations.join', data);
+  }
+
+  kick(channel, user) {
+    const data = { channel, user };
+    return this.post('conversations.kick', data);
+  }
+
+  leave(channel) {
+    const data = { channel };
+    return this.post('conversations.leave', data);
+  }
+
+  list(cursor = null, exclude_archived = false, exclude_members = false, limit = 0) {
+    const params = { cursor, exclude_archived, exclude_members, limit };
+    return this.get('conversations.list', params);
+  }
+
+  member(channel, cursor = null, limit = 100) {
+    const data = { channel, cursor, limit };
+    return this.post('conversations.member', data);
+  }
+
+  open(channel = null, return_im = false, users = null) {
+    const data = { channel, return_im, users };
+    if (Array.isArray(users)) data['users'] = users.join(',');
+    return this.post('conversations.open', data);
+  }
+
+  rename(channel, name, validate = null) {
+    const data = { validate, channel, name };
+    return this.post('conversations.rename', data);
+  }
+
+  replies(
+    channel,
+    thread_ts,
+    cursor = null,
+    inclusive = false,
+    latest = 'now',
+    limit = 10,
+    oldest = 0
+  ) {
+    const params = { thread_ts, cursor, inclusive, latest, limit, oldest };
+    return this.get('conversations.replies', params);
+  }
+
+  setPurpose(channel, purpose) {
+    const data = { channel, purpose };
+    return this.post('conversations.setPurpose', data);
+  }
+
+  setTopic(channel, topic) {
+    const data = { channel, topic };
+    return this.post('conversations.setTopic', data);
+  }
+
+  unarchive(channel) {
+    const data = { channel };
+    return this.post('conversations.unarchive', data);
+  }
+}
+
 export class Methods {
   public api;
   public apps;

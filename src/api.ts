@@ -3,17 +3,17 @@ import { extend, queryEncode } from './util';
 const DEFAULT_RETRIES = 3;
 
 class BaseAPI {
-  protected token;
-  private retries_limit;
+  protected token_;
+  private retries_limit_;
   static API_ENDPOINT = 'https://slack.com/api/';
   constructor(token = null, retries_limit = DEFAULT_RETRIES) {
-    this.token = token;
-    this.retries_limit = retries_limit;
+    this.token_ = token;
+    this.retries_limit_ = retries_limit;
   }
 
   get(api, params = {}) {
     // https://github.com/requests/requests/blob/master/requests/models.py
-    params = extend({ token: this.token }, params);
+    params = extend({ token: this.token_ }, params);
     const encodedParams = queryEncode(params);
     const url = `${BaseAPI.API_ENDPOINT}${api}?${encodedParams}`;
     return this.fetch(url);
@@ -21,7 +21,7 @@ class BaseAPI {
 
   post(api, data = {}) {
     const url = `${BaseAPI.API_ENDPOINT}${api}`;
-    const payload = extend({ token: this.token }, data);
+    const payload = extend({ token: this.token_ }, data);
     for (let key in payload) {
       if (payload[key] == null) delete payload[key];
     }
@@ -30,7 +30,7 @@ class BaseAPI {
 
   fetch(url, options = null) {
     let response = null;
-    for (let retry = 0; retry < this.retries_limit; retry++) {
+    for (let retry = 0; retry < this.retries_limit_; retry++) {
       try {
         if (options === null) {
           response = UrlFetchApp.fetch(url);
@@ -323,8 +323,14 @@ class Conversations extends BaseAPI {
     return this.post('conversations.leave', data);
   }
 
-  list(cursor = null, exclude_archived = false, exclude_members = false, limit = 0) {
-    const params = { cursor, exclude_archived, exclude_members, limit };
+  list(
+    cursor = null,
+    exclude_archived = false,
+    exclude_members = false,
+    limit = 100,
+    types = 'public_channel'
+  ) {
+    const params = { cursor, exclude_archived, exclude_members, limit, types };
     return this.get('conversations.list', params);
   }
 
@@ -568,6 +574,106 @@ class Groups extends BaseAPI {
   }
 }
 
+class IM extends BaseAPI {
+  close(channel) {
+    const data = { channel };
+    return this.post('im.close', data);
+  }
+
+  history(
+    channel: string,
+    count: number = 100,
+    inclusive = false,
+    latest = 'now',
+    oldest = 0,
+    unreads = false
+  ) {
+    const params = { channel, count, inclusive, latest, oldest, unreads };
+    return this.get('im.history', params);
+  }
+
+  list(cursor = null, limit = null) {
+    const params = { cursor, limit };
+    return this.get('im.list', params);
+  }
+
+  mark(channel, ts) {
+    const data = { channel, ts };
+    return this.post('im.mark', data);
+  }
+
+  open(channel, user, include_locale = false, return_im = null) {
+    const data = { channel, user, include_locale, return_im };
+    return this.post('im.mark', data);
+  }
+
+  replies(channel, thread_ts) {
+    const params = { channel, thread_ts };
+    return this.get('im.replies', params);
+  }
+}
+
+class Migration extends BaseAPI {
+  exchange(users, to_old = false) {
+    const params = { users, to_old };
+    return this.post('migration.exchange', params);
+  }
+}
+
+class MPIM extends BaseAPI {
+  close(channel) {
+    const data = { channel };
+    return this.post('mpim.close', data);
+  }
+
+  history(
+    channel: string,
+    count: number = 100,
+    inclusive = false,
+    latest = 'now',
+    oldest = 0,
+    unreads = false
+  ) {
+    const params = { channel, count, inclusive, latest, oldest, unreads };
+    return this.get('mpim.history', params);
+  }
+
+  list() {
+    return this.get('mpim.list');
+  }
+
+  mark(channel, ts) {
+    const data = { channel, ts };
+    return this.post('mpim.mark', data);
+  }
+
+  open(channel, user, include_locale = false, return_im = null) {
+    const data = { channel, user, include_locale, return_im };
+    return this.post('mpim.mark', data);
+  }
+
+  replies(channel, thread_ts) {
+    const params = { channel, thread_ts };
+    return this.get('mpim.replies', params);
+  }
+}
+
+class OAuth extends BaseAPI {
+  access(client_id, client_secret, code, redirect_uri = null) {
+    const params = { client_id, client_secret, code, redirect_uri };
+    const encodedParams = queryEncode(params);
+    const url = `${BaseAPI.API_ENDPOINT}oauth.access?${encodedParams}`;
+    return this.fetch(url);
+  }
+
+  token(client_id, client_secret, code, redirect_uri = null, single_channel = 0) {
+    const params = { client_id, client_secret, code, redirect_uri = null, single_channel };
+    const encodedParams = queryEncode(params);
+    const url = `${BaseAPI.API_ENDPOINT}oauth.token?${encodedParams}`;
+    return this.fetch(url);
+  }
+}
+
 export class Methods {
   public api;
   public apps;
@@ -608,10 +714,10 @@ export class Methods {
     this.emoji = new Emoji(token, retries_limit);
     this.files = new Files(token, retries_limit);
     this.groups = new Groups(token, retries_limit);
-    // this.im = new IM(token, retries_limit);
-    // this.migration = new Migration(token, retries_limit);
-    // this.mpim = new MPIM(token, retries_limit);
-    // this.oauth = new OAuth(token, retries_limit);
+    this.im = new IM(token, retries_limit);
+    this.migration = new Migration(token, retries_limit);
+    this.mpim = new MPIM(token, retries_limit);
+    this.oauth = new OAuth(token, retries_limit);
     // this.pins = new Pins(token, retries_limit);
     // this.reactions = new Reactions(token, retries_limit);
     // this.reminders = new Reminders(token, retries_limit);

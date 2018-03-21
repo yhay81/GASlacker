@@ -160,7 +160,8 @@ class Channels extends BaseAPI {
   }
 
   replies(channel, thread_ts) {
-    return this.get('channels.replies');
+    const params = { channel, thread_ts };
+    return this.get('channels.replies', params);
   }
 
   setPurpose(channel, purpose) {
@@ -473,6 +474,100 @@ class Files extends BaseAPI {
   }
 }
 
+class Groups extends BaseAPI {
+  archive(channel: string) {
+    const data = { channel };
+    return this.post('groups.archive', data);
+  }
+
+  create(name: string, validate: boolean) {
+    const params = { name, validate };
+    return this.get('groups.create', params);
+  }
+
+  createChild(channel) {
+    const params = { channel };
+    return this.get('groups.createChild', params);
+  }
+
+  history(
+    channel: string,
+    count: number = 100,
+    inclusive = false,
+    latest = 'now',
+    oldest = 0,
+    unreads = false
+  ) {
+    const params = { channel, count, inclusive, latest, oldest, unreads };
+    return this.get('groups.history', params);
+  }
+
+  info(channel, include_locale = false) {
+    const params = { channel, include_locale };
+    return this.get('groups.info', params);
+  }
+
+  invite(channel, user) {
+    const data = { channel, user };
+    return this.post('groups.invite', data);
+  }
+
+  join(name, validate = false) {
+    const data = { name, validate };
+    return this.post('groups.join', data);
+  }
+
+  kick(channel, user) {
+    const data = { channel, user };
+    return this.post('groups.kick', data);
+  }
+
+  leave(channel) {
+    const data = { channel };
+    return this.post('groups.leave', data);
+  }
+
+  list(cursor = null, exclude_archived = false, exclude_members = false) {
+    const params = { cursor, exclude_archived, exclude_members };
+    return this.get('groups.list', params);
+  }
+
+  mark(channel, ts) {
+    const data = { channel, ts };
+    return this.post('groups.mark', data);
+  }
+
+  open(channel) {
+    const data = { channel };
+    return this.post('groups.mark', data);
+  }
+
+  rename(channel, name, validate = null) {
+    const params = { validate, channel, name };
+    return this.get('groups.rename');
+  }
+
+  replies(channel, thread_ts) {
+    const params = { channel, thread_ts };
+    return this.get('groups.replies', params);
+  }
+
+  setPurpose(channel, purpose) {
+    const data = { channel, purpose };
+    return this.post('groups.setPurpose', data);
+  }
+
+  setTopic(channel, topic) {
+    const data = { channel, topic };
+    return this.post('groups.setTopic', data);
+  }
+
+  unarchive(channel) {
+    const data = { channel };
+    return this.post('groups.unarchive', data);
+  }
+}
+
 export class Methods {
   public api;
   public apps;
@@ -485,6 +580,7 @@ export class Methods {
   public dnd;
   public emoji;
   public files;
+  public groups;
   public im;
   public migration;
   public mpim;
@@ -509,9 +605,9 @@ export class Methods {
     this.conversations = new Conversations(token, retries_limit);
     this.dialog = new Dialog(token, retries_limit);
     this.dnd = new DND(token, retries_limit);
-    // this.emoji = new Emoji(token, retries_limit);
-    // this.files = new Files(token, retries_limit);
-    // this.groups = new Groups(token, retries_limit);
+    this.emoji = new Emoji(token, retries_limit);
+    this.files = new Files(token, retries_limit);
+    this.groups = new Groups(token, retries_limit);
     // this.im = new IM(token, retries_limit);
     // this.migration = new Migration(token, retries_limit);
     // this.mpim = new MPIM(token, retries_limit);

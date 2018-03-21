@@ -372,6 +372,38 @@ class Conversations extends BaseAPI {
   }
 }
 
+class Dialog extends BaseAPI {
+  open(dialog, trigger_id) {
+    const data = { dialog, trigger_id };
+    return this.post('conversations.unarchive', data);
+  }
+}
+
+class DND extends BaseAPI {
+  endDnd() {
+    return this.post('dnd.endDnd');
+  }
+
+  endSnooze() {
+    return this.post('dnd.endSnooze');
+  }
+
+  info(user) {
+    const params = { user };
+    return this.get('dnd.info', params);
+  }
+
+  setSnooze(num_minutes) {
+    const params = { num_minutes };
+    return this.get('dnd.setSnooze', params);
+  }
+
+  teamInfo(users = null) {
+    const params = { users };
+    return this.get('dnd.teamInfo', params);
+  }
+}
+
 export class Methods {
   public api;
   public apps;
@@ -405,9 +437,9 @@ export class Methods {
     this.bots = new Bots(token, retries_limit);
     this.channels = new Channels(token, retries_limit);
     this.chat = new Chat(token, retries_limit);
-    // this.conversations = new Conversations(token, retries_limit);
-    // this.dialog = new Dialog(token, retries_limit);
-    // this.dnd = new DND(token, retries_limit);
+    this.conversations = new Conversations(token, retries_limit);
+    this.dialog = new Dialog(token, retries_limit);
+    this.dnd = new DND(token, retries_limit);
     // this.emoji = new Emoji(token, retries_limit);
     // this.files = new Files(token, retries_limit);
     // this.groups = new Groups(token, retries_limit);

@@ -404,6 +404,75 @@ class DND extends BaseAPI {
   }
 }
 
+class Emoji extends BaseAPI {
+  list() {
+    return this.get('emoji.list');
+  }
+}
+
+class FilesComments extends BaseAPI {
+  add(comment, file) {
+    const data = { comment, file };
+    return this.post('files.comments.add', data);
+  }
+
+  delete(file, id) {
+    const data = { file, id };
+    return this.post('files.comments.delete', data);
+  }
+
+  edit(comment, file, id) {
+    const data = { comment, file, id };
+    return this.post('files.comments.edit', data);
+  }
+}
+
+class Files extends BaseAPI {
+  public comments;
+  constructor(token, retries_limit) {
+    super(token, retries_limit);
+    this.comments = new FilesComments(token, retries_limit);
+  }
+
+  delete(file) {
+    const data = { file };
+    return this.post('files.delete', data);
+  }
+
+  info(file, count = 100, page = 1) {
+    const params = { file, count, page };
+    return this.get('files.info', params);
+  }
+
+  list(channel, count = 100, page = 1, ts_from, ts_to, types, user) {
+    const params = { channel, count, page, ts_from, ts_to, types, user };
+    return this.get('files.list', params);
+  }
+
+  revokePublicURL(file) {
+    const data = { file };
+    return this.post('files.revokePublicURL', data);
+  }
+
+  sharedPublicURL(file) {
+    const data = { file };
+    return this.post('files.sharedPublicURL', data);
+  }
+
+  upload(
+    channels = [],
+    content = null,
+    file = null,
+    filename = null,
+    filetype = null,
+    initial_comment = null,
+    title = null
+  ) {
+    const data = { channels, content, file, filename, filetype, initial_comment, title };
+    return this.post('files.upload', data);
+  }
+}
+
 export class Methods {
   public api;
   public apps;

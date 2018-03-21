@@ -11,24 +11,24 @@ class BaseAPI {
     this.retries_limit_ = retries_limit;
   }
 
-  get(api, params = {}) {
+  get_(api, params = {}) {
     // https://github.com/requests/requests/blob/master/requests/models.py
     params = extend({ token: this.token_ }, params);
     const encodedParams = queryEncode(params);
     const url = `${BaseAPI.API_ENDPOINT}${api}?${encodedParams}`;
-    return this.fetch(url);
+    return this.fetch_(url);
   }
 
-  post(api, data = {}) {
+  post_(api, data = {}) {
     const url = `${BaseAPI.API_ENDPOINT}${api}`;
     const payload = extend({ token: this.token_ }, data);
     for (let key in payload) {
       if (payload[key] == null) delete payload[key];
     }
-    return this.fetch(url, { method: 'post', payload });
+    return this.fetch_(url, { method: 'post', payload });
   }
 
-  fetch(url, options = null) {
+  fetch_(url, options = null) {
     let response = null;
     for (let retry = 0; retry < this.retries_limit_; retry++) {
       try {
@@ -55,18 +55,18 @@ class BaseAPI {
 class API extends BaseAPI {
   test(error = null, data = {}) {
     data = extend({ error }, data);
-    return this.post('api.test', data);
+    return this.post_('api.test', data);
   }
 }
 
 class AppsPermissions extends BaseAPI {
   info() {
-    return this.get('apps.permissions.info');
+    return this.get_('apps.permissions.info');
   }
 
   request(scopes: Array<string>, trigger_id) {
     const params = { scopes: scopes.join(','), trigger_id };
-    return this.get('apps.permissions.request', params);
+    return this.get_('apps.permissions.request', params);
   }
 }
 
@@ -81,30 +81,30 @@ class Apps extends BaseAPI {
 class Auth extends BaseAPI {
   revoke(test = null) {
     const params = { test };
-    return this.get('auth.revoke', params);
+    return this.get_('auth.revoke', params);
   }
 
   test() {
-    return this.post('auth.test');
+    return this.post_('auth.test');
   }
 }
 
 class Bots extends BaseAPI {
   info(bot = null) {
     const params = { bot };
-    return this.get('bots.info', params);
+    return this.get_('bots.info', params);
   }
 }
 
 class Channels extends BaseAPI {
   archive(channel: string) {
     const data = { channel };
-    return this.post('channels.archive', data);
+    return this.post_('channels.archive', data);
   }
 
   create(name: string, validate: boolean) {
     const params = { name, validate };
-    return this.get('channels.create', params);
+    return this.get_('channels.create', params);
   }
 
   history(
@@ -116,84 +116,84 @@ class Channels extends BaseAPI {
     unreads = false
   ) {
     const params = { channel, count, inclusive, latest, oldest, unreads };
-    return this.get('channels.history', params);
+    return this.get_('channels.history', params);
   }
 
   info(channel, include_locale = false) {
     const params = { channel, include_locale };
-    return this.get('channels.info', params);
+    return this.get_('channels.info', params);
   }
 
   invite(channel, user) {
     const data = { channel, user };
-    return this.post('channels.invite', data);
+    return this.post_('channels.invite', data);
   }
 
   join(name, validate = false) {
     const data = { name, validate };
-    return this.post('channels.join', data);
+    return this.post_('channels.join', data);
   }
 
   kick(channel, user) {
     const data = { channel, user };
-    return this.post('channels.kick', data);
+    return this.post_('channels.kick', data);
   }
 
   leave(channel) {
     const data = { channel };
-    return this.post('channels.leave', data);
+    return this.post_('channels.leave', data);
   }
 
   list(cursor = null, exclude_archived = false, exclude_members = false, limit = 0) {
     const params = { cursor, exclude_archived, exclude_members, limit };
-    return this.get('channels.list', params);
+    return this.get_('channels.list', params);
   }
 
   mark(channel, ts) {
     const data = { channel, ts };
-    return this.post('channels.mark', data);
+    return this.post_('channels.mark', data);
   }
 
   rename(channel, name, validate = null) {
     const params = { validate, channel, name };
-    return this.get('channels.rename');
+    return this.get_('channels.rename');
   }
 
   replies(channel, thread_ts) {
     const params = { channel, thread_ts };
-    return this.get('channels.replies', params);
+    return this.get_('channels.replies', params);
   }
 
   setPurpose(channel, purpose) {
     const data = { channel, purpose };
-    return this.post('channels.setPurpose', data);
+    return this.post_('channels.setPurpose', data);
   }
 
   setTopic(channel, topic) {
     const data = { channel, topic };
-    return this.post('channels.setTopic', data);
+    return this.post_('channels.setTopic', data);
   }
 
   unarchive(channel) {
     const data = { channel };
-    return this.post('channels.unarchive', data);
+    return this.post_('channels.unarchive', data);
   }
 }
 
 class Chat extends BaseAPI {
   delete_(channel, ts, as_user = false) {
     const data = { channel, ts, as_user };
-    return this.post('chat.delete', data);
+    return this.post_('chat.delete', data);
   }
 
   getPermalink(channel, massage_ts) {
     const params = { name, massage_ts };
-    return this.get('chat.getPermalink', params);
+    return this.get_('chat.getPermalink', params);
   }
 
   meMessage(channel, text) {
     const data = { channel, text };
-    return this.post('chat.meMessage', data);
+    return this.post_('chat.meMessage', data);
   }
 
   postEphemeral(
@@ -206,7 +206,7 @@ class Chat extends BaseAPI {
     parse = 'none'
   ) {
     const data = { channel, text, user, as_user, attachments, link_names, parse };
-    return this.post('chat.postEphemeral', data);
+    return this.post_('chat.postEphemeral', data);
   }
 
   postMessage(
@@ -241,7 +241,7 @@ class Chat extends BaseAPI {
       unfurl_media,
       username
     };
-    return this.post('chat.postMessage', data);
+    return this.post_('chat.postMessage', data);
   }
 
   unfurl(
@@ -253,7 +253,7 @@ class Chat extends BaseAPI {
     user_auth_url = null
   ) {
     const data = { channel, ts, unfurls, user_auth_message, user_auth_required, user_auth_url };
-    return this.post('chat.unfurl', data);
+    return this.post_('chat.unfurl', data);
   }
 
   update(
@@ -266,24 +266,24 @@ class Chat extends BaseAPI {
     parse = 'client'
   ) {
     const data = { channel, text, ts, as_user, attachments, link_names, parse };
-    return this.post('chat.update', data);
+    return this.post_('chat.update', data);
   }
 }
 
 class Conversations extends BaseAPI {
   archive(channel: string) {
     const data = { channel };
-    return this.post('conversations.archive', data);
+    return this.post_('conversations.archive', data);
   }
 
   close(channel) {
     const params = { channel };
-    return this.get('conversations.close', params);
+    return this.get_('conversations.close', params);
   }
 
   create(name, is_private = false) {
     const params = { name, is_private };
-    return this.get('conversations.create', params);
+    return this.get_('conversations.create', params);
   }
 
   history(
@@ -295,32 +295,32 @@ class Conversations extends BaseAPI {
     unreads = false
   ) {
     const params = { channel, count, inclusive, latest, oldest, unreads };
-    return this.get('conversations.history', params);
+    return this.get_('conversations.history', params);
   }
 
   info(channel, include_locale = false) {
     const params = { channel, include_locale };
-    return this.get('conversations.info', params);
+    return this.get_('conversations.info', params);
   }
 
   invite(channel, user) {
     const data = { channel, user };
-    return this.post('conversations.invite', data);
+    return this.post_('conversations.invite', data);
   }
 
   join(name, validate = false) {
     const data = { name, validate };
-    return this.post('conversations.join', data);
+    return this.post_('conversations.join', data);
   }
 
   kick(channel, user) {
     const data = { channel, user };
-    return this.post('conversations.kick', data);
+    return this.post_('conversations.kick', data);
   }
 
   leave(channel) {
     const data = { channel };
-    return this.post('conversations.leave', data);
+    return this.post_('conversations.leave', data);
   }
 
   list(
@@ -331,23 +331,23 @@ class Conversations extends BaseAPI {
     types = 'public_channel'
   ) {
     const params = { cursor, exclude_archived, exclude_members, limit, types };
-    return this.get('conversations.list', params);
+    return this.get_('conversations.list', params);
   }
 
   member(channel, cursor = null, limit = 100) {
     const data = { channel, cursor, limit };
-    return this.post('conversations.member', data);
+    return this.post_('conversations.member', data);
   }
 
   open(channel = null, return_im = false, users = null) {
     const data = { channel, return_im, users };
     if (Array.isArray(users)) data['users'] = users.join(',');
-    return this.post('conversations.open', data);
+    return this.post_('conversations.open', data);
   }
 
   rename(channel, name, validate = null) {
     const data = { validate, channel, name };
-    return this.post('conversations.rename', data);
+    return this.post_('conversations.rename', data);
   }
 
   replies(
@@ -360,77 +360,77 @@ class Conversations extends BaseAPI {
     oldest = 0
   ) {
     const params = { thread_ts, cursor, inclusive, latest, limit, oldest };
-    return this.get('conversations.replies', params);
+    return this.get_('conversations.replies', params);
   }
 
   setPurpose(channel, purpose) {
     const data = { channel, purpose };
-    return this.post('conversations.setPurpose', data);
+    return this.post_('conversations.setPurpose', data);
   }
 
   setTopic(channel, topic) {
     const data = { channel, topic };
-    return this.post('conversations.setTopic', data);
+    return this.post_('conversations.setTopic', data);
   }
 
   unarchive(channel) {
     const data = { channel };
-    return this.post('conversations.unarchive', data);
+    return this.post_('conversations.unarchive', data);
   }
 }
 
 class Dialog extends BaseAPI {
   open(dialog, trigger_id) {
     const data = { dialog, trigger_id };
-    return this.post('conversations.unarchive', data);
+    return this.post_('conversations.unarchive', data);
   }
 }
 
 class DND extends BaseAPI {
   endDnd() {
-    return this.post('dnd.endDnd');
+    return this.post_('dnd.endDnd');
   }
 
   endSnooze() {
-    return this.post('dnd.endSnooze');
+    return this.post_('dnd.endSnooze');
   }
 
   info(user) {
     const params = { user };
-    return this.get('dnd.info', params);
+    return this.get_('dnd.info', params);
   }
 
   setSnooze(num_minutes) {
     const params = { num_minutes };
-    return this.get('dnd.setSnooze', params);
+    return this.get_('dnd.setSnooze', params);
   }
 
   teamInfo(users = null) {
     const params = { users };
-    return this.get('dnd.teamInfo', params);
+    return this.get_('dnd.teamInfo', params);
   }
 }
 
 class Emoji extends BaseAPI {
   list() {
-    return this.get('emoji.list');
+    return this.get_('emoji.list');
   }
 }
 
 class FilesComments extends BaseAPI {
   add(comment, file) {
     const data = { comment, file };
-    return this.post('files.comments.add', data);
+    return this.post_('files.comments.add', data);
   }
 
   delete(file, id) {
     const data = { file, id };
-    return this.post('files.comments.delete', data);
+    return this.post_('files.comments.delete', data);
   }
 
   edit(comment, file, id) {
     const data = { comment, file, id };
-    return this.post('files.comments.edit', data);
+    return this.post_('files.comments.edit', data);
   }
 }
 
@@ -443,27 +443,27 @@ class Files extends BaseAPI {
 
   delete(file) {
     const data = { file };
-    return this.post('files.delete', data);
+    return this.post_('files.delete', data);
   }
 
   info(file, count = 100, page = 1) {
     const params = { file, count, page };
-    return this.get('files.info', params);
+    return this.get_('files.info', params);
   }
 
   list(channel, count = 100, page = 1, ts_from, ts_to, types, user) {
     const params = { channel, count, page, ts_from, ts_to, types, user };
-    return this.get('files.list', params);
+    return this.get_('files.list', params);
   }
 
   revokePublicURL(file) {
     const data = { file };
-    return this.post('files.revokePublicURL', data);
+    return this.post_('files.revokePublicURL', data);
   }
 
   sharedPublicURL(file) {
     const data = { file };
-    return this.post('files.sharedPublicURL', data);
+    return this.post_('files.sharedPublicURL', data);
   }
 
   upload(
@@ -476,24 +476,24 @@ class Files extends BaseAPI {
     title = null
   ) {
     const data = { channels, content, file, filename, filetype, initial_comment, title };
-    return this.post('files.upload', data);
+    return this.post_('files.upload', data);
   }
 }
 
 class Groups extends BaseAPI {
   archive(channel: string) {
     const data = { channel };
-    return this.post('groups.archive', data);
+    return this.post_('groups.archive', data);
   }
 
   create(name: string, validate: boolean) {
     const params = { name, validate };
-    return this.get('groups.create', params);
+    return this.get_('groups.create', params);
   }
 
   createChild(channel) {
     const params = { channel };
-    return this.get('groups.createChild', params);
+    return this.get_('groups.createChild', params);
   }
 
   history(
@@ -505,79 +505,79 @@ class Groups extends BaseAPI {
     unreads = false
   ) {
     const params = { channel, count, inclusive, latest, oldest, unreads };
-    return this.get('groups.history', params);
+    return this.get_('groups.history', params);
   }
 
   info(channel, include_locale = false) {
     const params = { channel, include_locale };
-    return this.get('groups.info', params);
+    return this.get_('groups.info', params);
   }
 
   invite(channel, user) {
     const data = { channel, user };
-    return this.post('groups.invite', data);
+    return this.post_('groups.invite', data);
   }
 
   join(name, validate = false) {
     const data = { name, validate };
-    return this.post('groups.join', data);
+    return this.post_('groups.join', data);
   }
 
   kick(channel, user) {
     const data = { channel, user };
-    return this.post('groups.kick', data);
+    return this.post_('groups.kick', data);
   }
 
   leave(channel) {
     const data = { channel };
-    return this.post('groups.leave', data);
+    return this.post_('groups.leave', data);
   }
 
   list(cursor = null, exclude_archived = false, exclude_members = false) {
     const params = { cursor, exclude_archived, exclude_members };
-    return this.get('groups.list', params);
+    return this.get_('groups.list', params);
   }
 
   mark(channel, ts) {
     const data = { channel, ts };
-    return this.post('groups.mark', data);
+    return this.post_('groups.mark', data);
   }
 
   open(channel) {
     const data = { channel };
-    return this.post('groups.mark', data);
+    return this.post_('groups.mark', data);
   }
 
   rename(channel, name, validate = null) {
     const params = { validate, channel, name };
-    return this.get('groups.rename');
+    return this.get_('groups.rename');
   }
 
   replies(channel, thread_ts) {
     const params = { channel, thread_ts };
-    return this.get('groups.replies', params);
+    return this.get_('groups.replies', params);
   }
 
   setPurpose(channel, purpose) {
     const data = { channel, purpose };
-    return this.post('groups.setPurpose', data);
+    return this.post_('groups.setPurpose', data);
   }
 
   setTopic(channel, topic) {
     const data = { channel, topic };
-    return this.post('groups.setTopic', data);
+    return this.post_('groups.setTopic', data);
   }
 
   unarchive(channel) {
     const data = { channel };
-    return this.post('groups.unarchive', data);
+    return this.post_('groups.unarchive', data);
   }
 }
 
 class IM extends BaseAPI {
   close(channel) {
     const data = { channel };
-    return this.post('im.close', data);
+    return this.post_('im.close', data);
   }
 
   history(
@@ -589,41 +589,41 @@ class IM extends BaseAPI {
     unreads = false
   ) {
     const params = { channel, count, inclusive, latest, oldest, unreads };
-    return this.get('im.history', params);
+    return this.get_('im.history', params);
   }
 
   list(cursor = null, limit = null) {
     const params = { cursor, limit };
-    return this.get('im.list', params);
+    return this.get_('im.list', params);
   }
 
   mark(channel, ts) {
     const data = { channel, ts };
-    return this.post('im.mark', data);
+    return this.post_('im.mark', data);
   }
 
   open(channel, user, include_locale = false, return_im = null) {
     const data = { channel, user, include_locale, return_im };
-    return this.post('im.mark', data);
+    return this.post_('im.mark', data);
   }
 
   replies(channel, thread_ts) {
     const params = { channel, thread_ts };
-    return this.get('im.replies', params);
+    return this.get_('im.replies', params);
   }
 }
 
 class Migration extends BaseAPI {
   exchange(users, to_old = false) {
     const params = { users, to_old };
-    return this.post('migration.exchange', params);
+    return this.post_('migration.exchange', params);
   }
 }
 
 class MPIM extends BaseAPI {
   close(channel) {
     const data = { channel };
-    return this.post('mpim.close', data);
+    return this.post_('mpim.close', data);
   }
 
   history(
@@ -635,26 +635,26 @@ class MPIM extends BaseAPI {
     unreads = false
   ) {
     const params = { channel, count, inclusive, latest, oldest, unreads };
-    return this.get('mpim.history', params);
+    return this.get_('mpim.history', params);
   }
 
   list() {
-    return this.get('mpim.list');
+    return this.get_('mpim.list');
   }
 
   mark(channel, ts) {
     const data = { channel, ts };
-    return this.post('mpim.mark', data);
+    return this.post_('mpim.mark', data);
   }
 
   open(channel, user, include_locale = false, return_im = null) {
     const data = { channel, user, include_locale, return_im };
-    return this.post('mpim.mark', data);
+    return this.post_('mpim.mark', data);
   }
 
   replies(channel, thread_ts) {
     const params = { channel, thread_ts };
-    return this.get('mpim.replies', params);
+    return this.get_('mpim.replies', params);
   }
 }
 
@@ -663,14 +663,53 @@ class OAuth extends BaseAPI {
     const params = { client_id, client_secret, code, redirect_uri };
     const encodedParams = queryEncode(params);
     const url = `${BaseAPI.API_ENDPOINT}oauth.access?${encodedParams}`;
-    return this.fetch(url);
+    return this.fetch_(url);
   }
 
   token(client_id, client_secret, code, redirect_uri = null, single_channel = 0) {
     const params = { client_id, client_secret, code, redirect_uri = null, single_channel };
     const encodedParams = queryEncode(params);
     const url = `${BaseAPI.API_ENDPOINT}oauth.token?${encodedParams}`;
-    return this.fetch(url);
+    return this.fetch_(url);
+  }
+}
+
+class Pins extends BaseAPI {
+  add(channel, file = null, file_comment = null, timestamp = null) {
+    const data = { channel, file, file_comment, timestamp };
+    return this.post_('pins.add', data);
+  }
+
+  list(channel) {
+    const params = { channel };
+    return this.post_('pins.add', params);
+  }
+
+  remove(channel, file = null, file_comment = null, timestamp = null) {
+    const data = { channel, file, file_comment, timestamp };
+    return this.post_('pins.remove', data);
+  }
+}
+
+class Reactions extends BaseAPI {
+  add(name, channel = null, file = null, file_comment = null, timestamp = null) {
+    const data = { name, channel, file, file_comment, timestamp };
+    return this.post_('reactions.add', data);
+  }
+
+  get(channel = null, file = null, file_comment = null, timestamp = null) {
+    const params = { channel, file, file_comment, timestamp };
+    return this.get_('reactions.get', params);
+  }
+
+  list(count = 100, full = null, page = 1, user = null) {
+    const params = { count, full, page, user };
+    return this.post_('reactions.list', params);
+  }
+
+  remove(name, channel = null, file = null, file_comment = null, timestamp = null) {
+    const data = { name, channel, file, file_comment, timestamp };
+    return this.post_('reactions.remove', data);
   }
 }
 
@@ -718,8 +757,8 @@ export class Methods {
     this.migration = new Migration(token, retries_limit);
     this.mpim = new MPIM(token, retries_limit);
     this.oauth = new OAuth(token, retries_limit);
-    // this.pins = new Pins(token, retries_limit);
-    // this.reactions = new Reactions(token, retries_limit);
+    this.pins = new Pins(token, retries_limit);
+    this.reactions = new Reactions(token, retries_limit);
     // this.reminders = new Reminders(token, retries_limit);
     // this.rtm = new RTM(token, retries_limit);
     // this.search = new Search(token, retries_limit);

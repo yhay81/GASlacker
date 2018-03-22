@@ -801,9 +801,46 @@ class Stars extends BaseAPI {
   }
 }
 
-class TeamProfile extends BaseAPI {}
+class TeamProfile extends BaseAPI {
+  get(visibility = null) {
+    const params = { visibility };
+    return this._get('team.profile.get', params);
+  }
+}
 
-class Team extends BaseAPI {}
+class Team extends BaseAPI {
+  public profile;
+  constructor(token, retries_limit) {
+    super(token, retries_limit);
+    this.profile = new TeamProfile(token, retries_limit);
+  }
+
+  accessLogs(before = 'now', count = 100, page = 1) {
+    const params = { before, count, page };
+    return this._get('team.accessLogs', params);
+  }
+
+  billableInfo(user = null) {
+    const params = { before, count, page };
+    return this._get('team.billableInfo', params);
+  }
+
+  info() {
+    return this._get('team.info');
+  }
+
+  integrationLogs(
+    app_id = null,
+    change_type = null,
+    count = 100,
+    page = 1,
+    service_id = null,
+    user = null
+  ) {
+    const params = { app_id, change_type, count, page, service_id, user };
+    return this._get('team.integrationLogs', params);
+  }
+}
 
 class UsergroupUsers extends BaseAPI {}
 

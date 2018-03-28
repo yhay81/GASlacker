@@ -24,6 +24,7 @@ class BaseAPI {
     const payload = extend({ token: this._token }, data);
     for (let key in payload) {
       if (payload[key] == null) delete payload[key];
+      if (Array.isArray(payload[key])) payload[key] = payload[key].join(',');
     }
     return this._fetch(url, { method: 'post', payload });
   }
@@ -90,8 +91,8 @@ class Auth extends BaseAPI {
 }
 
 class Bots extends BaseAPI {
-  info(bot = null) {
-    const params = { bot };
+  info(options = {}) {
+    const params = options;
     return this._get('bots.info', params);
   }
 }
@@ -107,20 +108,13 @@ class Channels extends BaseAPI {
     return this._get('channels.create', params);
   }
 
-  history(
-    channel: string,
-    count: number = 100,
-    inclusive = false,
-    latest = 'now',
-    oldest = 0,
-    unreads = false
-  ) {
-    const params = { channel, count, inclusive, latest, oldest, unreads };
+  history(channel: string, options = {}) {
+    const params = extend({ channel }, options);
     return this._get('channels.history', params);
   }
 
-  info(channel, include_locale = false) {
-    const params = { channel, include_locale };
+  info(channel, options = {}) {
+    const params = extend({ channel }, options);
     return this._get('channels.info', params);
   }
 
@@ -129,8 +123,8 @@ class Channels extends BaseAPI {
     return this._post('channels.invite', data);
   }
 
-  join(name, validate = false) {
-    const data = { name, validate };
+  join(name, options = {}) {
+    const data = extend({ name }, options);
     return this._post('channels.join', data);
   }
 
@@ -144,8 +138,8 @@ class Channels extends BaseAPI {
     return this._post('channels.leave', data);
   }
 
-  list(cursor = null, exclude_archived = false, exclude_members = false, limit = 0) {
-    const params = { cursor, exclude_archived, exclude_members, limit };
+  list(options = {}) {
+    const params = options;
     return this._get('channels.list', params);
   }
 
@@ -154,8 +148,8 @@ class Channels extends BaseAPI {
     return this._post('channels.mark', data);
   }
 
-  rename(channel, name, validate = null) {
-    const params = { validate, channel, name };
+  rename(channel, name, options = {}) {
+    const params = extend({ channel, name }, options);
     return this._get('channels.rename');
   }
 
@@ -181,8 +175,8 @@ class Channels extends BaseAPI {
 }
 
 class Chat extends BaseAPI {
-  delete_(channel, ts, as_user = false) {
-    const data = { channel, ts, as_user };
+  delete_(channel, ts, options = {}) {
+    const data = extend({ channel, ts }, options);
     return this._post('chat.delete', data);
   }
 
@@ -196,76 +190,23 @@ class Chat extends BaseAPI {
     return this._post('chat.meMessage', data);
   }
 
-  postEphemeral(
-    channel,
-    text,
-    user,
-    as_user = false,
-    attachments = null,
-    link_names = false,
-    parse = 'none'
-  ) {
-    const data = { channel, text, user, as_user, attachments, link_names, parse };
+  postEphemeral(channel, text, user, options = {}) {
+    const data = extend({ channel, text, user }, options);
     return this._post('chat.postEphemeral', data);
   }
 
-  postMessage(
-    channel,
-    text,
-    as_user = false,
-    attachments = null,
-    icon_emoji = null,
-    icon_url = null,
-    link_names = false,
-    mrkdwn = true,
-    parse = 'none',
-    reply_broadcast = false,
-    thread_ts = null,
-    unfurl_links = false,
-    unfurl_media = true,
-    username = null
-  ) {
-    const data = {
-      channel,
-      text,
-      as_user,
-      attachments,
-      icon_emoji,
-      icon_url,
-      link_names,
-      mrkdwn,
-      parse,
-      reply_broadcast,
-      thread_ts,
-      unfurl_links,
-      unfurl_media,
-      username
-    };
+  postMessage(channel, text, options = {}) {
+    const data = extend({ channel, text }, options);
     return this._post('chat.postMessage', data);
   }
 
-  unfurl(
-    channel,
-    ts,
-    unfurls,
-    user_auth_message = null,
-    user_auth_required = false,
-    user_auth_url = null
-  ) {
-    const data = { channel, ts, unfurls, user_auth_message, user_auth_required, user_auth_url };
+  unfurl(channel, ts, unfurls, options = {}) {
+    const data = extend({ channel, ts, unfurls }, options);
     return this._post('chat.unfurl', data);
   }
 
-  update(
-    channel,
-    text,
-    ts,
-    as_user = false,
-    attachments = null,
-    link_names = 'none',
-    parse = 'client'
-  ) {
-    const data = { channel, text, ts, as_user, attachments, link_names, parse };
+  update(channel, text, ts, options = {}) {
+    const data = extend({ channel, text, ts }, options);
     return this._post('chat.update', data);
   }
 }
@@ -281,25 +222,18 @@ class Conversations extends BaseAPI {
     return this._get('conversations.close', params);
   }
 
-  create(name, is_private = false) {
-    const params = { name, is_private };
+  create(name, options = {}) {
+    const params = extend({ name }, options);
     return this._get('conversations.create', params);
   }
 
-  history(
-    channel: string,
-    count: number = 100,
-    inclusive = false,
-    latest = 'now',
-    oldest = 0,
-    unreads = false
-  ) {
-    const params = { channel, count, inclusive, latest, oldest, unreads };
+  history(channel: string, options = {}) {
+    const params = extend({ channel }, options);
     return this._get('conversations.history', params);
   }
 
-  info(channel, include_locale = false) {
-    const params = { channel, include_locale };
+  info(channel, options = {}) {
+    const params = extend({ channel }, options);
     return this._get('conversations.info', params);
   }
 
@@ -308,8 +242,8 @@ class Conversations extends BaseAPI {
     return this._post('conversations.invite', data);
   }
 
-  join(name, validate = false) {
-    const data = { name, validate };
+  join(name, options = {}) {
+    const data = extend({ name }, options);
     return this._post('conversations.join', data);
   }
 
@@ -323,43 +257,28 @@ class Conversations extends BaseAPI {
     return this._post('conversations.leave', data);
   }
 
-  list(
-    cursor = null,
-    exclude_archived = false,
-    exclude_members = false,
-    limit = 100,
-    types = 'public_channel'
-  ) {
-    const params = { cursor, exclude_archived, exclude_members, limit, types };
+  list(options = {}) {
+    const params = options;
     return this._get('conversations.list', params);
   }
 
-  member(channel, cursor = null, limit = 100) {
-    const data = { channel, cursor, limit };
+  member(channel, options = {}) {
+    const data = extend({ channel }, options);
     return this._post('conversations.member', data);
   }
 
-  open(channel = null, return_im = false, users = null) {
-    const data = { channel, return_im, users };
-    if (Array.isArray(users)) data['users'] = users.join(',');
+  open(options = {}) {
+    const data = options;
     return this._post('conversations.open', data);
   }
 
-  rename(channel, name, validate = null) {
-    const data = { validate, channel, name };
+  rename(channel, name, options = {}) {
+    const data = extend({ channel, name }, options);
     return this._post('conversations.rename', data);
   }
 
-  replies(
-    channel,
-    thread_ts,
-    cursor = null,
-    inclusive = false,
-    latest = 'now',
-    limit = 10,
-    oldest = 0
-  ) {
-    const params = { thread_ts, cursor, inclusive, latest, limit, oldest };
+  replies(channel, thread_ts, options = {}) {
+    const params = extend({ channel, thread_ts }, options);
     return this._get('conversations.replies', params);
   }
 
@@ -405,8 +324,8 @@ class DND extends BaseAPI {
     return this._get('dnd.setSnooze', params);
   }
 
-  teamInfo(users = null) {
-    const params = { users };
+  teamInfo(options = {}) {
+    const params = options;
     return this._get('dnd.teamInfo', params);
   }
 }
@@ -423,7 +342,7 @@ class FilesComments extends BaseAPI {
     return this._post('files.comments.add', data);
   }
 
-  delete(file, id) {
+  delete_(file, id) {
     const data = { file, id };
     return this._post('files.comments.delete', data);
   }
@@ -441,18 +360,18 @@ class Files extends BaseAPI {
     this.comments = new FilesComments(token, retries_limit);
   }
 
-  delete(file) {
+  delete_(file) {
     const data = { file };
     return this._post('files.delete', data);
   }
 
-  info(file, count = 100, page = 1) {
-    const params = { file, count, page };
+  info(file, options = {}) {
+    const params = extend({ file }, options);
     return this._get('files.info', params);
   }
 
-  list(channel, count = 100, page = 1, ts_from, ts_to, types, user) {
-    const params = { channel, count, page, ts_from, ts_to, types, user };
+  list(channel, options = {}) {
+    const params = extend({ channel }, options);
     return this._get('files.list', params);
   }
 
@@ -466,16 +385,8 @@ class Files extends BaseAPI {
     return this._post('files.sharedPublicURL', data);
   }
 
-  upload(
-    channels = [],
-    content = null,
-    file = null,
-    filename = null,
-    filetype = null,
-    initial_comment = null,
-    title = null
-  ) {
-    const data = { channels, content, file, filename, filetype, initial_comment, title };
+  upload(options = {}) {
+    const data = options;
     return this._post('files.upload', data);
   }
 }
@@ -496,20 +407,13 @@ class Groups extends BaseAPI {
     return this._get('groups.createChild', params);
   }
 
-  history(
-    channel: string,
-    count: number = 100,
-    inclusive = false,
-    latest = 'now',
-    oldest = 0,
-    unreads = false
-  ) {
-    const params = { channel, count, inclusive, latest, oldest, unreads };
+  history(channel: string, options = {}) {
+    const params = extend({ channel }, options);
     return this._get('groups.history', params);
   }
 
-  info(channel, include_locale = false) {
-    const params = { channel, include_locale };
+  info(channel, options = {}) {
+    const params = extend({ channel }, options);
     return this._get('groups.info', params);
   }
 
@@ -518,8 +422,8 @@ class Groups extends BaseAPI {
     return this._post('groups.invite', data);
   }
 
-  join(name, validate = false) {
-    const data = { name, validate };
+  join(name, options = {}) {
+    const data = extend({ name }, options);
     return this._post('groups.join', data);
   }
 
@@ -533,8 +437,8 @@ class Groups extends BaseAPI {
     return this._post('groups.leave', data);
   }
 
-  list(cursor = null, exclude_archived = false, exclude_members = false) {
-    const params = { cursor, exclude_archived, exclude_members };
+  list(options = {}) {
+    const params = options;
     return this._get('groups.list', params);
   }
 
@@ -548,8 +452,8 @@ class Groups extends BaseAPI {
     return this._post('groups.mark', data);
   }
 
-  rename(channel, name, validate = null) {
-    const params = { validate, channel, name };
+  rename(channel, name, options = {}) {
+    const params = extend({ channel }, options);
     return this._get('groups.rename');
   }
 
@@ -580,20 +484,13 @@ class IM extends BaseAPI {
     return this._post('im.close', data);
   }
 
-  history(
-    channel: string,
-    count: number = 100,
-    inclusive = false,
-    latest = 'now',
-    oldest = 0,
-    unreads = false
-  ) {
-    const params = { channel, count, inclusive, latest, oldest, unreads };
+  history(channel: string, options = {}) {
+    const params = extend({ channel }, options);
     return this._get('im.history', params);
   }
 
-  list(cursor = null, limit = null) {
-    const params = { cursor, limit };
+  list(options = {}) {
+    const params = options;
     return this._get('im.list', params);
   }
 
@@ -602,8 +499,8 @@ class IM extends BaseAPI {
     return this._post('im.mark', data);
   }
 
-  open(channel, user, include_locale = false, return_im = null) {
-    const data = { channel, user, include_locale, return_im };
+  open(channel, user, options = {}) {
+    const data = extend({ channel, user }, options);
     return this._post('im.mark', data);
   }
 
@@ -614,8 +511,8 @@ class IM extends BaseAPI {
 }
 
 class Migration extends BaseAPI {
-  exchange(users, to_old = false) {
-    const params = { users, to_old };
+  exchange(users, options = {}) {
+    const params = extend({ users }, options);
     return this._post('migration.exchange', params);
   }
 }
@@ -626,15 +523,8 @@ class MPIM extends BaseAPI {
     return this._post('mpim.close', data);
   }
 
-  history(
-    channel: string,
-    count: number = 100,
-    inclusive = false,
-    latest = 'now',
-    oldest = 0,
-    unreads = false
-  ) {
-    const params = { channel, count, inclusive, latest, oldest, unreads };
+  history(channel: string, options = {}) {
+    const params = extend({ channel }, options);
     return this._get('mpim.history', params);
   }
 
@@ -647,8 +537,8 @@ class MPIM extends BaseAPI {
     return this._post('mpim.mark', data);
   }
 
-  open(channel, user, include_locale = false, return_im = null) {
-    const data = { channel, user, include_locale, return_im };
+  open(channel, user, options = {}) {
+    const data = extend({ channel, user }, options);
     return this._post('mpim.mark', data);
   }
 
@@ -659,15 +549,15 @@ class MPIM extends BaseAPI {
 }
 
 class OAuth extends BaseAPI {
-  access(client_id, client_secret, code, redirect_uri = null) {
-    const params = { client_id, client_secret, code, redirect_uri };
+  access(client_id, client_secret, code, options = {}) {
+    const params = extend({ client_id, client_secret, code }, options);
     const encodedParams = queryEncode(params);
     const url = `${BaseAPI.API_ENDPOINT}oauth.access?${encodedParams}`;
     return this._fetch(url);
   }
 
-  token(client_id, client_secret, code, redirect_uri = null, single_channel = 0) {
-    const params = { client_id, client_secret, code, redirect_uri = null, single_channel };
+  token(client_id, client_secret, code, options = {}) {
+    const params = extend({ client_id, client_secret, code }, options);
     const encodedParams = queryEncode(params);
     const url = `${BaseAPI.API_ENDPOINT}oauth.token?${encodedParams}`;
     return this._fetch(url);
@@ -675,8 +565,8 @@ class OAuth extends BaseAPI {
 }
 
 class Pins extends BaseAPI {
-  add(channel, file = null, file_comment = null, timestamp = null) {
-    const data = { channel, file, file_comment, timestamp };
+  add(channel, options = {}) {
+    const data = extend({ channel }, options);
     return this._post('pins.add', data);
   }
 
@@ -685,37 +575,37 @@ class Pins extends BaseAPI {
     return this._post('pins.add', params);
   }
 
-  remove(channel, file = null, file_comment = null, timestamp = null) {
-    const data = { channel, file, file_comment, timestamp };
+  remove(channel, options = {}) {
+    const data = extend({ channel }, options);
     return this._post('pins.remove', data);
   }
 }
 
 class Reactions extends BaseAPI {
-  add(name, channel = null, file = null, file_comment = null, timestamp = null) {
-    const data = { name, channel, file, file_comment, timestamp };
+  add(name, options = {}) {
+    const data = extend({ name }, options);
     return this._post('reactions.add', data);
   }
 
-  get(channel = null, file = null, file_comment = null, timestamp = null) {
-    const params = { channel, file, file_comment, timestamp };
+  get(options = {}) {
+    const params = options;
     return this._get('reactions.get', params);
   }
 
-  list(count = 100, full = null, page = 1, user = null) {
-    const params = { count, full, page, user };
+  list(options = {}) {
+    const params = options;
     return this._post('reactions.list', params);
   }
 
-  remove(name, channel = null, file = null, file_comment = null, timestamp = null) {
-    const data = { name, channel, file, file_comment, timestamp };
+  remove(name, options = {}) {
+    const data = extend({ name }, options);
     return this._post('reactions.remove', data);
   }
 }
 
 class Reminders extends BaseAPI {
-  add(text, time, user = null) {
-    const data = { text, time, user };
+  add(text, time, options = {}) {
+    const data = extend({ text, time }, options);
     return this._post('reminders.add', data);
   }
 
@@ -740,53 +630,37 @@ class Reminders extends BaseAPI {
 }
 
 class RTM extends BaseAPI {
-  connect(batch_presence_aware = false, presence_sub = true) {
-    const params = { batch_presence_aware, presence_sub };
+  connect(options = {}) {
+    const params = options;
     return this._get('reminders.add', params);
   }
 
-  start(
-    batch_presence_aware = false,
-    include_locale = false,
-    mpim_aware = null,
-    no_latest = 0,
-    no_unreads = null,
-    presence_sub = true,
-    simple_latest = null
-  ) {
-    const params = {
-      batch_presence_aware,
-      include_locale,
-      mpim_aware,
-      no_latest,
-      no_unreads,
-      presence_sub,
-      simple_latest
-    };
+  start(options = {}) {
+    const params = options;
     return this._get('reminders.complete', params);
   }
 }
 
 class Search extends BaseAPI {
-  all(query, count = 20, highlight = null, page = 1, sort = 'score', sort_dir = 'desc') {
-    const params = { query, count, highlight, page, sort, sort_dir };
+  all(query, options = {}) {
+    const params = extend({ query }, options);
     return this._get('search.add', params);
   }
 
-  files(query, count = 20, highlight = null, page = 1, sort = 'score', sort_dir = 'desc') {
-    const params = { query, count, highlight, page, sort, sort_dir };
+  files(query, options = {}) {
+    const params = extend({ query }, options);
     return this._get('search.files', params);
   }
 
-  messages(query, count = 20, highlight = null, page = 1, sort = 'score', sort_dir = 'desc') {
-    const params = { query, count, highlight, page, sort, sort_dir };
+  messages(query, options = {}) {
+    const params = extend({ query }, options);
     return this._post('search.messages', params);
   }
 }
 
 class Stars extends BaseAPI {
-  add(name, channel = null, file = null, file_comment = null, timestamp = null) {
-    const data = { name, channel, file, file_comment, timestamp };
+  add(name, options = {}) {
+    const data = extend({ name }, options);
     return this._post('stars.add', data);
   }
 
@@ -795,15 +669,15 @@ class Stars extends BaseAPI {
     return this._post('stars.list', params);
   }
 
-  remove(name, channel = null, file = null, file_comment = null, timestamp = null) {
-    const data = { name, channel, file, file_comment, timestamp };
+  remove(name, options = {}) {
+    const data = extend({ name }, options);
     return this._post('stars.remove', data);
   }
 }
 
 class TeamProfile extends BaseAPI {
-  get(visibility = null) {
-    const params = { visibility };
+  get(options = {}) {
+    const params = options;
     return this._get('team.profile.get', params);
   }
 }
@@ -815,13 +689,13 @@ class Team extends BaseAPI {
     this.profile = new TeamProfile(token, retries_limit);
   }
 
-  accessLogs(before = 'now', count = 100, page = 1) {
-    const params = { before, count, page };
+  accessLogs(options = {}) {
+    const params = options;
     return this._get('team.accessLogs', params);
   }
 
-  billableInfo(user = null) {
-    const params = { before, count, page };
+  billableInfo(options = {}) {
+    const params = options;
     return this._get('team.billableInfo', params);
   }
 
@@ -829,26 +703,34 @@ class Team extends BaseAPI {
     return this._get('team.info');
   }
 
-  integrationLogs(
-    app_id = null,
-    change_type = null,
-    count = 100,
-    page = 1,
-    service_id = null,
-    user = null
-  ) {
-    const params = { app_id, change_type, count, page, service_id, user };
+  integrationLogs(options = {}) {
+    const params = options;
     return this._get('team.integrationLogs', params);
   }
 }
 
-class UsergroupUsers extends BaseAPI {}
+class UsergroupUsers extends BaseAPI {
+  get(usergroup, options = {}) {
+    const params = extend({ usergroup }, options);
+    return this._get('team.info', params);
+  }
+  update(usergroup, users, options = {}) {
+    const data = extend({ usergroup, users }, options);
+    return this._post('team.integrationLogs', data);
+  }
+}
 
-class Usergroup extends BaseAPI {}
+class Usergroup extends BaseAPI {
+  public users;
+  constructor(token, retries_limit) {
+    super(token, retries_limit);
+    this.users = new UsergroupUsers(token, retries_limit);
+  }
+}
 
-class UsersProfile extends BaseAPI {}
+// class UsersProfile extends BaseAPI {}
 
-class Users extends BaseAPI {}
+// class Users extends BaseAPI {}
 
 export class Methods {
   public api;
@@ -901,8 +783,8 @@ export class Methods {
     this.search = new Search(token, retries_limit);
     this.stars = new Stars(token, retries_limit);
     this.team = new Team(token, retries_limit);
-    this.usergroups = new UserGroups(token, retries_limit);
-    this.users = new Users(token, retries_limit);
+    // this.usergroups = new UserGroups(token, retries_limit);
+    // this.users = new Users(token, retries_limit);
 
     // this.presence = new Presence(token, retries_limit);
     // this.idpgroups = new IDPGroups(token, retries_limit);

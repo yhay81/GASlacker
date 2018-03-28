@@ -23,8 +23,10 @@ class BaseAPI {
     const url = `${BaseAPI.API_ENDPOINT}${api}`;
     const payload = extend({ token: this._token }, data);
     for (let key in payload) {
-      if (payload[key] == null) delete payload[key];
-      if (Array.isArray(payload[key])) payload[key] = payload[key].join(',');
+      const p = payload[key];
+      if (p == null) delete payload[key];
+      if (Array.isArray(p)) payload[key] = p.join(',');
+      if (typeof p == 'object') payload[key] = JSON.stringify(p);
     }
     return this._fetch(url, { method: 'post', payload });
   }
@@ -54,8 +56,8 @@ class BaseAPI {
 }
 
 class API extends BaseAPI {
-  test(error = null, data = {}) {
-    data = extend({ error }, data);
+  test(options = {}) {
+    const data = options;
     return this._post('api.test', data);
   }
 }
@@ -709,23 +711,23 @@ class Team extends BaseAPI {
   }
 }
 
-class UsergroupUsers extends BaseAPI {
+class UsergroupsUsers extends BaseAPI {
   list(usergroup, options = {}) {
     const params = extend({ usergroup }, options);
-    return this._get('usergroup.users.list', params);
+    return this._get('usergroups.users.list', params);
   }
 
   update(usergroup, users, options = {}) {
     const data = extend({ usergroup, users }, options);
-    return this._post('usergroup.users.update', data);
+    return this._post('usergroups.users.update', data);
   }
 }
 
-class Usergroup extends BaseAPI {
+class UserGroups extends BaseAPI {
   public users;
   constructor(token, retries_limit) {
     super(token, retries_limit);
-    this.users = new UsergroupUsers(token, retries_limit);
+    this.users = new UsergroupsUsers(token, retries_limit);
   }
 }
 

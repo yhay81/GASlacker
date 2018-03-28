@@ -13,6 +13,7 @@ export const queryEncode = params => {
     if (params[key] !== null) {
       let p = params[key];
       if (Array.isArray(p)) p = p.join(',');
+      if (typeof p == 'object') p = JSON.stringify(p);
       l.push(`${key}=${p}`);
     }
   }

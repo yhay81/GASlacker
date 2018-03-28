@@ -2,7 +2,12 @@
 
 Google Apps Script interface for Slack API
 
-## How to Use
+## Usage
+
+Add This Library from Google Apps Script.(Libraries are in Resources tab)
+`MCPiGxYANiZlb7LnYOqREqeJzI9uQ3ses`
+
+## Examples
 
 ```JavaScript
 var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
@@ -24,6 +29,7 @@ https://api.slack.com/methods
 
 https://github.com/os/slacker
 https://github.com/soundTricker/SlackApp
+https://github.com/howdy39/gas-clasp-starter
 
 ## License
 

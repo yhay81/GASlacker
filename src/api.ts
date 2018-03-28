@@ -710,13 +710,14 @@ class Team extends BaseAPI {
 }
 
 class UsergroupUsers extends BaseAPI {
-  get(usergroup, options = {}) {
+  list(usergroup, options = {}) {
     const params = extend({ usergroup }, options);
-    return this._get('team.info', params);
+    return this._get('usergroup.users.list', params);
   }
+
   update(usergroup, users, options = {}) {
     const data = extend({ usergroup, users }, options);
-    return this._post('team.integrationLogs', data);
+    return this._post('usergroup.users.update', data);
   }
 }
 
@@ -728,9 +729,62 @@ class Usergroup extends BaseAPI {
   }
 }
 
-// class UsersProfile extends BaseAPI {}
+class UsersProfile extends BaseAPI {
+  get(options) {
+    const params = options;
+    return this._get('users.profile.get', params);
+  }
 
-// class Users extends BaseAPI {}
+  set(options) {
+    const data = options;
+    return this._post('users.profile.set', data);
+  }
+}
+
+class Users extends BaseAPI {
+  public profile;
+  constructor(token, retries_limit) {
+    super(token, retries_limit);
+    this.profile = new UsersProfile(token, retries_limit);
+  }
+
+  deletePhoto() {
+    return this._get('users.deletePhoto');
+  }
+
+  getPresence(user) {
+    const params = { user };
+    return this._get('users.getPresence', params);
+  }
+
+  identity() {
+    return this._get('users.identity');
+  }
+
+  info(user, options = {}) {
+    const params = extend({ user }, options);
+    return this._get('users.info', params);
+  }
+
+  list(options = {}) {
+    const params = options;
+    return this._get('users.list', params);
+  }
+
+  lookupByEmail(email) {
+    const params = { email };
+    return this._get('users.lookupByEmail', params);
+  }
+
+  setActive() {
+    return this._post('users.lookupByEmail');
+  }
+
+  setPhoto(image) {
+    const params = { image };
+    return this._get('users.setPhoto', params);
+  }
+}
 
 export class Methods {
   public api;
@@ -783,8 +837,8 @@ export class Methods {
     this.search = new Search(token, retries_limit);
     this.stars = new Stars(token, retries_limit);
     this.team = new Team(token, retries_limit);
-    // this.usergroups = new UserGroups(token, retries_limit);
-    // this.users = new Users(token, retries_limit);
+    this.usergroups = new UserGroups(token, retries_limit);
+    this.users = new Users(token, retries_limit);
 
     // this.presence = new Presence(token, retries_limit);
     // this.idpgroups = new IDPGroups(token, retries_limit);

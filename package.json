@@ -1,49 +1,58 @@
 {
-  "name": "GASlack",
-  "version": "0.0.1",
+  "name": "gaslacker",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint": "tslint --fix src/**/*.ts",
+    "lint": "tslint --fix tests/**/*.ts",
     "test": "jest",
-    "build":
-      "npm run lint && npm run test && rimraf dist && webpack && cpx src/appsscript.json dist",
+    "build": "npm run lint && npm run test && rimraf dist && webpack && cpx src/appsscript.json dist",
     "deploy": "npm run build && clasp push"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yhay81/GASlack.git"
+    "url": "git+https://github.com/yhay81/GASlacker.git"
   },
-  "keywords": ["gas", "google-apps-script", "clasp", "slack"],
-  "author": "Yusuke Hayashi",
+  "keywords": [
+    "gas",
+    "google-apps-script",
+    "clasp"
+  ],
+  "author": "yhay81",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yhay81/GASlack/issues"
+    "url": "https://github.com/yhay81/GASlacker/issues"
   },
-  "homepage": "https://github.com/yhay81/GASlack#readme",
+  "homepage": "https://github.com/yhay81/GASlacker#readme",
   "devDependencies": {
-    "@types/google-apps-script": "0.0.21",
-    "@types/jest": "^22.2.0",
+    "@types/google-apps-script": "0.0.32",
+    "@types/jest": "^23.3.9",
     "cpx": "^1.5.0",
-    "gas-webpack-plugin": "^0.2.1",
-    "jest": "^22.4.2",
-    "prettier": "^1.11.1",
+    "gas-webpack-plugin": "^0.3.0",
+    "jest": "^23.6.0",
+    "prettier": "^1.15.2",
     "rimraf": "^2.6.2",
-    "ts-jest": "^22.4.1",
-    "ts-loader": "^4.0.1",
-    "tslint": "^5.9.1",
-    "tslint-config-prettier": "^1.10.0",
-    "tslint-plugin-prettier": "^1.3.0",
-    "typescript": "^2.7.2",
-    "webpack": "^4.1.1",
-    "webpack-cli": "^2.0.12",
-    "ajv": "^6.0.0"
+    "ts-jest": "^23.10.4",
+    "ts-loader": "^5.3.0",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.16.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.1.6",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2"
   },
   "jest": {
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
-    "testRegex": "(src/.+(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+    "testRegex": "(tests/.+(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }

@@ -1,21 +1,22 @@
-export const extend = (obj1, obj2) => {
-  const result = obj1;
-  for (let key in obj2) {
-    result[key] = obj2[key];
+// ref) https://github.com/python/cpython/blob/3.6/Lib/urllib/parse.py#L846
+export const queryEncode: Function = (params: Object) => {
+  const param_list: any[] = [];
+  for (let key in params) {
+    let param: any = params[key];
+    if (param === null) continue;
+    if (Array.isArray(param)) param = param.join(',');
+    else if (typeof param == 'object') param = JSON.stringify(param);
+    param_list.push(`${key}=${param}`);
   }
-  return result;
+  return param_list.join('&');
 };
 
-export const queryEncode = params => {
-  // https://github.com/python/cpython/blob/3.6/Lib/urllib/parse.py
-  const l = [];
-  for (let key in params) {
-    if (params[key] !== null) {
-      let p = params[key];
-      if (Array.isArray(p)) p = p.join(',');
-      if (typeof p == 'object') p = JSON.stringify(p);
-      l.push(`${key}=${p}`);
-    }
+export const createPayload: Function = (params: Object) => {
+  const payload = { ...params };
+  for (let key in payload) {
+    const param: any = payload[key];
+    if (param == null) delete payload[key];
+    else if (typeof param !== 'string') payload[key] = JSON.stringify(param);
   }
-  return l.join('&');
+  return payload;
 };

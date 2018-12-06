@@ -4,11 +4,19 @@ Google Apps Script interface for Slack API
 
 ## Usage
 
-Add This Library from Google Apps Script.(Libraries are in Resources tab)
+### Easy way
 
-```
-M1Qcbat9xEP7WrceSfuSbZuJzI9uQ3ses
-```
+1. Create a new Apps Script.
+2. Copy entire file of /dist/bundle.js and Paste it to the new apps script.
+3. Above the script, you can write your code like Examples below.
+
+### Developer way
+
+1. Clone this repository.
+2. Change scriptId in .clasp.json to your new empty Apps Script.
+3. Do `npm run deploy`.
+4. Publish your App Script from Apps Script web editor as an API and copy the key.
+5. Create Another App Script and import the library which you created from `Resources>Library`.
 
 ## Examples
 

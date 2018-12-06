@@ -8,21 +8,9 @@ Google Apps Script interface for Slack API
 
 1. Create a new Apps Script.
 2. Copy entire file of /dist/bundle.js and Paste it to the new apps script.
-3. Above the script, you can write your code like Examples below. (Change <<YOUR_SLACK_ACCESS_TOKEN>> to your token from slack)
-
-#### Examples
-
-```JavaScript
-var slack = methods('<<YOUR_SLACK_ACCESS_TOKEN>>');
-
-function doPost(e){
-  var event = JSON.parse(e.postData.contents).event;
-  if(event.text.match(/hello/)){
-    var text = "Hello," + event.message.username;
-    slack.chat.postMessage(event.channel, text);
-  }
-}
-```
+3. Publish your App Script from Apps Script web editor as an API and copy the key.
+4. Create Another App Script and import the library which you created from `Resources>Library`.
+5. You can Add your token to your Properties in your scripts and get it and use the library like the Example below.
 
 ### Developer way
 

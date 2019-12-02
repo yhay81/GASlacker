@@ -88,6 +88,6 @@ export default class UserGroups extends BaseAPI {
       name,
       ...extraArgs
     };
-    return this._post('usergroups.create', args);
+    return this._post('usergroups.update', args);
   }
 }

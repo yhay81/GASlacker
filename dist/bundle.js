@@ -516,7 +516,7 @@ var BaseAPI = /** @class */ (function () {
         var payload = Object(_util__WEBPACK_IMPORTED_MODULE_0__["createPayload"])(__assign({}, args));
         var url = "" + BaseAPI.API_ENDPOINT + api;
         var params = {
-            headers: { Authorization: this._token },
+            headers: { Authorization: 'Bearer ' + this._token },
             method: 'post',
             contentType: 'application/json; charset=UTF-8',
             payload: JSON.stringify(payload)
@@ -528,7 +528,7 @@ var BaseAPI = /** @class */ (function () {
         var payload = Object(_util__WEBPACK_IMPORTED_MODULE_0__["createPayload"])(__assign({}, args));
         var url = "" + BaseAPI.API_ENDPOINT + api + "?";
         var params = {
-            headers: { Authorization: this._token },
+            headers: { Authorization: 'Bearer ' + this._token },
             method: 'post',
             contentType: 'multipart/form-data; charset=UTF-8',
             payload: __assign({}, file_args, payload)
@@ -2509,7 +2509,7 @@ var UserGroups = /** @class */ (function (_super) {
             handle: handle,
             include_disabled: include_disabled,
             name: name }, extraArgs);
-        return this._post('usergroups.create', args);
+        return this._post('usergroups.update', args);
     };
     return UserGroups;
 }(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));

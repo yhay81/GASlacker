@@ -1,7 +1,7 @@
 // ref) https://github.com/python/cpython/blob/3.6/Lib/urllib/parse.py#L846
-export const queryEncode: Function = (params: Object) => {
+export const queryEncode: Function = (params: Record<string, any>) => {
   const param_list: any[] = [];
-  for (let key in params) {
+  for (const key in params) {
     let param: any = params[key];
     if (param === null) continue;
     if (Array.isArray(param)) param = param.join(',');
@@ -11,9 +11,9 @@ export const queryEncode: Function = (params: Object) => {
   return param_list.join('&');
 };
 
-export const createPayload: Function = (params: Object) => {
+export const createPayload: Function = (params: Record<string, any>) => {
   const payload = { ...params };
-  for (let key in payload) {
+  for (const key in payload) {
     const param: any = payload[key];
     if (param == null) delete payload[key];
     else if (typeof param !== 'string') payload[key] = JSON.stringify(param);

@@ -1,18 +1,23 @@
 import BaseAPI from './BaseAPI';
 
 export default class Chat extends BaseAPI {
-  public delete_(channel: string, ts: number, as_user: boolean = null, extraArgs: Object = {}) {
-    const args: Object = { channel, ts, as_user, ...extraArgs };
+  public delete_(
+    channel: string,
+    ts: number,
+    as_user: boolean = null,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, ts, as_user, ...extraArgs };
     return this._post('chat.delete', args);
   }
 
-  public getPermalink(channel: string, message_ts: number, extraArgs: Object = {}) {
-    const args: Object = { channel, message_ts, ...extraArgs };
+  public getPermalink(channel: string, message_ts: number, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, message_ts, ...extraArgs };
     return this._get('chat.getPermalink', args);
   }
 
-  public meMessage(channel: string, text: string, extraArgs: Object = {}) {
-    const args: Object = { channel, text, ...extraArgs };
+  public meMessage(channel: string, text: string, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, text, ...extraArgs };
     return this._post('chat.meMessage', args);
   }
 
@@ -20,14 +25,14 @@ export default class Chat extends BaseAPI {
     channel: string,
     text: string,
     user: string,
-    as_user: boolean = false,
-    attachements: Object[] = null,
-    link_names: boolean = false,
-    parse: string = 'none',
+    as_user = false,
+    attachements: Record<string, any>[] = null,
+    link_names = false,
+    parse = 'none',
     thread_ts: number = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       text,
       user,
@@ -44,21 +49,21 @@ export default class Chat extends BaseAPI {
   public postMessage(
     channel: string,
     text: string,
-    as_user: boolean = false,
-    attachements: Object[] = null,
+    as_user = false,
+    attachements: Record<string, any>[] = null,
     icon_emoji: string = null,
     icon_url: boolean = null,
-    link_names: boolean = false,
-    mrkdwn: boolean = true,
-    parse: string = 'none',
-    reply_broadcast: boolean = true,
+    link_names = false,
+    mrkdwn = true,
+    parse = 'none',
+    reply_broadcast = true,
     thread_ts: number = null,
     unfurl_links: boolean = null,
     unfurl_media: boolean = null,
     username: string = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       text,
       as_user,
@@ -82,11 +87,11 @@ export default class Chat extends BaseAPI {
     channel: string,
     ts: number,
     unfurls: string = null,
-    user_auth_required: string = '0',
+    user_auth_required = '0',
     user_auth_url: string = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       ts,
       unfurls,
@@ -101,12 +106,12 @@ export default class Chat extends BaseAPI {
     channel: string,
     text: string,
     ts: number,
-    attachements: Object[] = null,
-    link_names: boolean = false,
-    parse: string = 'none',
-    extraArgs: Object = {}
+    attachements: Record<string, any>[] = null,
+    link_names = false,
+    parse = 'none',
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       text,
       ts,

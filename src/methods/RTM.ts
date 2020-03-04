@@ -2,25 +2,29 @@ import BaseAPI from './BaseAPI';
 
 export default class RTM extends BaseAPI {
   public connect(
-    batch_presence_aware: string = 'false',
-    presence_sub: boolean = true,
-    extraArgs: Object = {}
+    batch_presence_aware = 'false',
+    presence_sub = true,
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = { batch_presence_aware, presence_sub, ...extraArgs };
+    const args: Record<string, any> = {
+      batch_presence_aware,
+      presence_sub,
+      ...extraArgs
+    };
     return this._get('reminders.add', args);
   }
 
   public start(
-    batch_presence_aware: string = 'false',
-    include_locale: boolean = false,
+    batch_presence_aware = 'false',
+    include_locale = false,
     mpim_aware: boolean = null,
-    no_latest: number = 0,
+    no_latest = 0,
     no_unreads: boolean = null,
-    presence_sub: boolean = true,
+    presence_sub = true,
     simple_latest: boolean = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       batch_presence_aware,
       include_locale,
       mpim_aware,

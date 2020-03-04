@@ -6,9 +6,9 @@ export default class Pins extends BaseAPI {
     file: string,
     file_comment: string,
     timestamp: number,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       file,
       file_comment,
@@ -18,8 +18,8 @@ export default class Pins extends BaseAPI {
     return this._post('pins.add', args);
   }
 
-  public list(channel: string, extraArgs: Object = {}) {
-    const args: Object = { channel, ...extraArgs };
+  public list(channel: string, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, ...extraArgs };
     return this._post('pins.add', args);
   }
 
@@ -28,9 +28,9 @@ export default class Pins extends BaseAPI {
     file: string,
     file_comment: string,
     timestamp: number,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       file,
       file_comment,

@@ -1,20 +1,20 @@
 import BaseAPI from './BaseAPI';
 
 export default class IM extends BaseAPI {
-  public close(channel: string, extraArgs: Object = {}) {
-    const args: Object = { channel, ...extraArgs };
+  public close(channel: string, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, ...extraArgs };
     return this._post('im.close', args);
   }
 
   public history(
     channel: string,
-    count: number = 100,
-    inclusive: string = '0',
-    latest: string = 'now',
-    oldest: number = 0,
-    extraArgs: Object = {}
+    count = 100,
+    inclusive = '0',
+    latest = 'now',
+    oldest = 0,
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       count,
       inclusive,
@@ -25,24 +25,24 @@ export default class IM extends BaseAPI {
     return this._get('im.history', args);
   }
 
-  public list(cursor: string = null, limit: number = null, extraArgs: Object = {}) {
-    const args: Object = { cursor, limit, ...extraArgs };
+  public list(cursor: string = null, limit: number = null, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { cursor, limit, ...extraArgs };
     return this._get('im.list', args);
   }
 
-  public mark(channel: string, ts: number, extraArgs: Object = {}) {
-    const args: Object = { channel, ts, ...extraArgs };
+  public mark(channel: string, ts: number, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, ts, ...extraArgs };
     return this._post('im.mark', args);
   }
 
   public open(
     channel: string,
     user: string,
-    include_locale: boolean = false,
+    include_locale = false,
     return_im: boolean = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       user,
       include_locale,
@@ -52,8 +52,8 @@ export default class IM extends BaseAPI {
     return this._post('im.mark', args);
   }
 
-  public replies(channel, thread_ts, extraArgs: Object = {}) {
-    const args: Object = { channel, thread_ts, ...extraArgs };
+  public replies(channel, thread_ts, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, thread_ts, ...extraArgs };
     return this._get('im.replies', args);
   }
 }

@@ -7,9 +7,9 @@ export default class Reactions extends BaseAPI {
     channel: string,
     channel_comment: string,
     timestamp: number,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       name,
       file,
       channel,
@@ -26,9 +26,9 @@ export default class Reactions extends BaseAPI {
     file_comment: string = null,
     full: boolean = null,
     timestamp: number = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       file,
       file_comment,
@@ -43,12 +43,12 @@ export default class Reactions extends BaseAPI {
     count: number,
     cursor: string = null,
     full: boolean = null,
-    limit: number = 0,
-    page: number = 1,
+    limit = 0,
+    page = 1,
     user: string = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       count,
       cursor,
       full,
@@ -66,9 +66,9 @@ export default class Reactions extends BaseAPI {
     file: string = null,
     file_comment: string = null,
     timestamp: number = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       name,
       channel,
       file,

@@ -6,9 +6,9 @@ export default class Stars extends BaseAPI {
     file: string = null,
     file_comment: string = null,
     timestamp: string = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       file,
       file_comment,
@@ -19,13 +19,19 @@ export default class Stars extends BaseAPI {
   }
 
   public list(
-    count: number = 100,
+    count = 100,
     cursor: string = null,
     limit: number = null,
-    page: number = 1,
-    extraArgs: Object = {}
+    page = 1,
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = { count, cursor, limit, page, ...extraArgs };
+    const args: Record<string, any> = {
+      count,
+      cursor,
+      limit,
+      page,
+      ...extraArgs
+    };
     return this._post('stars.list', args);
   }
 
@@ -34,9 +40,9 @@ export default class Stars extends BaseAPI {
     file: string = null,
     file_comment: string = null,
     timestamp: string = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       file,
       file_comment,

@@ -1,4 +1,4 @@
 {
-  "scriptId": "YOUR_SCRIPT_ID",
+  "scriptId": "<your_script_id>",
   "rootDir": "dist"
 }

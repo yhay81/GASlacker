@@ -7,10 +7,10 @@ export default class OAuth extends BaseAPI {
     client_secret: string,
     code,
     redirect_uri: string = null,
-    single_channel: boolean = false,
-    extraArgs: Object = {}
+    single_channel = false,
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       client_id,
       client_secret,
       code,
@@ -19,7 +19,7 @@ export default class OAuth extends BaseAPI {
       ...extraArgs
     };
     const encodedParams: string = queryEncode(args);
-    const url: string = `${BaseAPI.API_ENDPOINT}oauth.access?${encodedParams}`;
+    const url = `${BaseAPI.API_ENDPOINT}oauth.access?${encodedParams}`;
     return this._fetch(url, { method: 'POST' });
   }
 
@@ -28,10 +28,10 @@ export default class OAuth extends BaseAPI {
     client_secret: string,
     code: string,
     redirect_uri: string = null,
-    single_channel: boolean = false,
-    extraArgs: Object = {}
+    single_channel = false,
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       client_id,
       client_secret,
       code,

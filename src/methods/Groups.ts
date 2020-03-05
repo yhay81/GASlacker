@@ -1,26 +1,30 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 export default class Groups extends BaseAPI {
-  public archive(channel: string, extraArgs: Object = {}) {
-    const args: Object = { channel, ...extraArgs };
-    return this._post('groups.archive', args);
+  public archive(channel: string, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, ...extraArgs }
+    return this._post('groups.archive', args)
   }
 
-  public create(name: string, validate: boolean = null, extraArgs: Object = {}) {
-    const args: Object = { name, validate, ...extraArgs };
-    return this._get('groups.create', args);
+  public create(
+    name: string,
+    validate: boolean = null,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { name, validate, ...extraArgs }
+    return this._get('groups.create', args)
   }
 
   public createChild(
     channel: string,
-    count: number = 100,
-    inclusive: string = '0',
-    latest: string = 'now',
-    oldest: number = 0,
-    unreads: string = '0',
-    extraArgs: Object = {}
+    count = 100,
+    inclusive = '0',
+    latest = 'now',
+    oldest = 0,
+    unreads = '0',
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       count,
       inclusive,
@@ -28,20 +32,20 @@ export default class Groups extends BaseAPI {
       oldest,
       unreads,
       ...extraArgs
-    };
-    return this._get('groups.createChild', args);
+    }
+    return this._get('groups.createChild', args)
   }
 
   public history(
     channel: string,
-    count: number = 100,
-    inclusive: string = '0',
-    latest: string = 'now',
-    oldest: number = 0,
-    unreads: string = '0',
-    extraArgs: Object = {}
+    count = 100,
+    inclusive = '0',
+    latest = 'now',
+    oldest = 0,
+    unreads = '0',
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       count,
       inclusive,
@@ -49,80 +53,105 @@ export default class Groups extends BaseAPI {
       oldest,
       unreads,
       ...extraArgs
-    };
-    return this._get('groups.history', args);
+    }
+    return this._get('groups.history', args)
   }
 
-  public info(channel: string, include_locale: boolean = false, extraArgs: Object = {}) {
-    const args: Object = { channel, include_locale, ...extraArgs };
-    return this._get('groups.info', args);
+  public info(
+    channel: string,
+    include_locale = false,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, include_locale, ...extraArgs }
+    return this._get('groups.info', args)
   }
 
-  public invite(channel: string, user: string, extraArgs: Object = {}) {
-    const args: Object = { channel, user, ...extraArgs };
-    return this._post('groups.invite', args);
+  public invite(
+    channel: string,
+    user: string,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, user, ...extraArgs }
+    return this._post('groups.invite', args)
   }
 
-  public kick(channel, user, extraArgs: Object = {}) {
-    const args: Object = { channel, user, ...extraArgs };
-    return this._post('groups.kick', args);
+  public kick(channel, user, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, user, ...extraArgs }
+    return this._post('groups.kick', args)
   }
 
-  public leave(channel, extraArgs: Object = {}) {
-    const args: Object = { channel, ...extraArgs };
-    return this._post('groups.leave', args);
+  public leave(channel, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, ...extraArgs }
+    return this._post('groups.leave', args)
   }
 
   public list(
     options = {},
     cursor: string = null,
-    exclude_archived: string = '0',
-    exclude_members: boolean = false,
-    limit: number = 0,
-    extraArgs: Object = {}
+    exclude_archived = '0',
+    exclude_members = false,
+    limit = 0,
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       cursor,
       exclude_archived,
       exclude_members,
       limit,
       ...extraArgs
-    };
-    return this._get('groups.list', args);
+    }
+    return this._get('groups.list', args)
   }
 
-  public mark(channel, ts, extraArgs: Object = {}) {
-    const args: Object = { channel, ts, ...extraArgs };
-    return this._post('groups.mark', args);
+  public mark(channel, ts, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, ts, ...extraArgs }
+    return this._post('groups.mark', args)
   }
 
-  public open(channel, extraArgs: Object = {}) {
-    const args: Object = { channel, ...extraArgs };
-    return this._post('groups.mark', args);
+  public open(channel, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, ...extraArgs }
+    return this._post('groups.mark', args)
   }
 
-  public rename(channel: string, name: string, validate: boolean = null, extraArgs: Object = {}) {
-    const args: Object = { channel, name, validate, ...extraArgs };
-    return this._get('groups.rename', args);
+  public rename(
+    channel: string,
+    name: string,
+    validate: boolean = null,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, name, validate, ...extraArgs }
+    return this._get('groups.rename', args)
   }
 
-  public replies(channel: string, thread_ts: string, extraArgs: Object = {}) {
-    const args: Object = { channel, thread_ts, ...extraArgs };
-    return this._get('groups.replies', args);
+  public replies(
+    channel: string,
+    thread_ts: string,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, thread_ts, ...extraArgs }
+    return this._get('groups.replies', args)
   }
 
-  public setPurpose(channel: string, purpose: string, extraArgs: Object = {}) {
-    const args: Object = { channel, purpose, ...extraArgs };
-    return this._post('groups.setPurpose', args);
+  public setPurpose(
+    channel: string,
+    purpose: string,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, purpose, ...extraArgs }
+    return this._post('groups.setPurpose', args)
   }
 
-  public setTopic(channel: string, topic: string, extraArgs: Object = {}) {
-    const args: Object = { channel, topic, ...extraArgs };
-    return this._post('groups.setTopic', args);
+  public setTopic(
+    channel: string,
+    topic: string,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, topic, ...extraArgs }
+    return this._post('groups.setTopic', args)
   }
 
-  public unarchive(channel: string, extraArgs: Object = {}) {
-    const args: Object = { channel, ...extraArgs };
-    return this._post('groups.unarchive', args);
+  public unarchive(channel: string, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { channel, ...extraArgs }
+    return this._post('groups.unarchive', args)
   }
 }

@@ -1,57 +1,64 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 class FilesComments extends BaseAPI {
-  public add(comment, file, extraArgs: Object = {}) {
-    const args: Object = { comment, file };
-    return this._post('files.comments.add', args);
+  public add(comment, file, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { comment, file }
+    return this._post('files.comments.add', args)
   }
 
-  public delete_(file, id, extraArgs: Object = {}) {
-    const args: Object = { file, id };
-    return this._post('files.comments.delete', args);
+  public delete_(file, id, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { file, id }
+    return this._post('files.comments.delete', args)
   }
 
-  public edit(comment, file, id, extraArgs: Object = {}) {
-    const args: Object = { comment, file, id };
-    return this._post('files.comments.edit', args);
+  public edit(comment, file, id, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { comment, file, id }
+    return this._post('files.comments.edit', args)
   }
 }
 
 export default class Files extends BaseAPI {
-  public comments;
+  public comments
   constructor(token, retries_limit) {
-    super(token, retries_limit);
-    this.comments = new FilesComments(token, retries_limit);
+    super(token, retries_limit)
+    this.comments = new FilesComments(token, retries_limit)
   }
 
-  public delete_(file: string, extraArgs: Object = {}) {
-    const args: Object = { file, ...extraArgs };
-    return this._post('files.delete', args);
+  public delete_(file: string, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { file, ...extraArgs }
+    return this._post('files.delete', args)
   }
 
   public info(
     file: string,
-    count: number = 100,
+    count = 100,
     cursor: string = null,
-    limit: number = 0,
-    page: number = 1,
-    extraArgs: Object = {}
+    limit = 0,
+    page = 1,
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = { file, count, cursor, limit, page, ...extraArgs };
-    return this._get('files.info', args);
+    const args: Record<string, any> = {
+      file,
+      count,
+      cursor,
+      limit,
+      page,
+      ...extraArgs
+    }
+    return this._get('files.info', args)
   }
 
   public list(
     channel: string,
-    count: number = 100,
-    page: number = 1,
-    ts_from: number = 0,
-    ts_to: string = 'now',
-    types: string = 'all',
+    count = 100,
+    page = 1,
+    ts_from = 0,
+    ts_to = 'now',
+    types = 'all',
     user: string = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       count,
       page,
@@ -60,18 +67,18 @@ export default class Files extends BaseAPI {
       types,
       user,
       ...extraArgs
-    };
-    return this._get('files.list', args);
+    }
+    return this._get('files.list', args)
   }
 
-  public revokePublicURL(file: string, extraArgs: Object = {}) {
-    const args: Object = { file, ...extraArgs };
-    return this._post('files.revokePublicURL', args);
+  public revokePublicURL(file: string, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { file, ...extraArgs }
+    return this._post('files.revokePublicURL', args)
   }
 
-  public sharedPublicURL(file: string, extraArgs: Object = {}) {
-    const args: Object = { file, ...extraArgs };
-    return this._post('files.sharedPublicURL', args);
+  public sharedPublicURL(file: string, extraArgs: Record<string, any> = {}) {
+    const args: Record<string, any> = { file, ...extraArgs }
+    return this._post('files.sharedPublicURL', args)
   }
 
   public upload(
@@ -83,9 +90,9 @@ export default class Files extends BaseAPI {
     initial_comment: string = null,
     thread_ts: number = null,
     title: string = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       filename,
       filetype,
@@ -93,7 +100,7 @@ export default class Files extends BaseAPI {
       thread_ts,
       title,
       ...extraArgs
-    };
-    return this._post_file('files.upload', { content, file }, args);
+    }
+    return this._post_file('files.upload', { content, file }, args)
   }
 }

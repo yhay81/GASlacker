@@ -1,4 +1,4 @@
-function methods() {
+function methods(token, retries_limit) {
 }/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -103,7 +103,7 @@ g = (function() {
 
 try {
 	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1, eval)("this");
+	g = g || new Function("return this")();
 } catch (e) {
 	// This works if the window reference is available
 	if (typeof window === "object") g = window;
@@ -122,13 +122,13 @@ module.exports = g;
 /*!***********************!*\
   !*** ./src/config.ts ***!
   \***********************/
-/*! exports provided: DEFAULT_RETRIES */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_RETRIES", function() { return DEFAULT_RETRIES; });
-var DEFAULT_RETRIES = 3;
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DEFAULT_RETRIES = 3;
 
 
 /***/ }),
@@ -137,91 +137,66 @@ var DEFAULT_RETRIES = 3;
 /*!**********************!*\
   !*** ./src/index.ts ***!
   \**********************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(global) {/* harmony import */ var _methods_API__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./methods/API */ "./src/methods/API.ts");
-/* harmony import */ var _methods_Apps__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./methods/Apps */ "./src/methods/Apps.ts");
-/* harmony import */ var _methods_Auth__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./methods/Auth */ "./src/methods/Auth.ts");
-/* harmony import */ var _methods_Bots__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./methods/Bots */ "./src/methods/Bots.ts");
-/* harmony import */ var _methods_Channels__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./methods/Channels */ "./src/methods/Channels.ts");
-/* harmony import */ var _methods_Chat__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./methods/Chat */ "./src/methods/Chat.ts");
-/* harmony import */ var _methods_Conversations__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./methods/Conversations */ "./src/methods/Conversations.ts");
-/* harmony import */ var _methods_Dialog__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./methods/Dialog */ "./src/methods/Dialog.ts");
-/* harmony import */ var _methods_DND__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./methods/DND */ "./src/methods/DND.ts");
-/* harmony import */ var _methods_Emoji__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./methods/Emoji */ "./src/methods/Emoji.ts");
-/* harmony import */ var _methods_Files__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./methods/Files */ "./src/methods/Files.ts");
-/* harmony import */ var _methods_Groups__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./methods/Groups */ "./src/methods/Groups.ts");
-/* harmony import */ var _methods_IM__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./methods/IM */ "./src/methods/IM.ts");
-/* harmony import */ var _methods_Migration__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./methods/Migration */ "./src/methods/Migration.ts");
-/* harmony import */ var _methods_MPIM__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./methods/MPIM */ "./src/methods/MPIM.ts");
-/* harmony import */ var _methods_OAuth__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./methods/OAuth */ "./src/methods/OAuth.ts");
-/* harmony import */ var _methods_Pins__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./methods/Pins */ "./src/methods/Pins.ts");
-/* harmony import */ var _methods_Reactions__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./methods/Reactions */ "./src/methods/Reactions.ts");
-/* harmony import */ var _methods_Reminders__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./methods/Reminders */ "./src/methods/Reminders.ts");
-/* harmony import */ var _methods_RTM__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./methods/RTM */ "./src/methods/RTM.ts");
-/* harmony import */ var _methods_Search__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./methods/Search */ "./src/methods/Search.ts");
-/* harmony import */ var _methods_Stars__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./methods/Stars */ "./src/methods/Stars.ts");
-/* harmony import */ var _methods_Team__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./methods/Team */ "./src/methods/Team.ts");
-/* harmony import */ var _methods_UserGroups__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./methods/UserGroups */ "./src/methods/UserGroups.ts");
-/* harmony import */ var _methods_Users__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./methods/Users */ "./src/methods/Users.ts");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./config */ "./src/config.ts");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* WEBPACK VAR INJECTION */(function(global) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var API_1 = __webpack_require__(/*! ./methods/API */ "./src/methods/API.ts");
+var Apps_1 = __webpack_require__(/*! ./methods/Apps */ "./src/methods/Apps.ts");
+var Auth_1 = __webpack_require__(/*! ./methods/Auth */ "./src/methods/Auth.ts");
+var Bots_1 = __webpack_require__(/*! ./methods/Bots */ "./src/methods/Bots.ts");
+var Channels_1 = __webpack_require__(/*! ./methods/Channels */ "./src/methods/Channels.ts");
+var Chat_1 = __webpack_require__(/*! ./methods/Chat */ "./src/methods/Chat.ts");
+var Conversations_1 = __webpack_require__(/*! ./methods/Conversations */ "./src/methods/Conversations.ts");
+var Dialog_1 = __webpack_require__(/*! ./methods/Dialog */ "./src/methods/Dialog.ts");
+var DND_1 = __webpack_require__(/*! ./methods/DND */ "./src/methods/DND.ts");
+var Emoji_1 = __webpack_require__(/*! ./methods/Emoji */ "./src/methods/Emoji.ts");
+var Files_1 = __webpack_require__(/*! ./methods/Files */ "./src/methods/Files.ts");
+var Groups_1 = __webpack_require__(/*! ./methods/Groups */ "./src/methods/Groups.ts");
+var IM_1 = __webpack_require__(/*! ./methods/IM */ "./src/methods/IM.ts");
+var Migration_1 = __webpack_require__(/*! ./methods/Migration */ "./src/methods/Migration.ts");
+var MPIM_1 = __webpack_require__(/*! ./methods/MPIM */ "./src/methods/MPIM.ts");
+var OAuth_1 = __webpack_require__(/*! ./methods/OAuth */ "./src/methods/OAuth.ts");
+var Pins_1 = __webpack_require__(/*! ./methods/Pins */ "./src/methods/Pins.ts");
+var Reactions_1 = __webpack_require__(/*! ./methods/Reactions */ "./src/methods/Reactions.ts");
+var Reminders_1 = __webpack_require__(/*! ./methods/Reminders */ "./src/methods/Reminders.ts");
+var RTM_1 = __webpack_require__(/*! ./methods/RTM */ "./src/methods/RTM.ts");
+var Search_1 = __webpack_require__(/*! ./methods/Search */ "./src/methods/Search.ts");
+var Stars_1 = __webpack_require__(/*! ./methods/Stars */ "./src/methods/Stars.ts");
+var Team_1 = __webpack_require__(/*! ./methods/Team */ "./src/methods/Team.ts");
+var UserGroups_1 = __webpack_require__(/*! ./methods/UserGroups */ "./src/methods/UserGroups.ts");
+var Users_1 = __webpack_require__(/*! ./methods/Users */ "./src/methods/Users.ts");
+var config_1 = __webpack_require__(/*! ./config */ "./src/config.ts");
 var Methods = /** @class */ (function () {
     function Methods(token, retries_limit) {
-        if (retries_limit === void 0) { retries_limit = _config__WEBPACK_IMPORTED_MODULE_25__["DEFAULT_RETRIES"]; }
-        this.api = new _methods_API__WEBPACK_IMPORTED_MODULE_0__["default"](token, retries_limit);
-        this.apps = new _methods_Apps__WEBPACK_IMPORTED_MODULE_1__["default"](token, retries_limit);
-        this.auth = new _methods_Auth__WEBPACK_IMPORTED_MODULE_2__["default"](token, retries_limit);
-        this.bots = new _methods_Bots__WEBPACK_IMPORTED_MODULE_3__["default"](token, retries_limit);
-        this.channels = new _methods_Channels__WEBPACK_IMPORTED_MODULE_4__["default"](token, retries_limit);
-        this.chat = new _methods_Chat__WEBPACK_IMPORTED_MODULE_5__["default"](token, retries_limit);
-        this.conversations = new _methods_Conversations__WEBPACK_IMPORTED_MODULE_6__["default"](token, retries_limit);
-        this.dialog = new _methods_Dialog__WEBPACK_IMPORTED_MODULE_7__["default"](token, retries_limit);
-        this.dnd = new _methods_DND__WEBPACK_IMPORTED_MODULE_8__["default"](token, retries_limit);
-        this.emoji = new _methods_Emoji__WEBPACK_IMPORTED_MODULE_9__["default"](token, retries_limit);
-        this.files = new _methods_Files__WEBPACK_IMPORTED_MODULE_10__["default"](token, retries_limit);
-        this.groups = new _methods_Groups__WEBPACK_IMPORTED_MODULE_11__["default"](token, retries_limit);
-        this.im = new _methods_IM__WEBPACK_IMPORTED_MODULE_12__["default"](token, retries_limit);
-        this.migration = new _methods_Migration__WEBPACK_IMPORTED_MODULE_13__["default"](token, retries_limit);
-        this.mpim = new _methods_MPIM__WEBPACK_IMPORTED_MODULE_14__["default"](token, retries_limit);
-        this.oauth = new _methods_OAuth__WEBPACK_IMPORTED_MODULE_15__["default"](token, retries_limit);
-        this.pins = new _methods_Pins__WEBPACK_IMPORTED_MODULE_16__["default"](token, retries_limit);
-        this.reactions = new _methods_Reactions__WEBPACK_IMPORTED_MODULE_17__["default"](token, retries_limit);
-        this.reminders = new _methods_Reminders__WEBPACK_IMPORTED_MODULE_18__["default"](token, retries_limit);
-        this.rtm = new _methods_RTM__WEBPACK_IMPORTED_MODULE_19__["default"](token, retries_limit);
-        this.search = new _methods_Search__WEBPACK_IMPORTED_MODULE_20__["default"](token, retries_limit);
-        this.stars = new _methods_Stars__WEBPACK_IMPORTED_MODULE_21__["default"](token, retries_limit);
-        this.team = new _methods_Team__WEBPACK_IMPORTED_MODULE_22__["default"](token, retries_limit);
-        this.usergroups = new _methods_UserGroups__WEBPACK_IMPORTED_MODULE_23__["default"](token, retries_limit);
-        this.users = new _methods_Users__WEBPACK_IMPORTED_MODULE_24__["default"](token, retries_limit);
+        if (retries_limit === void 0) { retries_limit = config_1.DEFAULT_RETRIES; }
+        this.api = new API_1.default(token, retries_limit);
+        this.apps = new Apps_1.default(token, retries_limit);
+        this.auth = new Auth_1.default(token, retries_limit);
+        this.bots = new Bots_1.default(token, retries_limit);
+        this.channels = new Channels_1.default(token, retries_limit);
+        this.chat = new Chat_1.default(token, retries_limit);
+        this.conversations = new Conversations_1.default(token, retries_limit);
+        this.dialog = new Dialog_1.default(token, retries_limit);
+        this.dnd = new DND_1.default(token, retries_limit);
+        this.emoji = new Emoji_1.default(token, retries_limit);
+        this.files = new Files_1.default(token, retries_limit);
+        this.groups = new Groups_1.default(token, retries_limit);
+        this.im = new IM_1.default(token, retries_limit);
+        this.migration = new Migration_1.default(token, retries_limit);
+        this.mpim = new MPIM_1.default(token, retries_limit);
+        this.oauth = new OAuth_1.default(token, retries_limit);
+        this.pins = new Pins_1.default(token, retries_limit);
+        this.reactions = new Reactions_1.default(token, retries_limit);
+        this.reminders = new Reminders_1.default(token, retries_limit);
+        this.rtm = new RTM_1.default(token, retries_limit);
+        this.search = new Search_1.default(token, retries_limit);
+        this.stars = new Stars_1.default(token, retries_limit);
+        this.team = new Team_1.default(token, retries_limit);
+        this.usergroups = new UserGroups_1.default(token, retries_limit);
+        this.users = new Users_1.default(token, retries_limit);
         // this.presence = new Presence(token, retries_limit);
         // this.idpgroups = new IDPGroups(token, retries_limit);
         // this.incomingwebhook = new IncomingWebhook(url);
@@ -229,7 +204,7 @@ var Methods = /** @class */ (function () {
     return Methods;
 }());
 global.methods = function (token, retries_limit) {
-    if (retries_limit === void 0) { retries_limit = _config__WEBPACK_IMPORTED_MODULE_25__["DEFAULT_RETRIES"]; }
+    if (retries_limit === void 0) { retries_limit = config_1.DEFAULT_RETRIES; }
     return new Methods(token, retries_limit);
 };
 
@@ -241,26 +216,25 @@ global.methods = function (token, retries_limit) {
 /*!****************************!*\
   !*** ./src/methods/API.ts ***!
   \****************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -271,7 +245,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var API = /** @class */ (function (_super) {
     __extends(API, _super);
     function API() {
@@ -285,8 +260,8 @@ var API = /** @class */ (function (_super) {
         return this._post('api.test', args);
     };
     return API;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (API);
+}(BaseAPI_1.default));
+exports.default = API;
 
 
 /***/ }),
@@ -295,26 +270,25 @@ var API = /** @class */ (function (_super) {
 /*!*****************************!*\
   !*** ./src/methods/Apps.ts ***!
   \*****************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -325,7 +299,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var AppsPermissions = /** @class */ (function (_super) {
     __extends(AppsPermissions, _super);
     function AppsPermissions(token, retries_limit) {
@@ -346,7 +321,7 @@ var AppsPermissions = /** @class */ (function (_super) {
         return this._get('apps.permissions.request', args);
     };
     return AppsPermissions;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
+}(BaseAPI_1.default));
 var AppsPermissionsResouces = /** @class */ (function (_super) {
     __extends(AppsPermissionsResouces, _super);
     function AppsPermissionsResouces() {
@@ -360,7 +335,7 @@ var AppsPermissionsResouces = /** @class */ (function (_super) {
         return this._get('apps.permissions.resouces.list', args);
     };
     return AppsPermissionsResouces;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
+}(BaseAPI_1.default));
 var AppsPermissionsScopes = /** @class */ (function (_super) {
     __extends(AppsPermissionsScopes, _super);
     function AppsPermissionsScopes() {
@@ -372,7 +347,7 @@ var AppsPermissionsScopes = /** @class */ (function (_super) {
         return this._get('apps.permissions.scopes.list', args);
     };
     return AppsPermissionsScopes;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
+}(BaseAPI_1.default));
 var AppsPermissionsUsers = /** @class */ (function (_super) {
     __extends(AppsPermissionsUsers, _super);
     function AppsPermissionsUsers() {
@@ -387,11 +362,13 @@ var AppsPermissionsUsers = /** @class */ (function (_super) {
     };
     AppsPermissionsUsers.prototype.request = function (scopes, trigger_id, user, extraArgs) {
         if (extraArgs === void 0) { extraArgs = {}; }
-        var args = __assign({ scopes: scopes, trigger_id: trigger_id, user: user }, extraArgs);
+        var args = __assign({ scopes: scopes,
+            trigger_id: trigger_id,
+            user: user }, extraArgs);
         return this._get('apps.permissions.users.request', args);
     };
     return AppsPermissionsUsers;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
+}(BaseAPI_1.default));
 var Apps = /** @class */ (function (_super) {
     __extends(Apps, _super);
     function Apps(token, retries_limit) {
@@ -405,8 +382,8 @@ var Apps = /** @class */ (function (_super) {
         return this._get('apps.permissions.users.request', args);
     };
     return Apps;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Apps);
+}(BaseAPI_1.default));
+exports.default = Apps;
 
 
 /***/ }),
@@ -415,26 +392,25 @@ var Apps = /** @class */ (function (_super) {
 /*!*****************************!*\
   !*** ./src/methods/Auth.ts ***!
   \*****************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -445,7 +421,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Auth = /** @class */ (function (_super) {
     __extends(Auth, _super);
     function Auth() {
@@ -463,8 +440,8 @@ var Auth = /** @class */ (function (_super) {
         return this._post('auth.test', args);
     };
     return Auth;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Auth);
+}(BaseAPI_1.default));
+exports.default = Auth;
 
 
 /***/ }),
@@ -473,14 +450,12 @@ var Auth = /** @class */ (function (_super) {
 /*!********************************!*\
   !*** ./src/methods/BaseAPI.ts ***!
   \********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./src/util.ts");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../config */ "./src/config.ts");
-var __assign = (undefined && undefined.__assign) || function () {
+
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -491,19 +466,20 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ../util */ "./src/util.ts");
+var config_1 = __webpack_require__(/*! ../config */ "./src/config.ts");
 var BaseAPI = /** @class */ (function () {
     function BaseAPI(_token, _retries_limit) {
         if (_token === void 0) { _token = null; }
-        if (_retries_limit === void 0) { _retries_limit = _config__WEBPACK_IMPORTED_MODULE_1__["DEFAULT_RETRIES"]; }
+        if (_retries_limit === void 0) { _retries_limit = config_1.DEFAULT_RETRIES; }
         this._token = _token;
         this._retries_limit = _retries_limit;
     }
     BaseAPI.prototype._get = function (api, args) {
         if (args === void 0) { args = {}; }
         // https://github.com/requests/requests/blob/master/requests/models.py
-        var encodedArgs = Object(_util__WEBPACK_IMPORTED_MODULE_0__["queryEncode"])(__assign({ token: this._token }, args));
+        var encodedArgs = util_1.queryEncode(__assign({ token: this._token }, args));
         var url = "" + BaseAPI.API_ENDPOINT + api + "?" + encodedArgs;
         var params = {
             method: 'get',
@@ -513,10 +489,10 @@ var BaseAPI = /** @class */ (function () {
     };
     BaseAPI.prototype._post = function (api, args) {
         if (args === void 0) { args = {}; }
-        var payload = Object(_util__WEBPACK_IMPORTED_MODULE_0__["createPayload"])(__assign({}, args));
+        var payload = util_1.createPayload(__assign({}, args));
         var url = "" + BaseAPI.API_ENDPOINT + api;
         var params = {
-            headers: { Authorization: this._token },
+            headers: { Authorization: "Bearer " + this._token },
             method: 'post',
             contentType: 'application/json; charset=UTF-8',
             payload: JSON.stringify(payload)
@@ -525,19 +501,18 @@ var BaseAPI = /** @class */ (function () {
     };
     BaseAPI.prototype._post_file = function (api, file_args, args) {
         if (args === void 0) { args = {}; }
-        var payload = Object(_util__WEBPACK_IMPORTED_MODULE_0__["createPayload"])(__assign({}, args));
+        var payload = util_1.createPayload(__assign({}, args));
         var url = "" + BaseAPI.API_ENDPOINT + api + "?";
         var params = {
-            headers: { Authorization: this._token },
+            headers: { Authorization: "Bearer " + this._token },
             method: 'post',
             contentType: 'multipart/form-data; charset=UTF-8',
-            payload: __assign({}, file_args, payload)
+            payload: __assign(__assign({}, file_args), payload)
         };
         return this._fetch(url, params);
     };
-    BaseAPI.prototype._fetch = function (url, params, headers) {
+    BaseAPI.prototype._fetch = function (url, params) {
         if (params === void 0) { params = null; }
-        if (headers === void 0) { headers = null; }
         var response = null;
         for (var retry = 0; retry < this._retries_limit; retry++) {
             try {
@@ -559,7 +534,7 @@ var BaseAPI = /** @class */ (function () {
     BaseAPI.API_ENDPOINT = 'https://slack.com/api/';
     return BaseAPI;
 }());
-/* harmony default export */ __webpack_exports__["default"] = (BaseAPI);
+exports.default = BaseAPI;
 
 
 /***/ }),
@@ -568,26 +543,25 @@ var BaseAPI = /** @class */ (function () {
 /*!*****************************!*\
   !*** ./src/methods/Bots.ts ***!
   \*****************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -598,7 +572,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Bots = /** @class */ (function (_super) {
     __extends(Bots, _super);
     function Bots() {
@@ -611,8 +586,8 @@ var Bots = /** @class */ (function (_super) {
         return this._get('bots.info', args);
     };
     return Bots;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Bots);
+}(BaseAPI_1.default));
+exports.default = Bots;
 
 
 /***/ }),
@@ -621,26 +596,25 @@ var Bots = /** @class */ (function (_super) {
 /*!*********************************!*\
   !*** ./src/methods/Channels.ts ***!
   \*********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -651,7 +625,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Channels = /** @class */ (function (_super) {
     __extends(Channels, _super);
     function Channels() {
@@ -739,8 +714,8 @@ var Channels = /** @class */ (function (_super) {
         return this._post('channels.unarchive', args);
     };
     return Channels;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Channels);
+}(BaseAPI_1.default));
+exports.default = Channels;
 
 
 /***/ }),
@@ -749,26 +724,25 @@ var Channels = /** @class */ (function (_super) {
 /*!*****************************!*\
   !*** ./src/methods/Chat.ts ***!
   \*****************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -779,17 +753,28 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Chat = /** @class */ (function (_super) {
     __extends(Chat, _super);
     function Chat() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Chat.prototype.delete_ = function (channel, ts, as_user, extraArgs) {
+    Chat.prototype.delete_ = function (channel, ts, as_user, // deprecated_arguments
+    extraArgs) {
         if (as_user === void 0) { as_user = null; }
         if (extraArgs === void 0) { extraArgs = {}; }
         var args = __assign({ channel: channel, ts: ts, as_user: as_user }, extraArgs);
         return this._post('chat.delete', args);
+    };
+    Chat.prototype.deleteScheduledMessage = function (channel, scheduled_message_id, as_user, // deprecated_arguments
+    extraArgs) {
+        if (as_user === void 0) { as_user = null; }
+        if (extraArgs === void 0) { extraArgs = {}; }
+        var args = __assign({ channel: channel,
+            scheduled_message_id: scheduled_message_id,
+            as_user: as_user }, extraArgs);
+        return this._post('chat.deleteScheduledMessage', args);
     };
     Chat.prototype.getPermalink = function (channel, message_ts, extraArgs) {
         if (extraArgs === void 0) { extraArgs = {}; }
@@ -801,26 +786,32 @@ var Chat = /** @class */ (function (_super) {
         var args = __assign({ channel: channel, text: text }, extraArgs);
         return this._post('chat.meMessage', args);
     };
-    Chat.prototype.postEphemeral = function (channel, text, user, as_user, attachements, link_names, parse, thread_ts, extraArgs) {
-        if (as_user === void 0) { as_user = false; }
-        if (attachements === void 0) { attachements = null; }
+    Chat.prototype.postEphemeral = function (channel, text, user, blocks, icon_emoji, icon_url, link_names, parse, thread_ts, username, extraArgs) {
+        if (blocks === void 0) { blocks = null; }
+        if (icon_emoji === void 0) { icon_emoji = null; }
+        if (icon_url === void 0) { icon_url = null; }
         if (link_names === void 0) { link_names = false; }
         if (parse === void 0) { parse = 'none'; }
         if (thread_ts === void 0) { thread_ts = null; }
+        if (username === void 0) { username = null; }
         if (extraArgs === void 0) { extraArgs = {}; }
         var args = __assign({ channel: channel,
             text: text,
             user: user,
-            as_user: as_user,
-            attachements: attachements,
+            blocks: blocks,
+            icon_emoji: icon_emoji,
+            icon_url: icon_url,
             link_names: link_names,
             parse: parse,
-            thread_ts: thread_ts }, extraArgs);
+            thread_ts: thread_ts,
+            username: username }, extraArgs);
         return this._post('chat.postEphemeral', args);
     };
-    Chat.prototype.postMessage = function (channel, text, as_user, attachements, icon_emoji, icon_url, link_names, mrkdwn, parse, reply_broadcast, thread_ts, unfurl_links, unfurl_media, username, extraArgs) {
-        if (as_user === void 0) { as_user = false; }
+    Chat.prototype.postMessage = function (channel, text, as_user, // deprecated_arguments
+    attachements, blocks, icon_emoji, icon_url, link_names, mrkdwn, parse, reply_broadcast, thread_ts, unfurl_links, unfurl_media, username, extraArgs) {
+        if (as_user === void 0) { as_user = null; }
         if (attachements === void 0) { attachements = null; }
+        if (blocks === void 0) { blocks = null; }
         if (icon_emoji === void 0) { icon_emoji = null; }
         if (icon_url === void 0) { icon_url = null; }
         if (link_names === void 0) { link_names = false; }
@@ -836,6 +827,7 @@ var Chat = /** @class */ (function (_super) {
             text: text,
             as_user: as_user,
             attachements: attachements,
+            blocks: blocks,
             icon_emoji: icon_emoji,
             icon_url: icon_url,
             link_names: link_names,
@@ -848,19 +840,53 @@ var Chat = /** @class */ (function (_super) {
             username: username }, extraArgs);
         return this._post('chat.postMessage', args);
     };
-    Chat.prototype.unfurl = function (channel, ts, unfurls, user_auth_required, user_auth_url, extraArgs) {
-        if (unfurls === void 0) { unfurls = null; }
+    Chat.prototype.scheduleMessage = function (channel, post_at, text, as_user, // deprecated_arguments
+    attachements, blocks, link_names, mrkdwn, parse, reply_broadcast, thread_ts, unfurl_links, unfurl_media, username, extraArgs) {
+        if (as_user === void 0) { as_user = null; }
+        if (attachements === void 0) { attachements = null; }
+        if (blocks === void 0) { blocks = null; }
+        if (link_names === void 0) { link_names = false; }
+        if (mrkdwn === void 0) { mrkdwn = true; }
+        if (parse === void 0) { parse = 'none'; }
+        if (reply_broadcast === void 0) { reply_broadcast = true; }
+        if (thread_ts === void 0) { thread_ts = null; }
+        if (unfurl_links === void 0) { unfurl_links = null; }
+        if (unfurl_media === void 0) { unfurl_media = null; }
+        if (username === void 0) { username = null; }
+        if (extraArgs === void 0) { extraArgs = {}; }
+        var args = __assign({ channel: channel,
+            post_at: post_at,
+            text: text,
+            as_user: as_user,
+            attachements: attachements,
+            blocks: blocks,
+            link_names: link_names,
+            mrkdwn: mrkdwn,
+            parse: parse,
+            reply_broadcast: reply_broadcast,
+            thread_ts: thread_ts,
+            unfurl_links: unfurl_links,
+            unfurl_media: unfurl_media,
+            username: username }, extraArgs);
+        return this._post('chat.scheduleMessage', args);
+    };
+    Chat.prototype.unfurl = function (channel, ts, unfurls, user_auth_message, user_auth_required, user_auth_url, extraArgs) {
+        if (user_auth_message === void 0) { user_auth_message = null; }
         if (user_auth_required === void 0) { user_auth_required = '0'; }
         if (user_auth_url === void 0) { user_auth_url = null; }
         if (extraArgs === void 0) { extraArgs = {}; }
         var args = __assign({ channel: channel,
             ts: ts,
             unfurls: unfurls,
+            user_auth_message: user_auth_message,
             user_auth_required: user_auth_required,
             user_auth_url: user_auth_url }, extraArgs);
         return this._post('chat.unfurl', args);
     };
-    Chat.prototype.update = function (channel, text, ts, attachements, link_names, parse, extraArgs) {
+    Chat.prototype.update = function (channel, text, ts, as_user, // deprecated_arguments
+    blocks, attachements, link_names, parse, extraArgs) {
+        if (as_user === void 0) { as_user = null; }
+        if (blocks === void 0) { blocks = null; }
         if (attachements === void 0) { attachements = null; }
         if (link_names === void 0) { link_names = false; }
         if (parse === void 0) { parse = 'none'; }
@@ -868,14 +894,16 @@ var Chat = /** @class */ (function (_super) {
         var args = __assign({ channel: channel,
             text: text,
             ts: ts,
+            as_user: as_user,
+            blocks: blocks,
             attachements: attachements,
             link_names: link_names,
             parse: parse }, extraArgs);
         return this._post('chat.update', args);
     };
     return Chat;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Chat);
+}(BaseAPI_1.default));
+exports.default = Chat;
 
 
 /***/ }),
@@ -884,26 +912,25 @@ var Chat = /** @class */ (function (_super) {
 /*!**************************************!*\
   !*** ./src/methods/Conversations.ts ***!
   \**************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -914,7 +941,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Conversations = /** @class */ (function (_super) {
     __extends(Conversations, _super);
     function Conversations() {
@@ -934,7 +962,9 @@ var Conversations = /** @class */ (function (_super) {
         if (is_private === void 0) { is_private = null; }
         if (user_ids === void 0) { user_ids = null; }
         if (extraArgs === void 0) { extraArgs = {}; }
-        var args = __assign({ name: name, is_private: is_private, user_ids: user_ids }, extraArgs);
+        var args = __assign({ name: name,
+            is_private: is_private,
+            user_ids: user_ids }, extraArgs);
         return this._get('conversations.create', args);
     };
     Conversations.prototype.history = function (channel, inclusive, latest, limit, oldest, extraArgs) {
@@ -1000,7 +1030,9 @@ var Conversations = /** @class */ (function (_super) {
         if (return_im === void 0) { return_im = null; }
         if (users === void 0) { users = null; }
         if (extraArgs === void 0) { extraArgs = {}; }
-        var args = __assign({ channel: channel, return_im: return_im, users: users }, extraArgs);
+        var args = __assign({ channel: channel,
+            return_im: return_im,
+            users: users }, extraArgs);
         return this._post('conversations.open', args);
     };
     Conversations.prototype.rename = function (channel, name, extraArgs) {
@@ -1040,8 +1072,8 @@ var Conversations = /** @class */ (function (_super) {
         return this._post('conversations.unarchive', args);
     };
     return Conversations;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Conversations);
+}(BaseAPI_1.default));
+exports.default = Conversations;
 
 
 /***/ }),
@@ -1050,26 +1082,25 @@ var Conversations = /** @class */ (function (_super) {
 /*!****************************!*\
   !*** ./src/methods/DND.ts ***!
   \****************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1080,7 +1111,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var DND = /** @class */ (function (_super) {
     __extends(DND, _super);
     function DND() {
@@ -1114,8 +1146,8 @@ var DND = /** @class */ (function (_super) {
         return this._get('dnd.teamInfo', args);
     };
     return DND;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (DND);
+}(BaseAPI_1.default));
+exports.default = DND;
 
 
 /***/ }),
@@ -1124,26 +1156,25 @@ var DND = /** @class */ (function (_super) {
 /*!*******************************!*\
   !*** ./src/methods/Dialog.ts ***!
   \*******************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1154,7 +1185,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Dialog = /** @class */ (function (_super) {
     __extends(Dialog, _super);
     function Dialog() {
@@ -1166,8 +1198,8 @@ var Dialog = /** @class */ (function (_super) {
         return this._post('conversations.unarchive', args);
     };
     return Dialog;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Dialog);
+}(BaseAPI_1.default));
+exports.default = Dialog;
 
 
 /***/ }),
@@ -1176,26 +1208,25 @@ var Dialog = /** @class */ (function (_super) {
 /*!******************************!*\
   !*** ./src/methods/Emoji.ts ***!
   \******************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1206,7 +1237,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Emoji = /** @class */ (function (_super) {
     __extends(Emoji, _super);
     function Emoji() {
@@ -1218,8 +1250,8 @@ var Emoji = /** @class */ (function (_super) {
         return this._get('emoji.list', args);
     };
     return Emoji;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Emoji);
+}(BaseAPI_1.default));
+exports.default = Emoji;
 
 
 /***/ }),
@@ -1228,26 +1260,25 @@ var Emoji = /** @class */ (function (_super) {
 /*!******************************!*\
   !*** ./src/methods/Files.ts ***!
   \******************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1258,7 +1289,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var FilesComments = /** @class */ (function (_super) {
     __extends(FilesComments, _super);
     function FilesComments() {
@@ -1280,7 +1312,7 @@ var FilesComments = /** @class */ (function (_super) {
         return this._post('files.comments.edit', args);
     };
     return FilesComments;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
+}(BaseAPI_1.default));
 var Files = /** @class */ (function (_super) {
     __extends(Files, _super);
     function Files(token, retries_limit) {
@@ -1299,7 +1331,11 @@ var Files = /** @class */ (function (_super) {
         if (limit === void 0) { limit = 0; }
         if (page === void 0) { page = 1; }
         if (extraArgs === void 0) { extraArgs = {}; }
-        var args = __assign({ file: file, count: count, cursor: cursor, limit: limit, page: page }, extraArgs);
+        var args = __assign({ file: file,
+            count: count,
+            cursor: cursor,
+            limit: limit,
+            page: page }, extraArgs);
         return this._get('files.info', args);
     };
     Files.prototype.list = function (channel, count, page, ts_from, ts_to, types, user, extraArgs) {
@@ -1347,8 +1383,8 @@ var Files = /** @class */ (function (_super) {
         return this._post_file('files.upload', { content: content, file: file }, args);
     };
     return Files;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Files);
+}(BaseAPI_1.default));
+exports.default = Files;
 
 
 /***/ }),
@@ -1357,26 +1393,25 @@ var Files = /** @class */ (function (_super) {
 /*!*******************************!*\
   !*** ./src/methods/Groups.ts ***!
   \*******************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1387,7 +1422,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Groups = /** @class */ (function (_super) {
     __extends(Groups, _super);
     function Groups() {
@@ -1505,8 +1541,8 @@ var Groups = /** @class */ (function (_super) {
         return this._post('groups.unarchive', args);
     };
     return Groups;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Groups);
+}(BaseAPI_1.default));
+exports.default = Groups;
 
 
 /***/ }),
@@ -1515,26 +1551,25 @@ var Groups = /** @class */ (function (_super) {
 /*!***************************!*\
   !*** ./src/methods/IM.ts ***!
   \***************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1545,7 +1580,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var IM = /** @class */ (function (_super) {
     __extends(IM, _super);
     function IM() {
@@ -1597,8 +1633,8 @@ var IM = /** @class */ (function (_super) {
         return this._get('im.replies', args);
     };
     return IM;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (IM);
+}(BaseAPI_1.default));
+exports.default = IM;
 
 
 /***/ }),
@@ -1607,26 +1643,25 @@ var IM = /** @class */ (function (_super) {
 /*!*****************************!*\
   !*** ./src/methods/MPIM.ts ***!
   \*****************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1637,7 +1672,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var MPIM = /** @class */ (function (_super) {
     __extends(MPIM, _super);
     function MPIM() {
@@ -1686,8 +1722,8 @@ var MPIM = /** @class */ (function (_super) {
         return this._get('mpim.replies', args);
     };
     return MPIM;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (MPIM);
+}(BaseAPI_1.default));
+exports.default = MPIM;
 
 
 /***/ }),
@@ -1696,26 +1732,25 @@ var MPIM = /** @class */ (function (_super) {
 /*!**********************************!*\
   !*** ./src/methods/Migration.ts ***!
   \**********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1726,7 +1761,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Migration = /** @class */ (function (_super) {
     __extends(Migration, _super);
     function Migration() {
@@ -1739,8 +1775,8 @@ var Migration = /** @class */ (function (_super) {
         return this._get('migration.exchange', args);
     };
     return Migration;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Migration);
+}(BaseAPI_1.default));
+exports.default = Migration;
 
 
 /***/ }),
@@ -1749,27 +1785,25 @@ var Migration = /** @class */ (function (_super) {
 /*!******************************!*\
   !*** ./src/methods/OAuth.ts ***!
   \******************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util */ "./src/util.ts");
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1780,8 +1814,9 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = __webpack_require__(/*! ../util */ "./src/util.ts");
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var OAuth = /** @class */ (function (_super) {
     __extends(OAuth, _super);
     function OAuth() {
@@ -1796,8 +1831,8 @@ var OAuth = /** @class */ (function (_super) {
             code: code,
             redirect_uri: redirect_uri,
             single_channel: single_channel }, extraArgs);
-        var encodedParams = Object(_util__WEBPACK_IMPORTED_MODULE_0__["queryEncode"])(args);
-        var url = _BaseAPI__WEBPACK_IMPORTED_MODULE_1__["default"].API_ENDPOINT + "oauth.access?" + encodedParams;
+        var encodedParams = util_1.queryEncode(args);
+        var url = BaseAPI_1.default.API_ENDPOINT + "oauth.access?" + encodedParams;
         return this._fetch(url, { method: 'POST' });
     };
     OAuth.prototype.token = function (client_id, client_secret, code, redirect_uri, single_channel, extraArgs) {
@@ -1812,8 +1847,8 @@ var OAuth = /** @class */ (function (_super) {
         return this._get('oauth.token', args);
     };
     return OAuth;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_1__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (OAuth);
+}(BaseAPI_1.default));
+exports.default = OAuth;
 
 
 /***/ }),
@@ -1822,26 +1857,25 @@ var OAuth = /** @class */ (function (_super) {
 /*!*****************************!*\
   !*** ./src/methods/Pins.ts ***!
   \*****************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1852,7 +1886,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Pins = /** @class */ (function (_super) {
     __extends(Pins, _super);
     function Pins() {
@@ -1880,8 +1915,8 @@ var Pins = /** @class */ (function (_super) {
         return this._post('pins.remove', args);
     };
     return Pins;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Pins);
+}(BaseAPI_1.default));
+exports.default = Pins;
 
 
 /***/ }),
@@ -1890,26 +1925,25 @@ var Pins = /** @class */ (function (_super) {
 /*!****************************!*\
   !*** ./src/methods/RTM.ts ***!
   \****************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1920,7 +1954,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var RTM = /** @class */ (function (_super) {
     __extends(RTM, _super);
     function RTM() {
@@ -1930,7 +1965,8 @@ var RTM = /** @class */ (function (_super) {
         if (batch_presence_aware === void 0) { batch_presence_aware = 'false'; }
         if (presence_sub === void 0) { presence_sub = true; }
         if (extraArgs === void 0) { extraArgs = {}; }
-        var args = __assign({ batch_presence_aware: batch_presence_aware, presence_sub: presence_sub }, extraArgs);
+        var args = __assign({ batch_presence_aware: batch_presence_aware,
+            presence_sub: presence_sub }, extraArgs);
         return this._get('reminders.add', args);
     };
     RTM.prototype.start = function (batch_presence_aware, include_locale, mpim_aware, no_latest, no_unreads, presence_sub, simple_latest, extraArgs) {
@@ -1952,8 +1988,8 @@ var RTM = /** @class */ (function (_super) {
         return this._get('reminders.complete', args);
     };
     return RTM;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (RTM);
+}(BaseAPI_1.default));
+exports.default = RTM;
 
 
 /***/ }),
@@ -1962,26 +1998,25 @@ var RTM = /** @class */ (function (_super) {
 /*!**********************************!*\
   !*** ./src/methods/Reactions.ts ***!
   \**********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -1992,7 +2027,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Reactions = /** @class */ (function (_super) {
     __extends(Reactions, _super);
     function Reactions() {
@@ -2051,8 +2087,8 @@ var Reactions = /** @class */ (function (_super) {
         return this._post('reactions.remove', args);
     };
     return Reactions;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Reactions);
+}(BaseAPI_1.default));
+exports.default = Reactions;
 
 
 /***/ }),
@@ -2061,26 +2097,25 @@ var Reactions = /** @class */ (function (_super) {
 /*!**********************************!*\
   !*** ./src/methods/Reminders.ts ***!
   \**********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -2091,7 +2126,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Reminders = /** @class */ (function (_super) {
     __extends(Reminders, _super);
     function Reminders() {
@@ -2124,8 +2160,8 @@ var Reminders = /** @class */ (function (_super) {
         return this._get('reminders.list', args);
     };
     return Reminders;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Reminders);
+}(BaseAPI_1.default));
+exports.default = Reminders;
 
 
 /***/ }),
@@ -2134,26 +2170,25 @@ var Reminders = /** @class */ (function (_super) {
 /*!*******************************!*\
   !*** ./src/methods/Search.ts ***!
   \*******************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -2164,7 +2199,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Search = /** @class */ (function (_super) {
     __extends(Search, _super);
     function Search() {
@@ -2216,8 +2252,8 @@ var Search = /** @class */ (function (_super) {
         return this._get('search.messages', args);
     };
     return Search;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Search);
+}(BaseAPI_1.default));
+exports.default = Search;
 
 
 /***/ }),
@@ -2226,26 +2262,25 @@ var Search = /** @class */ (function (_super) {
 /*!******************************!*\
   !*** ./src/methods/Stars.ts ***!
   \******************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -2256,7 +2291,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Stars = /** @class */ (function (_super) {
     __extends(Stars, _super);
     function Stars() {
@@ -2280,7 +2316,10 @@ var Stars = /** @class */ (function (_super) {
         if (limit === void 0) { limit = null; }
         if (page === void 0) { page = 1; }
         if (extraArgs === void 0) { extraArgs = {}; }
-        var args = __assign({ count: count, cursor: cursor, limit: limit, page: page }, extraArgs);
+        var args = __assign({ count: count,
+            cursor: cursor,
+            limit: limit,
+            page: page }, extraArgs);
         return this._post('stars.list', args);
     };
     Stars.prototype.remove = function (channel, file, file_comment, timestamp, extraArgs) {
@@ -2296,8 +2335,8 @@ var Stars = /** @class */ (function (_super) {
         return this._post('stars.remove', args);
     };
     return Stars;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Stars);
+}(BaseAPI_1.default));
+exports.default = Stars;
 
 
 /***/ }),
@@ -2306,26 +2345,25 @@ var Stars = /** @class */ (function (_super) {
 /*!*****************************!*\
   !*** ./src/methods/Team.ts ***!
   \*****************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -2336,7 +2374,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var TeamProfile = /** @class */ (function (_super) {
     __extends(TeamProfile, _super);
     function TeamProfile() {
@@ -2349,7 +2388,7 @@ var TeamProfile = /** @class */ (function (_super) {
         return this._get('team.profile.get', args);
     };
     return TeamProfile;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
+}(BaseAPI_1.default));
 var Team = /** @class */ (function (_super) {
     __extends(Team, _super);
     function Team(token, retries_limit) {
@@ -2393,8 +2432,8 @@ var Team = /** @class */ (function (_super) {
         return this._get('team.integrationLogs', args);
     };
     return Team;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Team);
+}(BaseAPI_1.default));
+exports.default = Team;
 
 
 /***/ }),
@@ -2403,26 +2442,25 @@ var Team = /** @class */ (function (_super) {
 /*!***********************************!*\
   !*** ./src/methods/UserGroups.ts ***!
   \***********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -2433,7 +2471,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var UsergroupsUsers = /** @class */ (function (_super) {
     __extends(UsergroupsUsers, _super);
     function UsergroupsUsers() {
@@ -2442,17 +2481,20 @@ var UsergroupsUsers = /** @class */ (function (_super) {
     UsergroupsUsers.prototype.list = function (usergroup, include_disabled, extraArgs) {
         if (include_disabled === void 0) { include_disabled = null; }
         if (extraArgs === void 0) { extraArgs = {}; }
-        var args = __assign({ usergroup: usergroup, include_disabled: include_disabled }, extraArgs);
+        var args = __assign({ usergroup: usergroup,
+            include_disabled: include_disabled }, extraArgs);
         return this._get('usergroups.users.list', args);
     };
     UsergroupsUsers.prototype.update = function (usergroup, users, include_count, extraArgs) {
         if (include_count === void 0) { include_count = null; }
         if (extraArgs === void 0) { extraArgs = {}; }
-        var args = __assign({ usergroup: usergroup, users: users, include_count: include_count }, extraArgs);
+        var args = __assign({ usergroup: usergroup,
+            users: users,
+            include_count: include_count }, extraArgs);
         return this._post('usergroups.users.update', args);
     };
     return UsergroupsUsers;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
+}(BaseAPI_1.default));
 var UserGroups = /** @class */ (function (_super) {
     __extends(UserGroups, _super);
     function UserGroups(token, retries_limit) {
@@ -2476,13 +2518,15 @@ var UserGroups = /** @class */ (function (_super) {
     UserGroups.prototype.disable = function (usergroup, include_count, extraArgs) {
         if (include_count === void 0) { include_count = null; }
         if (extraArgs === void 0) { extraArgs = {}; }
-        var args = __assign({ usergroup: usergroup, include_count: include_count }, extraArgs);
+        var args = __assign({ usergroup: usergroup,
+            include_count: include_count }, extraArgs);
         return this._post('usergroups.disable', args);
     };
     UserGroups.prototype.enable = function (usergroup, include_count, extraArgs) {
         if (include_count === void 0) { include_count = null; }
         if (extraArgs === void 0) { extraArgs = {}; }
-        var args = __assign({ usergroup: usergroup, include_count: include_count }, extraArgs);
+        var args = __assign({ usergroup: usergroup,
+            include_count: include_count }, extraArgs);
         return this._post('usergroups.enable', args);
     };
     UserGroups.prototype.list = function (usergroup, include_count, include_disabled, include_users, extraArgs) {
@@ -2512,8 +2556,8 @@ var UserGroups = /** @class */ (function (_super) {
         return this._post('usergroups.create', args);
     };
     return UserGroups;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (UserGroups);
+}(BaseAPI_1.default));
+exports.default = UserGroups;
 
 
 /***/ }),
@@ -2522,26 +2566,25 @@ var UserGroups = /** @class */ (function (_super) {
 /*!******************************!*\
   !*** ./src/methods/Users.ts ***!
   \******************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _BaseAPI__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
+
+var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (undefined && undefined.__assign) || function () {
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -2552,7 +2595,8 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAPI_1 = __webpack_require__(/*! ./BaseAPI */ "./src/methods/BaseAPI.ts");
 var Users = /** @class */ (function (_super) {
     __extends(Users, _super);
     function Users(token, retries_limit) {
@@ -2627,8 +2671,8 @@ var Users = /** @class */ (function (_super) {
         return this._post('users.setPresence', args);
     };
     return Users;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
-/* harmony default export */ __webpack_exports__["default"] = (Users);
+}(BaseAPI_1.default));
+exports.default = Users;
 var UsersProfile = /** @class */ (function (_super) {
     __extends(UsersProfile, _super);
     function UsersProfile() {
@@ -2647,11 +2691,14 @@ var UsersProfile = /** @class */ (function (_super) {
         if (user === void 0) { user = null; }
         if (value === void 0) { value = null; }
         if (extraArgs === void 0) { extraArgs = {}; }
-        var args = __assign({ name: name, profile: profile, user: user, value: value }, extraArgs);
+        var args = __assign({ name: name,
+            profile: profile,
+            user: user,
+            value: value }, extraArgs);
         return this._post('users.profile.set', args);
     };
     return UsersProfile;
-}(_BaseAPI__WEBPACK_IMPORTED_MODULE_0__["default"]));
+}(BaseAPI_1.default));
 
 
 /***/ }),
@@ -2660,14 +2707,12 @@ var UsersProfile = /** @class */ (function (_super) {
 /*!*********************!*\
   !*** ./src/util.ts ***!
   \*********************/
-/*! exports provided: queryEncode, createPayload */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "queryEncode", function() { return queryEncode; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPayload", function() { return createPayload; });
-var __assign = (undefined && undefined.__assign) || function () {
+
+var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
@@ -2678,8 +2723,9 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 // ref) https://github.com/python/cpython/blob/3.6/Lib/urllib/parse.py#L846
-var queryEncode = function (params) {
+exports.queryEncode = function (params) {
     var param_list = [];
     for (var key in params) {
         var param = params[key];
@@ -2693,7 +2739,7 @@ var queryEncode = function (params) {
     }
     return param_list.join('&');
 };
-var createPayload = function (params) {
+exports.createPayload = function (params) {
     var payload = __assign({}, params);
     for (var key in payload) {
         var param = payload[key];

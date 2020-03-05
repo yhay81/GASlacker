@@ -1,5 +1,5 @@
-import { queryEncode } from '../util';
-import BaseAPI from './BaseAPI';
+import { queryEncode } from '../util'
+import BaseAPI from './BaseAPI'
 
 export default class OAuth extends BaseAPI {
   public access(
@@ -7,20 +7,20 @@ export default class OAuth extends BaseAPI {
     client_secret: string,
     code,
     redirect_uri: string = null,
-    single_channel: boolean = false,
-    extraArgs: Object = {}
+    single_channel = false,
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       client_id,
       client_secret,
       code,
       redirect_uri,
       single_channel,
       ...extraArgs
-    };
-    const encodedParams: string = queryEncode(args);
-    const url: string = `${BaseAPI.API_ENDPOINT}oauth.access?${encodedParams}`;
-    return this._fetch(url, { method: 'POST' });
+    }
+    const encodedParams: string = queryEncode(args)
+    const url = `${BaseAPI.API_ENDPOINT}oauth.access?${encodedParams}`
+    return this._fetch(url, { method: 'POST' })
   }
 
   public token(
@@ -28,17 +28,17 @@ export default class OAuth extends BaseAPI {
     client_secret: string,
     code: string,
     redirect_uri: string = null,
-    single_channel: boolean = false,
-    extraArgs: Object = {}
+    single_channel = false,
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       client_id,
       client_secret,
       code,
       redirect_uri,
       single_channel,
       ...extraArgs
-    };
-    return this._get('oauth.token', args);
+    }
+    return this._get('oauth.token', args)
   }
 }

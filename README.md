@@ -30,7 +30,7 @@ var slack = GASlacker.methods(token);
 function doPost(e){
   var event = JSON.parse(e.postData.contents).event;
   if(event.text.match(/hello/)){
-    var text = "Hello," + event.message.username;
+    var text = "Hello World";
     slack.chat.postMessage(event.channel, text);
   }
 }
@@ -54,3 +54,7 @@ https://api.slack.com/methods
 ## License
 
 This software is released under the MIT License, see [LICENSE.txt](LICENSE.txt).
+
+## Contributing
+
+Any Issue and PR for better software is wellcome.

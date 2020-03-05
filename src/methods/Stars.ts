@@ -1,4 +1,4 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 export default class Stars extends BaseAPI {
   public add(
@@ -6,27 +6,33 @@ export default class Stars extends BaseAPI {
     file: string = null,
     file_comment: string = null,
     timestamp: string = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       file,
       file_comment,
       timestamp,
       ...extraArgs
-    };
-    return this._post('stars.add', args);
+    }
+    return this._post('stars.add', args)
   }
 
   public list(
-    count: number = 100,
+    count = 100,
     cursor: string = null,
     limit: number = null,
-    page: number = 1,
-    extraArgs: Object = {}
+    page = 1,
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = { count, cursor, limit, page, ...extraArgs };
-    return this._post('stars.list', args);
+    const args: Record<string, any> = {
+      count,
+      cursor,
+      limit,
+      page,
+      ...extraArgs
+    }
+    return this._post('stars.list', args)
   }
 
   public remove(
@@ -34,15 +40,15 @@ export default class Stars extends BaseAPI {
     file: string = null,
     file_comment: string = null,
     timestamp: string = null,
-    extraArgs: Object = {}
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       channel,
       file,
       file_comment,
       timestamp,
       ...extraArgs
-    };
-    return this._post('stars.remove', args);
+    }
+    return this._post('stars.remove', args)
   }
 }

@@ -1,16 +1,16 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 export default class Search extends BaseAPI {
   public all(
     query: string,
-    count: number = 20,
+    count = 20,
     highlight: boolean = null,
-    page: number = 1,
-    sort: string = 'score',
-    sort_dir: string = 'desc',
-    extraArgs: Object = {}
+    page = 1,
+    sort = 'score',
+    sort_dir = 'desc',
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       query,
       count,
       highlight,
@@ -18,20 +18,20 @@ export default class Search extends BaseAPI {
       sort,
       sort_dir,
       ...extraArgs
-    };
-    return this._get('search.add', args);
+    }
+    return this._get('search.add', args)
   }
 
   public files(
     query: string,
-    count: number = 20,
+    count = 20,
     highlight: boolean = null,
-    page: number = 1,
-    sort: string = 'score',
-    sort_dir: string = 'desc',
-    extraArgs: Object = {}
+    page = 1,
+    sort = 'score',
+    sort_dir = 'desc',
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       query,
       count,
       highlight,
@@ -39,20 +39,20 @@ export default class Search extends BaseAPI {
       sort,
       sort_dir,
       ...extraArgs
-    };
-    return this._get('search.files', args);
+    }
+    return this._get('search.files', args)
   }
 
   public messages(
     query: string,
-    count: number = 20,
+    count = 20,
     highlight: boolean = null,
-    page: number = 1,
-    sort: string = 'score',
-    sort_dir: string = 'desc',
-    extraArgs: Object = {}
+    page = 1,
+    sort = 'score',
+    sort_dir = 'desc',
+    extraArgs: Record<string, any> = {}
   ) {
-    const args: Object = {
+    const args: Record<string, any> = {
       query,
       count,
       highlight,
@@ -60,7 +60,7 @@ export default class Search extends BaseAPI {
       sort,
       sort_dir,
       ...extraArgs
-    };
-    return this._get('search.messages', args);
+    }
+    return this._get('search.messages', args)
   }
 }

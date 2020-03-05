@@ -47,11 +47,7 @@ export default class BaseAPI {
     return this._fetch(url, params)
   }
 
-  protected _fetch(
-    url: string,
-    params: Record<string, any> = null,
-    headers: Record<string, any> = null
-  ): any {
+  protected _fetch(url: string, params: Record<string, any> = null): any {
     let response: any = null
     for (let retry = 0; retry < this._retries_limit; retry++) {
       try {

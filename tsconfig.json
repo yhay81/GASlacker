@@ -2,6 +2,6 @@
   "compilerOptions": {
     "lib": ["dom", "esnext"],
     "sourceMap": true,
-    "target": "es6"
+    "target": "es5"
   }
 }

@@ -2553,7 +2553,7 @@ var UserGroups = /** @class */ (function (_super) {
             handle: handle,
             include_disabled: include_disabled,
             name: name }, extraArgs);
-        return this._post('usergroups.create', args);
+        return this._post('usergroups.update', args);
     };
     return UserGroups;
 }(BaseAPI_1.default));

@@ -23,7 +23,7 @@ export default class BaseAPI {
     const payload: Record<string, any> = createPayload({ ...args })
     const url = `${BaseAPI.API_ENDPOINT}${api}`
     const params: Record<string, any> = {
-      headers: { Authorization: this._token },
+      headers: { Authorization: `Bearer ${this._token}` },
       method: 'post',
       contentType: 'application/json; charset=UTF-8',
       payload: JSON.stringify(payload)
@@ -39,7 +39,7 @@ export default class BaseAPI {
     const payload: Record<string, any> = createPayload({ ...args })
     const url = `${BaseAPI.API_ENDPOINT}${api}?`
     const params: Record<string, any> = {
-      headers: { Authorization: this._token },
+      headers: { Authorization: `Bearer ${this._token}` },
       method: 'post',
       contentType: 'multipart/form-data; charset=UTF-8',
       payload: { ...file_args, ...payload }

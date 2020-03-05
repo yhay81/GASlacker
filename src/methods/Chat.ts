@@ -1,4 +1,4 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 export default class Chat extends BaseAPI {
   public delete_(
@@ -7,18 +7,26 @@ export default class Chat extends BaseAPI {
     as_user: boolean = null,
     extraArgs: Record<string, any> = {}
   ) {
-    const args: Record<string, any> = { channel, ts, as_user, ...extraArgs };
-    return this._post('chat.delete', args);
+    const args: Record<string, any> = { channel, ts, as_user, ...extraArgs }
+    return this._post('chat.delete', args)
   }
 
-  public getPermalink(channel: string, message_ts: number, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, message_ts, ...extraArgs };
-    return this._get('chat.getPermalink', args);
+  public getPermalink(
+    channel: string,
+    message_ts: number,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, message_ts, ...extraArgs }
+    return this._get('chat.getPermalink', args)
   }
 
-  public meMessage(channel: string, text: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, text, ...extraArgs };
-    return this._post('chat.meMessage', args);
+  public meMessage(
+    channel: string,
+    text: string,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, text, ...extraArgs }
+    return this._post('chat.meMessage', args)
   }
 
   public postEphemeral(
@@ -42,8 +50,8 @@ export default class Chat extends BaseAPI {
       parse,
       thread_ts,
       ...extraArgs
-    };
-    return this._post('chat.postEphemeral', args);
+    }
+    return this._post('chat.postEphemeral', args)
   }
 
   public postMessage(
@@ -79,8 +87,8 @@ export default class Chat extends BaseAPI {
       unfurl_media,
       username,
       ...extraArgs
-    };
-    return this._post('chat.postMessage', args);
+    }
+    return this._post('chat.postMessage', args)
   }
 
   public unfurl(
@@ -98,8 +106,8 @@ export default class Chat extends BaseAPI {
       user_auth_required,
       user_auth_url,
       ...extraArgs
-    };
-    return this._post('chat.unfurl', args);
+    }
+    return this._post('chat.unfurl', args)
   }
 
   public update(
@@ -119,7 +127,7 @@ export default class Chat extends BaseAPI {
       link_names,
       parse,
       ...extraArgs
-    };
-    return this._post('chat.update', args);
+    }
+    return this._post('chat.update', args)
   }
 }

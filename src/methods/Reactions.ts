@@ -1,4 +1,4 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 export default class Reactions extends BaseAPI {
   public add(
@@ -16,8 +16,8 @@ export default class Reactions extends BaseAPI {
       channel_comment,
       timestamp,
       ...extraArgs
-    };
-    return this._post('reactions.add', args);
+    }
+    return this._post('reactions.add', args)
   }
 
   public get(
@@ -35,8 +35,8 @@ export default class Reactions extends BaseAPI {
       full,
       timestamp,
       ...extraArgs
-    };
-    return this._get('reactions.get', args);
+    }
+    return this._get('reactions.get', args)
   }
 
   public list(
@@ -56,8 +56,8 @@ export default class Reactions extends BaseAPI {
       page,
       user,
       ...extraArgs
-    };
-    return this._get('reactions.list', args);
+    }
+    return this._get('reactions.list', args)
   }
 
   public remove(
@@ -75,7 +75,7 @@ export default class Reactions extends BaseAPI {
       file_comment,
       timestamp,
       ...extraArgs
-    };
-    return this._post('reactions.remove', args);
+    }
+    return this._post('reactions.remove', args)
   }
 }

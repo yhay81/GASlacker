@@ -1,4 +1,4 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 class UsergroupsUsers extends BaseAPI {
   public list(
@@ -10,8 +10,8 @@ class UsergroupsUsers extends BaseAPI {
       usergroup,
       include_disabled,
       ...extraArgs
-    };
-    return this._get('usergroups.users.list', args);
+    }
+    return this._get('usergroups.users.list', args)
   }
 
   public update(
@@ -25,16 +25,16 @@ class UsergroupsUsers extends BaseAPI {
       users,
       include_count,
       ...extraArgs
-    };
-    return this._post('usergroups.users.update', args);
+    }
+    return this._post('usergroups.users.update', args)
   }
 }
 
 export default class UserGroups extends BaseAPI {
-  public users;
+  public users
   constructor(token, retries_limit) {
-    super(token, retries_limit);
-    this.users = new UsergroupsUsers(token, retries_limit);
+    super(token, retries_limit)
+    this.users = new UsergroupsUsers(token, retries_limit)
   }
 
   public create(
@@ -52,8 +52,8 @@ export default class UserGroups extends BaseAPI {
       handle,
       include_disabled,
       ...extraArgs
-    };
-    return this._post('usergroups.create', args);
+    }
+    return this._post('usergroups.create', args)
   }
 
   public disable(
@@ -61,8 +61,12 @@ export default class UserGroups extends BaseAPI {
     include_count: boolean = null,
     extraArgs: Record<string, any> = {}
   ) {
-    const args: Record<string, any> = { usergroup, include_count, ...extraArgs };
-    return this._post('usergroups.disable', args);
+    const args: Record<string, any> = {
+      usergroup,
+      include_count,
+      ...extraArgs
+    }
+    return this._post('usergroups.disable', args)
   }
 
   public enable(
@@ -70,8 +74,12 @@ export default class UserGroups extends BaseAPI {
     include_count: boolean = null,
     extraArgs: Record<string, any> = {}
   ) {
-    const args: Record<string, any> = { usergroup, include_count, ...extraArgs };
-    return this._post('usergroups.enable', args);
+    const args: Record<string, any> = {
+      usergroup,
+      include_count,
+      ...extraArgs
+    }
+    return this._post('usergroups.enable', args)
   }
 
   public list(
@@ -87,8 +95,8 @@ export default class UserGroups extends BaseAPI {
       include_disabled,
       include_users,
       ...extraArgs
-    };
-    return this._get('usergroups.list', args);
+    }
+    return this._get('usergroups.list', args)
   }
 
   public update(
@@ -108,7 +116,7 @@ export default class UserGroups extends BaseAPI {
       include_disabled,
       name,
       ...extraArgs
-    };
-    return this._post('usergroups.create', args);
+    }
+    return this._post('usergroups.create', args)
   }
 }

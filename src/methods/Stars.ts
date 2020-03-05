@@ -1,4 +1,4 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 export default class Stars extends BaseAPI {
   public add(
@@ -14,8 +14,8 @@ export default class Stars extends BaseAPI {
       file_comment,
       timestamp,
       ...extraArgs
-    };
-    return this._post('stars.add', args);
+    }
+    return this._post('stars.add', args)
   }
 
   public list(
@@ -31,8 +31,8 @@ export default class Stars extends BaseAPI {
       limit,
       page,
       ...extraArgs
-    };
-    return this._post('stars.list', args);
+    }
+    return this._post('stars.list', args)
   }
 
   public remove(
@@ -48,7 +48,7 @@ export default class Stars extends BaseAPI {
       file_comment,
       timestamp,
       ...extraArgs
-    };
-    return this._post('stars.remove', args);
+    }
+    return this._post('stars.remove', args)
   }
 }

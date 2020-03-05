@@ -1,9 +1,9 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 export default class IM extends BaseAPI {
   public close(channel: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ...extraArgs };
-    return this._post('im.close', args);
+    const args: Record<string, any> = { channel, ...extraArgs }
+    return this._post('im.close', args)
   }
 
   public history(
@@ -21,18 +21,26 @@ export default class IM extends BaseAPI {
       latest,
       oldest,
       ...extraArgs
-    };
-    return this._get('im.history', args);
+    }
+    return this._get('im.history', args)
   }
 
-  public list(cursor: string = null, limit: number = null, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { cursor, limit, ...extraArgs };
-    return this._get('im.list', args);
+  public list(
+    cursor: string = null,
+    limit: number = null,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { cursor, limit, ...extraArgs }
+    return this._get('im.list', args)
   }
 
-  public mark(channel: string, ts: number, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ts, ...extraArgs };
-    return this._post('im.mark', args);
+  public mark(
+    channel: string,
+    ts: number,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, ts, ...extraArgs }
+    return this._post('im.mark', args)
   }
 
   public open(
@@ -48,12 +56,12 @@ export default class IM extends BaseAPI {
       include_locale,
       return_im,
       ...extraArgs
-    };
-    return this._post('im.mark', args);
+    }
+    return this._post('im.mark', args)
   }
 
   public replies(channel, thread_ts, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, thread_ts, ...extraArgs };
-    return this._get('im.replies', args);
+    const args: Record<string, any> = { channel, thread_ts, ...extraArgs }
+    return this._get('im.replies', args)
   }
 }

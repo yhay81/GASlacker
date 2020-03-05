@@ -1,4 +1,4 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 export default class Pins extends BaseAPI {
   public add(
@@ -14,13 +14,13 @@ export default class Pins extends BaseAPI {
       file_comment,
       timestamp,
       ...extraArgs
-    };
-    return this._post('pins.add', args);
+    }
+    return this._post('pins.add', args)
   }
 
   public list(channel: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ...extraArgs };
-    return this._post('pins.add', args);
+    const args: Record<string, any> = { channel, ...extraArgs }
+    return this._post('pins.add', args)
   }
 
   public remove(
@@ -36,7 +36,7 @@ export default class Pins extends BaseAPI {
       file_comment,
       timestamp,
       ...extraArgs
-    };
-    return this._post('pins.remove', args);
+    }
+    return this._post('pins.remove', args)
   }
 }

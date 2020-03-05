@@ -1,5 +1,5 @@
-import { queryEncode } from '../util';
-import BaseAPI from './BaseAPI';
+import { queryEncode } from '../util'
+import BaseAPI from './BaseAPI'
 
 export default class OAuth extends BaseAPI {
   public access(
@@ -17,10 +17,10 @@ export default class OAuth extends BaseAPI {
       redirect_uri,
       single_channel,
       ...extraArgs
-    };
-    const encodedParams: string = queryEncode(args);
-    const url = `${BaseAPI.API_ENDPOINT}oauth.access?${encodedParams}`;
-    return this._fetch(url, { method: 'POST' });
+    }
+    const encodedParams: string = queryEncode(args)
+    const url = `${BaseAPI.API_ENDPOINT}oauth.access?${encodedParams}`
+    return this._fetch(url, { method: 'POST' })
   }
 
   public token(
@@ -38,7 +38,7 @@ export default class OAuth extends BaseAPI {
       redirect_uri,
       single_channel,
       ...extraArgs
-    };
-    return this._get('oauth.token', args);
+    }
+    return this._get('oauth.token', args)
   }
 }

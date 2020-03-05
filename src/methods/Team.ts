@@ -1,32 +1,40 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 class TeamProfile extends BaseAPI {
   public get(visibility: string = null, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { visibility, ...extraArgs };
-    return this._get('team.profile.get', args);
+    const args: Record<string, any> = { visibility, ...extraArgs }
+    return this._get('team.profile.get', args)
   }
 }
 
 export default class Team extends BaseAPI {
-  public profile;
+  public profile
   constructor(token, retries_limit) {
-    super(token, retries_limit);
-    this.profile = new TeamProfile(token, retries_limit);
+    super(token, retries_limit)
+    this.profile = new TeamProfile(token, retries_limit)
   }
 
-  public accessLogs(before = 'now', count = 100, page = 1, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { before, count, page, ...extraArgs };
-    return this._get('team.accessLogs', args);
+  public accessLogs(
+    before = 'now',
+    count = 100,
+    page = 1,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { before, count, page, ...extraArgs }
+    return this._get('team.accessLogs', args)
   }
 
-  public billableInfo(user: string = null, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { user, ...extraArgs };
-    return this._get('team.billableInfo', args);
+  public billableInfo(
+    user: string = null,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { user, ...extraArgs }
+    return this._get('team.billableInfo', args)
   }
 
   public info(extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { ...extraArgs };
-    return this._get('team.info', args);
+    const args: Record<string, any> = { ...extraArgs }
+    return this._get('team.info', args)
   }
 
   public integrationLogs(
@@ -46,7 +54,7 @@ export default class Team extends BaseAPI {
       service_id,
       user,
       ...extraArgs
-    };
-    return this._get('team.integrationLogs', args);
+    }
+    return this._get('team.integrationLogs', args)
   }
 }

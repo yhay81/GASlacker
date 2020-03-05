@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint --fix {src,tests}/**/*.ts",
+    "lint": "eslint --fix tests/**/*.ts",
     "test": "jest",
-    "build": "npm run lint && npm run test && rimraf dist && webpack && cpx src/appsscript.json dist",
+    "build": "npm run lint && npm run test && rimraf dist && webpack && cpx appsscript.json dist",
     "deploy": "npm run build && clasp push",
     "fmt": "prettier --write \"**/*.{js,ts,json,md}\""
   },

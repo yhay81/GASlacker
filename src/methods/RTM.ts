@@ -1,4 +1,4 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 export default class RTM extends BaseAPI {
   public connect(
@@ -10,8 +10,8 @@ export default class RTM extends BaseAPI {
       batch_presence_aware,
       presence_sub,
       ...extraArgs
-    };
-    return this._get('reminders.add', args);
+    }
+    return this._get('reminders.add', args)
   }
 
   public start(
@@ -33,7 +33,7 @@ export default class RTM extends BaseAPI {
       presence_sub,
       simple_latest,
       ...extraArgs
-    };
-    return this._get('reminders.complete', args);
+    }
+    return this._get('reminders.complete', args)
   }
 }

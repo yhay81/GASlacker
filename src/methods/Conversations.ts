@@ -1,14 +1,14 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 export default class Conversations extends BaseAPI {
   public archive(channel: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ...extraArgs };
-    return this._post('conversations.archive', args);
+    const args: Record<string, any> = { channel, ...extraArgs }
+    return this._post('conversations.archive', args)
   }
 
   public close(channel: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ...extraArgs };
-    return this._get('conversations.close', args);
+    const args: Record<string, any> = { channel, ...extraArgs }
+    return this._get('conversations.close', args)
   }
 
   public create(
@@ -22,8 +22,8 @@ export default class Conversations extends BaseAPI {
       is_private,
       user_ids,
       ...extraArgs
-    };
-    return this._get('conversations.create', args);
+    }
+    return this._get('conversations.create', args)
   }
 
   public history(
@@ -41,33 +41,45 @@ export default class Conversations extends BaseAPI {
       limit,
       oldest,
       ...extraArgs
-    };
-    return this._get('conversations.history', args);
+    }
+    return this._get('conversations.history', args)
   }
 
-  public info(channel: string, include_locale = false, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, include_locale, ...extraArgs };
-    return this._get('conversations.info', args);
+  public info(
+    channel: string,
+    include_locale = false,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, include_locale, ...extraArgs }
+    return this._get('conversations.info', args)
   }
 
-  public invite(channel: string, user: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, user, ...extraArgs };
-    return this._post('conversations.invite', args);
+  public invite(
+    channel: string,
+    user: string,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, user, ...extraArgs }
+    return this._post('conversations.invite', args)
   }
 
   public join(name: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { name, ...extraArgs };
-    return this._post('conversations.join', args);
+    const args: Record<string, any> = { name, ...extraArgs }
+    return this._post('conversations.join', args)
   }
 
-  public kick(channel: string, user: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, user, ...extraArgs };
-    return this._post('conversations.kick', args);
+  public kick(
+    channel: string,
+    user: string,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, user, ...extraArgs }
+    return this._post('conversations.kick', args)
   }
 
   public leave(channel: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ...extraArgs };
-    return this._post('conversations.leave', args);
+    const args: Record<string, any> = { channel, ...extraArgs }
+    return this._post('conversations.leave', args)
   }
 
   public list(
@@ -83,8 +95,8 @@ export default class Conversations extends BaseAPI {
       limit,
       types,
       ...extraArgs
-    };
-    return this._get('conversations.list', args);
+    }
+    return this._get('conversations.list', args)
   }
 
   public member(
@@ -93,8 +105,8 @@ export default class Conversations extends BaseAPI {
     limit = 100,
     extraArgs: Record<string, any> = {}
   ) {
-    const args: Record<string, any> = { channel, cursor, limit, ...extraArgs };
-    return this._post('conversations.member', args);
+    const args: Record<string, any> = { channel, cursor, limit, ...extraArgs }
+    return this._post('conversations.member', args)
   }
 
   public open(
@@ -108,13 +120,17 @@ export default class Conversations extends BaseAPI {
       return_im,
       users,
       ...extraArgs
-    };
-    return this._post('conversations.open', args);
+    }
+    return this._post('conversations.open', args)
   }
 
-  public rename(channel: string, name: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, name, ...extraArgs };
-    return this._post('conversations.rename', args);
+  public rename(
+    channel: string,
+    name: string,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, name, ...extraArgs }
+    return this._post('conversations.rename', args)
   }
 
   public replies(
@@ -136,22 +152,30 @@ export default class Conversations extends BaseAPI {
       limit,
       oldest,
       ...extraArgs
-    };
-    return this._get('conversations.replies', args);
+    }
+    return this._get('conversations.replies', args)
   }
 
-  public setPurpose(channel: string, purpose: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, purpose, ...extraArgs };
-    return this._post('conversations.setPurpose', args);
+  public setPurpose(
+    channel: string,
+    purpose: string,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, purpose, ...extraArgs }
+    return this._post('conversations.setPurpose', args)
   }
 
-  public setTopic(channel: string, topic: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, topic, ...extraArgs };
-    return this._post('conversations.setTopic', args);
+  public setTopic(
+    channel: string,
+    topic: string,
+    extraArgs: Record<string, any> = {}
+  ) {
+    const args: Record<string, any> = { channel, topic, ...extraArgs }
+    return this._post('conversations.setTopic', args)
   }
 
   public unarchive(channel: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ...extraArgs };
-    return this._post('conversations.unarchive', args);
+    const args: Record<string, any> = { channel, ...extraArgs }
+    return this._post('conversations.unarchive', args)
   }
 }

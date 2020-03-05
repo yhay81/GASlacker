@@ -1,32 +1,32 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI from './BaseAPI'
 
 class FilesComments extends BaseAPI {
   public add(comment, file, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { comment, file };
-    return this._post('files.comments.add', args);
+    const args: Record<string, any> = { comment, file }
+    return this._post('files.comments.add', args)
   }
 
   public delete_(file, id, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { file, id };
-    return this._post('files.comments.delete', args);
+    const args: Record<string, any> = { file, id }
+    return this._post('files.comments.delete', args)
   }
 
   public edit(comment, file, id, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { comment, file, id };
-    return this._post('files.comments.edit', args);
+    const args: Record<string, any> = { comment, file, id }
+    return this._post('files.comments.edit', args)
   }
 }
 
 export default class Files extends BaseAPI {
-  public comments;
+  public comments
   constructor(token, retries_limit) {
-    super(token, retries_limit);
-    this.comments = new FilesComments(token, retries_limit);
+    super(token, retries_limit)
+    this.comments = new FilesComments(token, retries_limit)
   }
 
   public delete_(file: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { file, ...extraArgs };
-    return this._post('files.delete', args);
+    const args: Record<string, any> = { file, ...extraArgs }
+    return this._post('files.delete', args)
   }
 
   public info(
@@ -44,8 +44,8 @@ export default class Files extends BaseAPI {
       limit,
       page,
       ...extraArgs
-    };
-    return this._get('files.info', args);
+    }
+    return this._get('files.info', args)
   }
 
   public list(
@@ -67,18 +67,18 @@ export default class Files extends BaseAPI {
       types,
       user,
       ...extraArgs
-    };
-    return this._get('files.list', args);
+    }
+    return this._get('files.list', args)
   }
 
   public revokePublicURL(file: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { file, ...extraArgs };
-    return this._post('files.revokePublicURL', args);
+    const args: Record<string, any> = { file, ...extraArgs }
+    return this._post('files.revokePublicURL', args)
   }
 
   public sharedPublicURL(file: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { file, ...extraArgs };
-    return this._post('files.sharedPublicURL', args);
+    const args: Record<string, any> = { file, ...extraArgs }
+    return this._post('files.sharedPublicURL', args)
   }
 
   public upload(
@@ -100,7 +100,7 @@ export default class Files extends BaseAPI {
       thread_ts,
       title,
       ...extraArgs
-    };
-    return this._post_file('files.upload', { content, file }, args);
+    }
+    return this._post_file('files.upload', { content, file }, args)
   }
 }

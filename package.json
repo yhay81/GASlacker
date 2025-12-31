@@ -1,66 +1,48 @@
 {
   "name": "gaslacker",
-  "version": "0.0.3",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "lint": "eslint --fix tests/**/*.ts",
-    "test": "jest",
-    "build": "npm run lint && npm run test && rimraf dist && webpack && cpx appsscript.json dist",
-    "deploy": "npm run build && clasp push",
-    "fmt": "prettier --write \"**/*.{js,ts,json,md}\""
+  "version": "0.1.0",
+  "description": "Google Apps Script library for Slack Web API.",
+  "keywords": [
+    "clasp",
+    "gas",
+    "google-apps-script"
+  ],
+  "homepage": "https://github.com/yhay81/GASlacker#readme",
+  "bugs": {
+    "url": "https://github.com/yhay81/GASlacker/issues"
   },
+  "license": "MIT",
+  "author": "yhay81",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yhay81/GASlacker.git"
   },
-  "keywords": [
-    "gas",
-    "google-apps-script",
-    "clasp"
-  ],
-  "author": "yhay81",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/yhay81/GASlacker/issues"
+  "main": "dist/bundle.js",
+  "scripts": {
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "build": "pnpm run lint && pnpm run test && rimraf dist && vite build && cpx appsscript.json dist",
+    "deploy": "pnpm run build && clasp push",
+    "fmt": "oxfmt --write ."
   },
-  "homepage": "https://github.com/yhay81/GASlacker#readme",
   "devDependencies": {
-    "@types/google-apps-script": "1.0.10",
-    "@types/jest": "^25.1.3",
-    "@typescript-eslint/eslint-plugin": "2.22.0",
-    "@typescript-eslint/parser": "2.22.0",
+    "@google/clasp": "^3.1.3",
+    "@types/google-apps-script": "2.0.8",
+    "@vitest/coverage-v8": "^4.0.16",
+    "braces": ">=3.0.3",
     "cpx": "^1.5.0",
-    "eslint": "6.8.0",
-    "eslint-config-prettier": "6.10.0",
-    "eslint-plugin-prettier": "3.1.2",
-    "gas-webpack-plugin": "^1.0.2",
-    "jest": "^25.1.0",
-    "prettier": "^1.19.1",
-    "rimraf": "^3.0.2",
-    "ts-jest": "^25.2.1",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.8.3",
-    "webpack": "^4.42.0",
-    "webpack-cli": "^3.3.11",
-    "braces": ">=2.3.1"
+    "gas-entry-generator": "^3.0.0",
+    "oxfmt": "^0.21.0",
+    "oxlint": "^1.36.0",
+    "rimraf": "^6.1.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "(tests/.+(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
+  "engines": {
+    "node": ">=22.12"
   },
-  "prettier": {
-    "singleQuote": true,
-    "semi": false
-  }
+  "packageManager": "pnpm@10.27.0"
 }

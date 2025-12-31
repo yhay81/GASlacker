@@ -1,32 +1,48 @@
-import { queryEncode, createPayload } from '../util'
+import { queryEncode, createPayload, createFormPayload } from '../util'
 import { DEFAULT_RETRIES } from '../config'
 
 export default class BaseAPI {
   static API_ENDPOINT = 'https://slack.com/api/'
   constructor(
     protected _token: string = null,
-    private _retries_limit: number = DEFAULT_RETRIES
+    private _retries_limit: number = DEFAULT_RETRIES,
   ) {}
 
   protected _get(api: string, args: Record<string, any> = {}): any {
-    // https://github.com/requests/requests/blob/master/requests/models.py
-    const encodedArgs: string = queryEncode({ token: this._token, ...args })
-    const url = `${BaseAPI.API_ENDPOINT}${api}?${encodedArgs}`
+    const safeArgs = this._normalizeArgs(args, 'params')
+    const encodedArgs: string = queryEncode(safeArgs)
+    const query = encodedArgs ? `?${encodedArgs}` : ''
+    const url = `${BaseAPI.API_ENDPOINT}${api}${query}`
     const params: Record<string, any> = {
       method: 'get',
-      contentType: 'application/x-www-form-urlencoded; charset=UTF-8'
+      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+      headers: this._buildHeaders(),
     }
     return this._fetch(url, params)
   }
 
   protected _post(api: string, args: Record<string, any> = {}): any {
-    const payload: Record<string, any> = createPayload({ ...args })
+    const safeArgs = this._normalizeArgs(args, 'params')
+    const payload: Record<string, any> = createPayload(safeArgs)
     const url = `${BaseAPI.API_ENDPOINT}${api}`
     const params: Record<string, any> = {
-      headers: { Authorization: `Bearer ${this._token}` },
+      headers: this._buildHeaders(),
       method: 'post',
       contentType: 'application/json; charset=UTF-8',
-      payload: JSON.stringify(payload)
+      payload: JSON.stringify(payload),
+    }
+    return this._fetch(url, params)
+  }
+
+  protected _post_form(api: string, args: Record<string, any> = {}): any {
+    const safeArgs = this._normalizeArgs(args, 'params')
+    const payload: Record<string, any> = createFormPayload(safeArgs)
+    const url = `${BaseAPI.API_ENDPOINT}${api}`
+    const params: Record<string, any> = {
+      headers: this._buildHeaders(),
+      method: 'post',
+      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+      payload,
     }
     return this._fetch(url, params)
   }
@@ -34,35 +50,70 @@ export default class BaseAPI {
   protected _post_file(
     api: string,
     file_args: Record<string, any>,
-    args: Record<string, any> = {}
+    args: Record<string, any> = {},
   ): any {
-    const payload: Record<string, any> = createPayload({ ...args })
-    const url = `${BaseAPI.API_ENDPOINT}${api}?`
+    const safeArgs = this._normalizeArgs(args, 'params')
+    const safeFileArgs = this._normalizeArgs(file_args, 'file_params')
+    const payload: Record<string, any> = createFormPayload(safeArgs)
+    const filePayload: Record<string, any> = createPayload(safeFileArgs)
+    const url = `${BaseAPI.API_ENDPOINT}${api}`
     const params: Record<string, any> = {
-      headers: { Authorization: `Bearer ${this._token}` },
+      headers: this._buildHeaders(),
       method: 'post',
-      contentType: 'multipart/form-data; charset=UTF-8',
-      payload: { ...file_args, ...payload }
+      payload: Object.assign({}, filePayload, payload),
     }
     return this._fetch(url, params)
   }
 
   protected _fetch(url: string, params: Record<string, any> = null): any {
+    const requestParams: Record<string, any> = Object.assign({}, params || {})
+    if (requestParams.muteHttpExceptions == null) {
+      requestParams.muteHttpExceptions = true
+    }
+    const maxAttempts = Math.max(1, this._retries_limit + 1)
     let response: any = null
-    for (let retry = 0; retry < this._retries_limit; retry++) {
-      try {
-        response = UrlFetchApp.fetch(url, params)
-      } catch (e) {
-        throw e
-      }
-      // handle HTTP 429 as documented at
-      // https://api.slack.com/docs/rate-limits
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      response = UrlFetchApp.fetch(url, requestParams)
+      // HTTP 429 はレート制限として待機して再試行する
       if (response.getResponseCode() === 429) {
-        Utilities.sleep(parseInt(response.getHeaders()['retry-after']))
+        const retryAfterHeader = this._getHeader(response.getHeaders(), 'retry-after')
+        const retryAfter = parseInt(retryAfterHeader ?? '', 10)
+        const waitMs = isNaN(retryAfter) ? 1000 : retryAfter * 1000
+        Utilities.sleep(waitMs)
         continue
       }
-      return response
+      return this._parseResponse(response)
     }
     throw Error('Try limit over')
+  }
+
+  private _getHeader(headers: Record<string, any>, name: string): string | null {
+    if (!headers) return null
+    const found = Object.keys(headers).find((key) => key.toLowerCase() === name.toLowerCase())
+    if (!found) return null
+    return headers[found]
+  }
+
+  private _buildHeaders(): Record<string, string> {
+    if (!this._token) return {}
+    return { Authorization: `Bearer ${this._token}` }
+  }
+
+  protected _normalizeArgs(args: Record<string, any>, name: string): Record<string, any> {
+    if (args == null) return {}
+    if (typeof args !== 'object' || Array.isArray(args)) {
+      throw new Error(`${name} はオブジェクトで指定してください`)
+    }
+    return args
+  }
+
+  private _parseResponse(response: any): any {
+    const text = response.getContentText()
+    if (!text) return {}
+    try {
+      return JSON.parse(text)
+    } catch {
+      return { ok: false, error: 'invalid_json', raw: text }
+    }
   }
 }

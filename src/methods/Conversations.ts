@@ -1,181 +1,75 @@
 import BaseAPI from './BaseAPI'
 
 export default class Conversations extends BaseAPI {
-  public archive(channel: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ...extraArgs }
-    return this._post('conversations.archive', args)
+  public archive(params: Record<string, any> = {}) {
+    return this._post('conversations.archive', params)
   }
 
-  public close(channel: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ...extraArgs }
-    return this._get('conversations.close', args)
+  public close(params: Record<string, any> = {}) {
+    return this._post('conversations.close', params)
   }
 
-  public create(
-    name: string,
-    is_private: boolean = null,
-    user_ids: string[] = null,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = {
-      name,
-      is_private,
-      user_ids,
-      ...extraArgs
-    }
-    return this._get('conversations.create', args)
+  public create(params: Record<string, any> = {}) {
+    return this._post('conversations.create', params)
   }
 
-  public history(
-    channel: string,
-    inclusive: string = null,
-    latest = 'now',
-    limit = 10,
-    oldest = 0,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = {
-      channel,
-      inclusive,
-      latest,
-      limit,
-      oldest,
-      ...extraArgs
-    }
-    return this._get('conversations.history', args)
+  public history(params: Record<string, any> = {}) {
+    return this._get('conversations.history', params)
   }
 
-  public info(
-    channel: string,
-    include_locale = false,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = { channel, include_locale, ...extraArgs }
-    return this._get('conversations.info', args)
+  public info(params: Record<string, any> = {}) {
+    return this._get('conversations.info', params)
   }
 
-  public invite(
-    channel: string,
-    user: string,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = { channel, user, ...extraArgs }
-    return this._post('conversations.invite', args)
+  public invite(params: Record<string, any> = {}) {
+    return this._post('conversations.invite', params)
   }
 
-  public join(name: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { name, ...extraArgs }
-    return this._post('conversations.join', args)
+  public join(params: Record<string, any> = {}) {
+    return this._post('conversations.join', params)
   }
 
-  public kick(
-    channel: string,
-    user: string,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = { channel, user, ...extraArgs }
-    return this._post('conversations.kick', args)
+  public kick(params: Record<string, any> = {}) {
+    return this._post('conversations.kick', params)
   }
 
-  public leave(channel: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ...extraArgs }
-    return this._post('conversations.leave', args)
+  public leave(params: Record<string, any> = {}) {
+    return this._post('conversations.leave', params)
   }
 
-  public list(
-    cursor: string = null,
-    exclude_archived = false,
-    limit = 100,
-    types = 'public_channel',
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = {
-      cursor,
-      exclude_archived,
-      limit,
-      types,
-      ...extraArgs
-    }
-    return this._get('conversations.list', args)
+  public list(params: Record<string, any> = {}) {
+    return this._get('conversations.list', params)
   }
 
-  public member(
-    channel: string,
-    cursor: string = null,
-    limit = 100,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = { channel, cursor, limit, ...extraArgs }
-    return this._post('conversations.member', args)
+  public mark(params: Record<string, any> = {}) {
+    return this._post('conversations.mark', params)
   }
 
-  public open(
-    channel: string = null,
-    return_im: boolean = null,
-    users: string = null,
-    extraArgs = {}
-  ) {
-    const args: Record<string, any> = {
-      channel,
-      return_im,
-      users,
-      ...extraArgs
-    }
-    return this._post('conversations.open', args)
+  public members(params: Record<string, any> = {}) {
+    return this._get('conversations.members', params)
   }
 
-  public rename(
-    channel: string,
-    name: string,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = { channel, name, ...extraArgs }
-    return this._post('conversations.rename', args)
+  public open(params: Record<string, any> = {}) {
+    return this._post('conversations.open', params)
   }
 
-  public replies(
-    channel: string,
-    ts: number,
-    cursor: string = null,
-    inclusive: string = null,
-    latest = 'now',
-    limit = 10,
-    oldest = 0,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = {
-      channel,
-      ts,
-      cursor,
-      inclusive,
-      latest,
-      limit,
-      oldest,
-      ...extraArgs
-    }
-    return this._get('conversations.replies', args)
+  public rename(params: Record<string, any> = {}) {
+    return this._post('conversations.rename', params)
   }
 
-  public setPurpose(
-    channel: string,
-    purpose: string,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = { channel, purpose, ...extraArgs }
-    return this._post('conversations.setPurpose', args)
+  public replies(params: Record<string, any> = {}) {
+    return this._get('conversations.replies', params)
   }
 
-  public setTopic(
-    channel: string,
-    topic: string,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = { channel, topic, ...extraArgs }
-    return this._post('conversations.setTopic', args)
+  public setPurpose(params: Record<string, any> = {}) {
+    return this._post('conversations.setPurpose', params)
   }
 
-  public unarchive(channel: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ...extraArgs }
-    return this._post('conversations.unarchive', args)
+  public setTopic(params: Record<string, any> = {}) {
+    return this._post('conversations.setTopic', params)
+  }
+
+  public unarchive(params: Record<string, any> = {}) {
+    return this._post('conversations.unarchive', params)
   }
 }

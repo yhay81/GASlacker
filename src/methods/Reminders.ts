@@ -1,33 +1,23 @@
 import BaseAPI from './BaseAPI'
 
 export default class Reminders extends BaseAPI {
-  public add(
-    text: string,
-    time: number,
-    user: string = null,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = { text, time, user, ...extraArgs }
-    return this._post('reminders.add', args)
+  public add(params: Record<string, any> = {}) {
+    return this._post('reminders.add', params)
   }
 
-  public complete(reminder: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { reminder, ...extraArgs }
-    return this._post('reminders.complete', args)
+  public complete(params: Record<string, any> = {}) {
+    return this._post('reminders.complete', params)
   }
 
-  public delete_(reminder, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { reminder, ...extraArgs }
-    return this._post('reminders.delete', args)
+  public delete_(params: Record<string, any> = {}) {
+    return this._post('reminders.delete', params)
   }
 
-  public info(reminder, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { reminder, ...extraArgs }
-    return this._get('reminders.info', args)
+  public info(params: Record<string, any> = {}) {
+    return this._get('reminders.info', params)
   }
 
-  public list(extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { ...extraArgs }
-    return this._get('reminders.list', args)
+  public list(params: Record<string, any> = {}) {
+    return this._get('reminders.list', params)
   }
 }

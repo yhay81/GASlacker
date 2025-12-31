@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "env": {
+    "es2020": true
+  },
+  "globals": {
+    "UrlFetchApp": "readonly",
+    "Utilities": "readonly"
+  },
+  "overrides": [
+    {
+      "files": ["tests/**/*.ts"],
+      "env": {
+        "node": true
+      }
+    }
+  ]
+}

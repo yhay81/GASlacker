@@ -1,42 +1,15 @@
 import BaseAPI from './BaseAPI'
 
 export default class Pins extends BaseAPI {
-  public add(
-    channel: string,
-    file: string,
-    file_comment: string,
-    timestamp: number,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = {
-      channel,
-      file,
-      file_comment,
-      timestamp,
-      ...extraArgs
-    }
-    return this._post('pins.add', args)
+  public add(params: Record<string, any> = {}) {
+    return this._post('pins.add', params)
   }
 
-  public list(channel: string, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { channel, ...extraArgs }
-    return this._post('pins.add', args)
+  public list(params: Record<string, any> = {}) {
+    return this._get('pins.list', params)
   }
 
-  public remove(
-    channel: string,
-    file: string,
-    file_comment: string,
-    timestamp: number,
-    extraArgs: Record<string, any> = {}
-  ) {
-    const args: Record<string, any> = {
-      channel,
-      file,
-      file_comment,
-      timestamp,
-      ...extraArgs
-    }
-    return this._post('pins.remove', args)
+  public remove(params: Record<string, any> = {}) {
+    return this._post('pins.remove', params)
   }
 }

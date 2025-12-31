@@ -1,28 +1,23 @@
 import BaseAPI from './BaseAPI'
 
 export default class DND extends BaseAPI {
-  public endDnd(extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { ...extraArgs }
-    return this._post('dnd.endDnd', args)
+  public endDnd(params: Record<string, any> = {}) {
+    return this._post('dnd.endDnd', params)
   }
 
-  public endSnooze(extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { ...extraArgs }
-    return this._post('dnd.endSnooze', args)
+  public endSnooze(params: Record<string, any> = {}) {
+    return this._post('dnd.endSnooze', params)
   }
 
-  public info(user: string = null, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { user, ...extraArgs }
-    return this._get('dnd.info', args)
+  public info(params: Record<string, any> = {}) {
+    return this._get('dnd.info', params)
   }
 
-  public setSnooze(num_minutes: number, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { num_minutes, ...extraArgs }
-    return this._get('dnd.setSnooze', args)
+  public setSnooze(params: Record<string, any> = {}) {
+    return this._post('dnd.setSnooze', params)
   }
 
-  public teamInfo(users: string[] = [], extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { users, ...extraArgs }
-    return this._get('dnd.teamInfo', args)
+  public teamInfo(params: Record<string, any> = {}) {
+    return this._get('dnd.teamInfo', params)
   }
 }

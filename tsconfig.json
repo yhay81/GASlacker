@@ -2,6 +2,7 @@
   "compilerOptions": {
     "lib": ["dom", "esnext"],
     "sourceMap": true,
-    "target": "es5"
+    "target": "es2019",
+    "types": ["google-apps-script", "vitest/globals"]
   }
 }

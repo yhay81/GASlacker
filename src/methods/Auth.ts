@@ -1,13 +1,11 @@
 import BaseAPI from './BaseAPI'
 
 export default class Auth extends BaseAPI {
-  public revoke(test: boolean = null, extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { test, ...extraArgs }
-    return this._get('auth.revoke', args)
+  public revoke(params: Record<string, any> = {}) {
+    return this._post('auth.revoke', params)
   }
 
-  public test(extraArgs: Record<string, any> = {}) {
-    const args: Record<string, any> = { ...extraArgs }
-    return this._post('auth.test', args)
+  public test(params: Record<string, any> = {}) {
+    return this._get('auth.test', params)
   }
 }

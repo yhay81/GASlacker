@@ -8,7 +8,7 @@ class TeamProfile extends BaseAPI {
 
 export default class Team extends BaseAPI {
   public profile
-  constructor(token, retries_limit) {
+  constructor(token: string, retries_limit?: number) {
     super(token, retries_limit)
     this.profile = new TeamProfile(token, retries_limit)
   }

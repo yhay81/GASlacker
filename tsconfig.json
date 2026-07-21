@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "esnext"],
-    "sourceMap": true,
+    "lib": ["esnext"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "target": "es2019",
+    "noEmit": true,
+    "skipLibCheck": true,
     "types": ["google-apps-script", "vitest/globals"]
-  }
+  },
+  "include": ["src", "tests", "vite.config.ts"]
 }

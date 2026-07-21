@@ -58,10 +58,8 @@ const createResponse = (
 })
 
 describe('BaseAPI', () => {
-  const globalAny = globalThis as typeof globalThis & {
-    UrlFetchApp?: UrlFetchAppLike
-    Utilities?: UtilitiesLike
-  }
+  // GAS グローバルをモックで差し替えるため any 扱いにする
+  const globalAny = globalThis as Record<string, any>
   let originalUrlFetchApp: UrlFetchAppLike | undefined
   let originalUtilities: UtilitiesLike | undefined
 
@@ -192,12 +190,12 @@ describe('BaseAPI', () => {
 
   it('throws when params is array', () => {
     const api = new TestAPI('token')
-    expect(() =>
-      api.get('auth.test', ['a'] as unknown as Record<string, unknown>),
-    ).toThrow('params はオブジェクトで指定してください')
+    expect(() => api.get('auth.test', ['a'] as unknown as Record<string, unknown>)).toThrow(
+      'params はオブジェクトで指定してください',
+    )
   })
 
-  it('returns empty object on empty response', () => {
+  it('returns empty_response error on empty response', () => {
     const fetch = vi.fn().mockReturnValue(createResponse(200, ''))
     globalAny.UrlFetchApp = { fetch }
     globalAny.Utilities = { sleep: vi.fn() }
@@ -205,7 +203,7 @@ describe('BaseAPI', () => {
     const api = new TestAPI('token')
     const res = api.get('auth.test', {})
 
-    expect(res).toEqual({})
+    expect(res).toEqual({ ok: false, error: 'empty_response' })
   })
 
   it('makes at least one request when retries limit is 0', () => {

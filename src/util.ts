@@ -8,7 +8,7 @@ const normalizeFormValue = (value: unknown): string | null => {
 }
 
 // 参考) https://github.com/python/cpython/blob/3.6/Lib/urllib/parse.py#L846
-export const queryEncode: Function = (params: Record<string, any>) => {
+export const queryEncode = (params: Record<string, any>): string => {
   if (params == null) return ''
   const param_list: string[] = []
   for (const [key, rawValue] of Object.entries(params)) {
@@ -19,7 +19,7 @@ export const queryEncode: Function = (params: Record<string, any>) => {
   return param_list.join('&')
 }
 
-export const createPayload: Function = (params: Record<string, any>) => {
+export const createPayload = (params: Record<string, any>): Record<string, any> => {
   if (params == null) return {}
   const payload: Record<string, any> = {}
   for (const [key, value] of Object.entries(params)) {
@@ -29,7 +29,7 @@ export const createPayload: Function = (params: Record<string, any>) => {
   return payload
 }
 
-export const createFormPayload: Function = (params: Record<string, any>) => {
+export const createFormPayload = (params: Record<string, any>): Record<string, string> => {
   if (params == null) return {}
   const payload: Record<string, any> = {}
   for (const [key, rawValue] of Object.entries(params)) {

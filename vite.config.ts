@@ -1,16 +1,17 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vitest/config'
 import { generate } from 'gas-entry-generator'
 
 const GLOBAL_HEADER = "var global = Function('return this')();\n"
 
-const gasStubPlugin = () => ({
+// GAS ライブラリとして公開するため、トップレベル関数のスタブを bundle 先頭に生成する
+const gasStubPlugin = (): Plugin => ({
   name: 'gas-stub',
   generateBundle(_options, bundle) {
     for (const output of Object.values(bundle)) {
       if (output.type !== 'chunk' || !output.isEntry) continue
       const { entryPointFunctions } = generate(output.code, {
         comment: true,
-        globalIdentifierName: 'global'
+        globalIdentifierName: 'global',
       })
       output.code = `${GLOBAL_HEADER}${entryPointFunctions}${output.code}`
     }

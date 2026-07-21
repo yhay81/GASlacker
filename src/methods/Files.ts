@@ -1,18 +1,4 @@
-import BaseAPI from './BaseAPI'
-
-class FilesComments extends BaseAPI {
-  public add(params: Record<string, any> = {}) {
-    return this._post('files.comments.add', params)
-  }
-
-  public delete_(params: Record<string, any> = {}) {
-    return this._post('files.comments.delete', params)
-  }
-
-  public edit(params: Record<string, any> = {}) {
-    return this._post('files.comments.edit', params)
-  }
-}
+import BaseAPI, { SlackResponse } from './BaseAPI'
 
 class FilesRemote extends BaseAPI {
   public add(params: Record<string, any> = {}) {
@@ -41,11 +27,9 @@ class FilesRemote extends BaseAPI {
 }
 
 export default class Files extends BaseAPI {
-  public comments
   public remote
-  constructor(token, retries_limit) {
+  constructor(token: string, retries_limit?: number) {
     super(token, retries_limit)
-    this.comments = new FilesComments(token, retries_limit)
     this.remote = new FilesRemote(token, retries_limit)
   }
 
@@ -69,10 +53,39 @@ export default class Files extends BaseAPI {
     return this._post('files.sharedPublicURL', params)
   }
 
-  public uploadV2(params: Record<string, any> = {}) {
+  // files.uploadV2 という HTTP エンドポイントは存在しないため、公式推奨の
+  // 3 ステップ(URL 取得 → アップロード → 完了通知)を 1 メソッドにまとめている。
+  // file には GAS の Blob、content には文字列を指定する。
+  public uploadV2(params: Record<string, any> = {}): SlackResponse {
     const safeParams = this._normalizeArgs(params, 'params')
-    const { file, content, ...args } = safeParams
-    return this._post_file('files.uploadV2', { file, content }, args)
+    const { file, content, filename, snippet_type, alt_txt, title, ...completeArgs } = safeParams
+    if (file == null && content == null) {
+      throw new Error('file または content を指定してください')
+    }
+    const blob = file != null ? file : Utilities.newBlob(String(content))
+    if (typeof blob.getBytes !== 'function') {
+      throw new Error('file には Blob を指定してください')
+    }
+    const name = filename ?? (typeof blob.getName === 'function' ? blob.getName() : null) ?? 'file'
+    const urlRes = this._post('files.getUploadURLExternal', {
+      filename: name,
+      length: blob.getBytes().length,
+      snippet_type,
+      alt_txt,
+    })
+    if (!urlRes.ok) return urlRes
+    const uploadRes = UrlFetchApp.fetch(urlRes.upload_url, {
+      method: 'post',
+      payload: blob,
+      muteHttpExceptions: true,
+    })
+    if (uploadRes.getResponseCode() !== 200) {
+      return { ok: false, error: 'upload_failed', raw: uploadRes.getContentText() }
+    }
+    return this._post('files.completeUploadExternal', {
+      files: [{ id: urlRes.file_id, title: title ?? name }],
+      ...completeArgs,
+    })
   }
 
   public getUploadURLExternal(params: Record<string, any> = {}) {

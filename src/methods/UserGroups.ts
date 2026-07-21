@@ -12,7 +12,7 @@ class UsergroupsUsers extends BaseAPI {
 
 export default class UserGroups extends BaseAPI {
   public users
-  constructor(token, retries_limit) {
+  constructor(token: string, retries_limit?: number) {
     super(token, retries_limit)
     this.users = new UsergroupsUsers(token, retries_limit)
   }

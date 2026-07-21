@@ -1,6 +1,18 @@
 import BaseAPI from './BaseAPI'
 
+class ConversationsCanvases extends BaseAPI {
+  public create(params: Record<string, any> = {}) {
+    return this._post('conversations.canvases.create', params)
+  }
+}
+
 export default class Conversations extends BaseAPI {
+  public canvases
+  constructor(token: string, retries_limit?: number) {
+    super(token, retries_limit)
+    this.canvases = new ConversationsCanvases(token, retries_limit)
+  }
+
   public archive(params: Record<string, any> = {}) {
     return this._post('conversations.archive', params)
   }

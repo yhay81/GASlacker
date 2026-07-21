@@ -2,7 +2,7 @@ import BaseAPI from './BaseAPI'
 
 export default class Users extends BaseAPI {
   public profile
-  constructor(token: string, retries_limit: number) {
+  constructor(token: string, retries_limit?: number) {
     super(token, retries_limit)
     this.profile = new UsersProfile(token, retries_limit)
   }

@@ -1,7 +1,7 @@
 {
   "name": "gaslacker",
-  "version": "0.1.0",
-  "description": "Google Apps Script library for Slack Web API.",
+  "version": "1.0.0",
+  "description": "Slack Web API client library for Google Apps Script.",
   "keywords": [
     "clasp",
     "gas",
@@ -21,9 +21,10 @@
   "scripts": {
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "build": "pnpm run lint && pnpm run test && rimraf dist && vite build && cpx appsscript.json dist",
+    "build": "pnpm run lint && pnpm run typecheck && pnpm run test && rimraf dist && vite build && cpx appsscript.json dist",
     "deploy": "pnpm run build && clasp push",
     "fmt": "oxfmt --write ."
   },

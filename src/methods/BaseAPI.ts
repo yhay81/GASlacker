@@ -1,6 +1,13 @@
 import { queryEncode, createPayload, createFormPayload } from '../util'
 import { DEFAULT_RETRIES } from '../config'
 
+// Slack Web API の共通レスポンス。ok / error 以外のフィールドはメソッドごとに異なる。
+export interface SlackResponse {
+  ok: boolean
+  error?: string
+  [key: string]: any
+}
+
 export default class BaseAPI {
   static API_ENDPOINT = 'https://slack.com/api/'
   constructor(
@@ -8,7 +15,7 @@ export default class BaseAPI {
     private _retries_limit: number = DEFAULT_RETRIES,
   ) {}
 
-  protected _get(api: string, args: Record<string, any> = {}): any {
+  protected _get(api: string, args: Record<string, any> = {}): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
     const encodedArgs: string = queryEncode(safeArgs)
     const query = encodedArgs ? `?${encodedArgs}` : ''
@@ -21,7 +28,7 @@ export default class BaseAPI {
     return this._fetch(url, params)
   }
 
-  protected _post(api: string, args: Record<string, any> = {}): any {
+  protected _post(api: string, args: Record<string, any> = {}): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
     const payload: Record<string, any> = createPayload(safeArgs)
     const url = `${BaseAPI.API_ENDPOINT}${api}`
@@ -34,7 +41,7 @@ export default class BaseAPI {
     return this._fetch(url, params)
   }
 
-  protected _post_form(api: string, args: Record<string, any> = {}): any {
+  protected _post_form(api: string, args: Record<string, any> = {}): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
     const payload: Record<string, any> = createFormPayload(safeArgs)
     const url = `${BaseAPI.API_ENDPOINT}${api}`
@@ -51,7 +58,7 @@ export default class BaseAPI {
     api: string,
     file_args: Record<string, any>,
     args: Record<string, any> = {},
-  ): any {
+  ): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
     const safeFileArgs = this._normalizeArgs(file_args, 'file_params')
     const payload: Record<string, any> = createFormPayload(safeArgs)
@@ -65,7 +72,7 @@ export default class BaseAPI {
     return this._fetch(url, params)
   }
 
-  protected _fetch(url: string, params: Record<string, any> = null): any {
+  protected _fetch(url: string, params: Record<string, any> = null): SlackResponse {
     const requestParams: Record<string, any> = Object.assign({}, params || {})
     if (requestParams.muteHttpExceptions == null) {
       requestParams.muteHttpExceptions = true
@@ -107,9 +114,9 @@ export default class BaseAPI {
     return args
   }
 
-  private _parseResponse(response: any): any {
+  private _parseResponse(response: any): SlackResponse {
     const text = response.getContentText()
-    if (!text) return {}
+    if (!text) return { ok: false, error: 'empty_response' }
     try {
       return JSON.parse(text)
     } catch {

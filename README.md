@@ -1,102 +1,183 @@
 # GASlacker
 
-Google Apps Script から Slack Web API を呼び出すための小さなライブラリです。
-Authorization ヘッダー + JSON 送信を基本に、OAuth v2 やファイルアップロードのフォーム送信にも対応します。
+[![CI](https://github.com/yhay81/GASlacker/actions/workflows/ci.yml/badge.svg)](https://github.com/yhay81/GASlacker/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
 
-## クイックスタート
+日本語版は [README.ja.md](README.ja.md) を参照してください。
 
-前提: Node.js 22.12+ / pnpm
+A lightweight Slack Web API client for Google Apps Script.
 
-1. このリポジトリを取得し、`pnpm install` を実行します。
-2. `pnpm run build` で `dist/bundle.js` を生成します。
-3. 新規 Apps Script に `dist/bundle.js` を貼り付けて保存します。
-4. ライブラリとして公開し、スクリプト ID を取得します。
-5. 利用側の Apps Script にライブラリを追加します。
-6. スクリプト プロパティに `SLACK_ACCESS_TOKEN` を保存します。
+- 110+ Slack Web API methods organized like the official SDKs: `slack.chat.postMessage({...})`
+- Bearer authorization + JSON requests, with automatic retry on rate limits (HTTP 429, honoring `Retry-After`)
+- File uploads implemented with the current 3-step external upload flow (`files.uploadV2`)
+- OAuth v2 (`oauth.v2.access`) and modern APIs such as `canvases.*` / `assistant.threads.*`
+- Zero runtime dependencies — a single `bundle.js` for the GAS V8 runtime
+- Escape hatch for any method: `slack.call('some.method', params)`
 
-## 使い方
+Every endpoint name in this library is verified to exist on the live Slack API
+(dead endpoints answer `unknown_method`; see [tests/routing.spec.ts](tests/routing.spec.ts)).
 
-```JavaScript
+## Installation
+
+Requirements for building: Node.js 22.12+ and pnpm.
+
+```sh
+pnpm install
+pnpm run build   # generates dist/bundle.js
+```
+
+Then choose one:
+
+**A. Use as a library (recommended)**
+
+1. Create a standalone Apps Script project and paste `dist/bundle.js` into it.
+2. Deploy it as a library and note the script ID.
+3. In the consuming project, add the library with identifier `GASlacker`.
+4. Call `GASlacker.methods(token)`.
+
+**B. Paste directly into your project**
+
+Copy `dist/bundle.js` into your Apps Script project as a script file and call
+`methods(token)` directly (no `GASlacker.` prefix).
+
+**C. Push with clasp**
+
+Set your own `scriptId` in `.clasp.json`, then `pnpm run deploy`.
+
+## Quick start
+
+Save your bot token in Script Properties as `SLACK_ACCESS_TOKEN`, then:
+
+```javascript
 var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
 var slack = GASlacker.methods(token);
 
-function doPost(e) {
-  // Events API を使う場合は署名検証などを別途実装してください。
-  var event = JSON.parse(e.postData.contents).event;
-  if (event.text.match(/hello/)) {
-    slack.chat.postMessage({ channel: event.channel, text: 'Hello World' });
+function hello() {
+  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello World' });
+  if (!res.ok) {
+    Logger.log(res.error);
   }
 }
 ```
 
-### レスポンス
+Every method returns the Slack API JSON response as-is — check `ok` / `error` yourself.
 
-各メソッドは Slack API の JSON レスポンスをそのまま返します。
-`ok` / `error` を利用側で確認してください。
+### Handling Slack events (Events API)
 
-```JavaScript
-var res = slack.chat.postMessage({ channel: 'C123', text: 'Hi' });
-if (!res.ok) {
-  Logger.log(res.error);
+```javascript
+function doPost(e) {
+  var body = JSON.parse(e.postData.contents);
+  // Endpoint URL verification during Events API setup
+  if (body.type === 'url_verification') {
+    return ContentService.createTextOutput(body.challenge);
+  }
+  // Verify the request signature yourself in production.
+  var event = body.event;
+  if (event && event.type === 'message' && event.text && /hello/.test(event.text)) {
+    slack.chat.postMessage({ channel: event.channel, text: 'Hello World' });
+  }
+  return ContentService.createTextOutput('');
 }
 ```
 
-### 任意のメソッド呼び出し
+### Calling any method
 
-```JavaScript
-slack.call('chat.postMessage', { channel: 'C123', text: 'Hi' });
+```javascript
+slack.call('chat.postMessage', { channel: 'C0123456789', text: 'Hi' });
 slack.call('conversations.list', { limit: 20 }, 'get');
 ```
 
-### フォーム送信が必要な例
+### Uploading files
 
-```JavaScript
+`files.uploadV2` wraps Slack's 3-step upload flow
+(`files.getUploadURLExternal` → upload → `files.completeUploadExternal`) in one call:
+
+```javascript
+var blob = Utilities.newBlob('hello', 'text/plain', 'hello.txt');
+slack.files.uploadV2({ channel_id: 'C0123456789', file: blob, initial_comment: 'A file!' });
+
+// or upload a string as a file
+slack.files.uploadV2({ channel_id: 'C0123456789', content: 'hello', filename: 'hello.txt' });
+```
+
+Pass a GAS `Blob` as `file`, or a string as `content` (with `filename`).
+The individual steps are also exposed (`slack.files.getUploadURLExternal` /
+`slack.files.completeUploadExternal`) if you need finer control.
+
+### OAuth v2
+
+```javascript
 slack.oauth.access({
   client_id: clientId,
   client_secret: clientSecret,
   code: code,
   redirect_uri: redirectUri
 });
-slack.files.uploadV2({
-  channel_id: 'C123',
-  file: fileBlob,
-  filename: 'report.txt'
-});
 ```
 
-### リトライ回数
+### Rate-limit retries
 
-`GASlacker.methods(token, retriesLimit)` の `retriesLimit` は 429 時の追加リトライ回数です。
-省略時は 3、0 を指定すると 1 回だけリクエストします。
+`GASlacker.methods(token, retriesLimit)` — `retriesLimit` is the number of extra
+attempts on HTTP 429 (default 3; `0` sends exactly one request). Waits for the
+`Retry-After` header between attempts.
 
-## 変更方針
+## API coverage
 
-- legacy 系の `channels.*` / `groups.*` / `im.*` / `mpim.*` / `rtm.*` は削除しています。
-- `apps.permissions.users.*` は Workspace Apps 廃止に伴い削除しています。
-- legacy トークン向けの `migration.exchange` / `oauth.v2.exchange` は削除しています。
-- ファイルアップロードは `files.uploadV2` のみ提供します。
+| Property              | Slack API family                                                      |
+| --------------------- | --------------------------------------------------------------------- |
+| `slack.api`           | `api.test`, plus `call()` for arbitrary methods                       |
+| `slack.apps`          | `apps.uninstall`, `apps.connections.*`, `apps.event.authorizations.*` |
+| `slack.assistant`     | `assistant.threads.*`                                                 |
+| `slack.auth`          | `auth.*`                                                              |
+| `slack.bookmarks`     | `bookmarks.*`                                                         |
+| `slack.bots`          | `bots.*`                                                              |
+| `slack.canvases`      | `canvases.*` (incl. `access` / `sections`)                            |
+| `slack.chat`          | `chat.*`                                                              |
+| `slack.conversations` | `conversations.*` (incl. `canvases.create`)                           |
+| `slack.dialog`        | `dialog.*` (legacy)                                                   |
+| `slack.dnd`           | `dnd.*`                                                               |
+| `slack.emoji`         | `emoji.*`                                                             |
+| `slack.files`         | `files.*` (incl. `remote`, 3-step upload)                             |
+| `slack.oauth`         | `oauth.v2.access`                                                     |
+| `slack.pins`          | `pins.*`                                                              |
+| `slack.reactions`     | `reactions.*`                                                         |
+| `slack.reminders`     | `reminders.*`                                                         |
+| `slack.search`        | `search.*`                                                            |
+| `slack.stars`         | `stars.*` (superseded by "Later" but still served)                    |
+| `slack.team`          | `team.*` (incl. `profile`)                                            |
+| `slack.usergroups`    | `usergroups.*` (incl. `users`)                                        |
+| `slack.users`         | `users.*` (incl. `profile`, `setPhoto`)                               |
+| `slack.views`         | `views.*`                                                             |
 
-## 開発
+Method names mirror Slack's, with a trailing underscore where the name is a
+JavaScript reserved word: `chat.delete_()`, `files.delete_()`, `canvases.delete_()`.
 
-- `pnpm run lint` / `pnpm run fmt` / `pnpm run test` / `pnpm run build`
-- `pnpm run deploy` は `clasp push` で Apps Script に反映します。
-- `.clasp.json` の `scriptId` は事前に設定してください。
+## Removed / not included
 
-## ドキュメント
+- Legacy `channels.*` / `groups.*` / `im.*` / `mpim.*` / `rtm.*`
+- `files.comments.*` and `apps.permissions.*` (discontinued by Slack; they answer `unknown_method`)
+- `files.upload` (v1, discontinued) — use `files.uploadV2`
+- `admin.*` enterprise methods (out of scope; use `slack.call()` if needed)
 
-Slack API の詳細は公式ドキュメントを参照してください。
-https://docs.slack.dev/reference/methods/
+## Development
+
+```sh
+pnpm run lint        # oxlint
+pnpm run typecheck   # tsc --noEmit
+pnpm run test        # vitest (152 tests)
+pnpm run build       # lint + typecheck + test + vite build
+pnpm run deploy      # build + clasp push
+```
+
+See [docs/verification.md](docs/verification.md) for the manual verification
+plan against the real Slack API, and [CONTRIBUTING.md](CONTRIBUTING.md) for how
+to add a new API method.
 
 ## Reference
 
-- https://github.com/os/slacker
-- https://github.com/soundTricker/SlackApp
-- https://github.com/howdy39/gas-clasp-starter
+- Slack Web API docs: https://docs.slack.dev/reference/methods/
+- Inspired by [os/slacker](https://github.com/os/slacker) and [soundTricker/SlackApp](https://github.com/soundTricker/SlackApp)
 
 ## License
 
-MIT License. 詳細は `LICENSE.txt` を参照してください。
-
-## Contributing
-
-Issue と PR は歓迎します。
+MIT License. See [LICENSE.txt](LICENSE.txt).

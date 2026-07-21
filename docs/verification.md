@@ -107,9 +107,12 @@ function smoke() {
   **期待結果**
 - `ok: true` または `ok: false` と `error` が JSON で返る
 
-### 6. ファイル POST の検証
+### 6. ファイルアップロードの検証
 
-**目的**: ファイル送信経路が正しいこと  
+**目的**: `files.uploadV2`(3 ステップ合成)の経路が正しいこと  
+**補足**: `files.uploadV2` という HTTP エンドポイントは存在しないため、内部で
+`files.getUploadURLExternal` → アップロード URL への POST →
+`files.completeUploadExternal` を順に実行する実装になっている。  
 **手順（例）**
 
 ```JavaScript
@@ -126,7 +129,7 @@ function upload() {
 - `ok: true` を返す
 - チャンネルにファイルが表示される
 
-### 7. 大容量アップロードの検証
+### 7. 個別ステップでのアップロード検証
 
 **目的**: `files.getUploadURLExternal` / `files.completeUploadExternal` の経路が正しいこと  
 **手順（例）**
@@ -235,3 +238,14 @@ function openModal(triggerId) {
 - 実行コマンド: `pnpm run test` / `pnpm run build`
 - 結果: Lint/ユーティリティ/メソッド/エントリのテスト成功、`dist/bundle.js` 生成と `global.methods` の存在を確認
 - 補足: GET/JSON POST/フォーム POST/ファイル POST/429 待機・再試行に加え、Authorization ヘッダー無し、Users.setPhoto、ネストクライアントのルーティングをユニットテストで確認（実 API 呼び出しは未実施）
+
+## 検証記録（エンドポイント実在確認）
+
+- 実行日時: 2026-07-22
+- 方法: トークンなしで `curl -X POST https://slack.com/api/<method>` を全メソッドに実行し、
+  実在(`not_authed`)/廃止(`unknown_method`)を判定
+- 結果: ライブラリが提供する全 116 エンドポイントの実在を確認。
+  廃止判定となった `files.uploadV2`(HTTP エンドポイントとしては不存在)、
+  `files.comments.add/edit/delete`、`apps.permissions.*` は削除または合成実装に置き換え。
+  新規追加した `canvases.*` / `conversations.canvases.create` / `assistant.threads.*` も実在を確認。
+- 補足: トークンを使う実 API 検証(最小検証セット)は未実施。リリース前に実施を推奨。

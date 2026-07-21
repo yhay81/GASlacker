@@ -12,7 +12,6 @@ node_modules/
 .idea/
 .vscode/
 
-# Build directory
-dist/
+# dist/ は GAS 利用者が貼り付ける配布物のため、意図的にコミットする(.gitignore 対象外)
 
 coverage/

@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # lint / typecheck / test / vite build をまとめて実行する
+      - run: pnpm run build
+      # dist/ は配布物としてコミットするため、src/ と同期していることを保証する
+      - name: Check dist is in sync with src
+        run: git diff --exit-code dist/

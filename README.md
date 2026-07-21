@@ -19,30 +19,33 @@ Every endpoint name in this library is verified to exist on the live Slack API
 
 ## Installation
 
-Requirements for building: Node.js 22.12+ and pnpm.
-
-```sh
-pnpm install
-pnpm run build   # generates dist/bundle.js
-```
-
-Then choose one:
+No build step is required — [`dist/bundle.js`](dist/bundle.js) in this
+repository is the ready-to-use distributable. Choose one:
 
 **A. Use as a library (recommended)**
 
-1. Create a standalone Apps Script project and paste `dist/bundle.js` into it.
+1. Create a standalone Apps Script project and paste the contents of
+   [`dist/bundle.js`](dist/bundle.js) into it.
 2. Deploy it as a library and note the script ID.
 3. In the consuming project, add the library with identifier `GASlacker`.
 4. Call `GASlacker.methods(token)`.
 
 **B. Paste directly into your project**
 
-Copy `dist/bundle.js` into your Apps Script project as a script file and call
-`methods(token)` directly (no `GASlacker.` prefix).
+Copy [`dist/bundle.js`](dist/bundle.js) into your Apps Script project as a
+script file and call `methods(token)` directly (no `GASlacker.` prefix).
 
 **C. Push with clasp**
 
-Set your own `scriptId` in `.clasp.json`, then `pnpm run deploy`.
+Clone this repository, set your own `scriptId` in `.clasp.json`, then:
+
+```sh
+pnpm install
+pnpm run deploy   # build + clasp push
+```
+
+To rebuild `dist/bundle.js` yourself, run `pnpm install && pnpm run build`
+(Node.js 22.12+ and pnpm required).
 
 ## Quick start
 
@@ -164,7 +167,7 @@ JavaScript reserved word: `chat.delete_()`, `files.delete_()`, `canvases.delete_
 ```sh
 pnpm run lint        # oxlint
 pnpm run typecheck   # tsc --noEmit
-pnpm run test        # vitest (152 tests)
+pnpm run test        # vitest
 pnpm run build       # lint + typecheck + test + vite build
 pnpm run deploy      # build + clasp push
 ```

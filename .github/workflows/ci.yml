@@ -19,5 +19,11 @@ jobs:
       # lint / typecheck / test / vite build をまとめて実行する
       - run: pnpm run build
       # dist/ は配布物としてコミットするため、src/ と同期していることを保証する
+      # (git status で未コミットの変更・新規ファイルの両方を検出する)
       - name: Check dist is in sync with src
-        run: git diff --exit-code dist/
+        run: |
+          if [ -n "$(git status --porcelain dist)" ]; then
+            git status --porcelain dist
+            echo "dist/ is out of sync. Run 'pnpm run build' and commit dist/." >&2
+            exit 1
+          fi

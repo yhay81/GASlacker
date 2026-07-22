@@ -29,6 +29,13 @@
 
 ### Changed
 
+- **`@google/clasp` is no longer a devDependency.** It is only needed for manual publishing,
+  yet it pulled in 248 of the project's 443 packages — an MCP server, an HTTP server and the
+  Google API clients — and was the source of 43 of the 44 open Dependabot alerts. `pnpm run
+  deploy` now fetches the same version on demand with `pnpm dlx @google/clasp@3`, so the
+  command is unchanged. `pnpm dedupe` cleared the one remaining alert (a stale `picomatch`
+  under vitest), leaving 193 packages and no known vulnerabilities. `dist/bundle.js` is
+  byte-identical — GASlacker still ships zero runtime dependencies.
 - `.gitignore`'s remaining Japanese comment translated (leftover from the 1.3.0
   English unification), `UsersProfile` declared before it is used like every other nested
   class, and the stale CPython reference on `queryEncode` replaced with a description of

@@ -1,7 +1,6 @@
 allowBuilds:
   esbuild: false
 ignoredBuiltDependencies:
-  - core-js
   - esbuild
   - fsevents
 minimumReleaseAgeExclude:

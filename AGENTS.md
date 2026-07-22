@@ -18,7 +18,10 @@
 - `pnpm run fmt`: formatting via Oxfmt.
 - `pnpm run test`: run Vitest.
 - `pnpm run build`: lint/typecheck/test, then build `dist/bundle.js` with Vite and copy `appsscript.json` into `dist/`.
-- `pnpm run deploy`: build, then `clasp push` to Apps Script.
+- `pnpm run deploy`: build, then `clasp push` to Apps Script. clasp is fetched on demand via
+  `pnpm dlx` instead of being a devDependency — it is only needed for manual publishing, and it
+  pulls in ~250 packages (an MCP server, an HTTP server, the Google API clients) that neither the
+  build nor CI ever touches.
 
 ## Coding Style & Naming Conventions
 

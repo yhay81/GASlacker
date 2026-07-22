@@ -237,6 +237,20 @@
         text-align: center;
       }
 
+      /* 文字の背後だけ背景をぼかし、縁は radial マスクでフェードさせて溶け込ませる */
+      .hero-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 34px clamp(30px, 7vw, 84px) 46px;
+        background: rgba(248, 242, 232, 0.52);
+        backdrop-filter: blur(16px) saturate(1.05);
+        -webkit-backdrop-filter: blur(16px) saturate(1.05);
+        border-radius: 56px;
+        mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 58%, transparent 94%);
+        -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 58%, transparent 94%);
+      }
+
       .hero-kicker {
         margin: 0 0 5px;
         font-size: clamp(0.75rem, 1.2vw, 0.9rem);
@@ -1122,18 +1136,22 @@
           fetchpriority="high"
         />
         <div class="shell">
-          <p class="hero-kicker">Google Apps Script × Slack</p>
-          <h1 id="hero-title">GAS<span>lacker</span></h1>
-          <div class="hero-copy">
-            <h2>いつものシートから、<br />チームの会話を動かそう。</h2>
-            <p>
-              ビルド環境は不要。ライブラリ ID
-              をひとつ追加すれば、毎朝の通知も、返信ボットも、ファイル投稿もすぐに始められます。
-            </p>
-          </div>
-          <div class="actions">
-            <a class="button primary" href="#start">5 分ではじめる</a>
-            <a class="button secondary" href="https://github.com/yhay81/GASlacker">GitHub で見る</a>
+          <div class="hero-panel">
+            <p class="hero-kicker">Google Apps Script × Slack</p>
+            <h1 id="hero-title">GAS<span>lacker</span></h1>
+            <div class="hero-copy">
+              <h2>いつものシートから、<br />チームの会話を動かそう。</h2>
+              <p>
+                ビルド環境は不要。ライブラリ ID
+                をひとつ追加すれば、毎朝の通知も、返信ボットも、ファイル投稿もすぐに始められます。
+              </p>
+            </div>
+            <div class="actions">
+              <a class="button primary" href="#start">5 分ではじめる</a>
+              <a class="button secondary" href="https://github.com/yhay81/GASlacker"
+                >GitHub で見る</a
+              >
+            </div>
           </div>
         </div>
         <p class="proof-line" aria-label="プロジェクトの特徴">

@@ -70,11 +70,19 @@
       a {
         color: inherit;
       }
-      button {
+      button,
+      select {
         font: inherit;
       }
       code {
         font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+      }
+
+      .icon {
+        width: 20px;
+        height: 20px;
+        flex: none;
+        color: var(--teal);
       }
 
       .skip-link {
@@ -161,7 +169,7 @@
       .site-nav {
         display: flex;
         align-items: center;
-        gap: 28px;
+        gap: 24px;
         font-size: 0.88rem;
         font-weight: 700;
       }
@@ -179,6 +187,32 @@
         padding: 8px 16px;
         border: 1px solid var(--ink);
         border-radius: 999px;
+      }
+
+      .lang {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255, 253, 248, 0.7);
+      }
+
+      .lang .icon {
+        width: 16px;
+        height: 16px;
+        color: var(--muted);
+      }
+
+      .lang select {
+        border: 0;
+        background: transparent;
+        font-size: 0.84rem;
+        font-weight: 700;
+        color: var(--ink);
+        cursor: pointer;
+        outline-offset: 3px;
       }
 
       .hero {
@@ -338,6 +372,7 @@
         left: 0;
         display: flex;
         justify-content: center;
+        flex-wrap: wrap;
         gap: 12px;
         margin: 0;
         color: rgba(255, 255, 255, 0.95);
@@ -460,6 +495,7 @@
         font-size: 0.88em;
       }
 
+      /* コピーボタンはコードの上の専用帯に置き、コード本文と重ならないようにする */
       .codebox {
         position: relative;
         margin-top: 12px;
@@ -470,7 +506,7 @@
         background: var(--code-bg);
         color: var(--code-fg);
         border-radius: 16px;
-        padding: 18px 96px 18px 20px;
+        padding: 52px 20px 18px;
         overflow-x: auto;
         font-size: 0.86rem;
         line-height: 1.7;
@@ -479,8 +515,11 @@
 
       .codebox .copy {
         position: absolute;
-        top: 12px;
+        top: 10px;
         right: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         background: rgba(255, 253, 248, 0.12);
         color: var(--code-fg);
         border: 1px solid rgba(255, 253, 248, 0.3);
@@ -489,6 +528,12 @@
         font-size: 0.8rem;
         cursor: pointer;
         font-weight: 700;
+      }
+
+      .codebox .copy .icon {
+        width: 14px;
+        height: 14px;
+        color: currentColor;
       }
 
       .codebox .copy:hover {
@@ -530,6 +575,9 @@
 
       .card h3 {
         margin: 0 0 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
         font-size: 1rem;
       }
 
@@ -615,10 +663,13 @@
           height: 68px;
         }
         .site-header .shell {
-          gap: 12px;
+          gap: 10px;
         }
         .brand {
           font-size: 1rem;
+        }
+        .site-nav {
+          gap: 10px;
         }
         .nav-cta {
           padding: 6px 12px;
@@ -666,18 +717,84 @@
     </style>
   </head>
   <body>
-    <a class="skip-link" href="#main">本文へ移動</a>
+    <a class="skip-link" href="#main" data-i18n="skip">本文へ移動</a>
+
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none" aria-hidden="true">
+      <defs>
+        <g id="i-globe">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+        </g>
+        <g id="i-calendar">
+          <rect x="3" y="5" width="18" height="16" rx="3" />
+          <path d="M3 10h18M8 3v4M16 3v4" />
+        </g>
+        <g id="i-bot">
+          <rect x="4" y="9" width="16" height="11" rx="3" />
+          <path d="M12 9V5M12 5h.01" />
+          <circle cx="12" cy="4" r="1" />
+          <path d="M9 14h.01M15 14h.01M9.5 17h5" />
+        </g>
+        <g id="i-clip">
+          <path
+            d="M20.5 11.5 12.8 19a5 5 0 0 1-7-7l7.6-7.5a3.4 3.4 0 0 1 4.8 4.8L10.6 17a1.8 1.8 0 0 1-2.5-2.5l7-7"
+          />
+        </g>
+        <g id="i-chart">
+          <path d="M4 20V10M10 20V4M16 20v-8M21 20H3" />
+        </g>
+        <g id="i-doc">
+          <path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
+          <path d="M14 3v5h5M9 13h6M9 17h6" />
+        </g>
+        <g id="i-terminal">
+          <rect x="3" y="4" width="18" height="16" rx="3" />
+          <path d="m7 9 3 3-3 3M13 15h4" />
+        </g>
+        <g id="i-check">
+          <circle cx="12" cy="12" r="9" />
+          <path d="m8 12 3 3 5-6" />
+        </g>
+        <g id="i-refresh">
+          <path d="M20 8a8.5 8.5 0 0 0-15-1.5M4 16a8.5 8.5 0 0 0 15 1.5" />
+          <path d="M20 3v5h-5M4 21v-5h5" />
+        </g>
+        <g id="i-lock">
+          <rect x="5" y="11" width="14" height="9" rx="2.5" />
+          <path d="M8 11V8a4 4 0 0 1 8 0v3M12 15v2" />
+        </g>
+        <g id="i-braces">
+          <path d="M8 4c-2 0-3 1-3 3v2c0 1.5-1 2.5-2 3 1 .5 2 1.5 2 3v2c0 2 1 3 3 3" />
+          <path d="M16 4c2 0 3 1 3 3v2c0 1.5 1 2.5 2 3-1 .5-2 1.5-2 3v2c0 2-1 3-3 3" />
+        </g>
+        <g id="i-copy">
+          <rect x="9" y="9" width="12" height="12" rx="2.5" />
+          <path d="M5 15H4a1.5 1.5 0 0 1-1.5-1.5v-9A1.5 1.5 0 0 1 4 3h9A1.5 1.5 0 0 1 14.5 4.5V5" />
+        </g>
+      </defs>
+    </svg>
 
     <header class="site-header">
       <div class="shell">
-        <a class="brand" href="#top" aria-label="GASlacker トップへ">
+        <a class="brand" href="#top" aria-label="GASlacker">
           <span class="brand-mark" aria-hidden="true"></span>
           <b>GAS<span>lacker</span></b>
         </a>
-        <nav class="site-nav" aria-label="メインナビゲーション">
-          <a href="#start">5 分ではじめる</a>
-          <a href="#examples">できること</a>
-          <a href="#faq">よくある質問</a>
+        <nav class="site-nav" aria-label="Navigation">
+          <a href="#start" data-i18n="nav.start">5 分ではじめる</a>
+          <a href="#examples" data-i18n="nav.examples">できること</a>
+          <a href="#faq" data-i18n="nav.faq">よくある質問</a>
+          <label class="lang">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-globe" /></svg>
+            <select id="lang-select" aria-label="Language">
+              <option value="ja">日本語</option>
+              <option value="en">English</option>
+              <option value="zh-CN">简体中文</option>
+              <option value="ko">한국어</option>
+              <option value="es">Español</option>
+              <option value="pt-BR">Português</option>
+            </select>
+          </label>
           <a class="nav-cta" href="https://github.com/yhay81/GASlacker">GitHub</a>
         </nav>
       </div>
@@ -690,7 +807,7 @@
           src="assets/hero-automation.webp"
           width="1600"
           height="835"
-          alt="スプレッドシートの情報がスクリプトを通ってチームの会話へ届く様子"
+          alt=""
           fetchpriority="high"
         />
         <div class="shell">
@@ -698,43 +815,48 @@
             <p class="hero-kicker">Google Apps Script × Slack</p>
             <h1 id="hero-title">GAS<span>lacker</span></h1>
             <div class="hero-copy">
-              <h2>いつものシートから、<br />チームの会話を動かそう。</h2>
-              <p>
+              <h2 data-i18n="hero.h2">いつものシートから、<br />チームの会話を動かそう。</h2>
+              <p data-i18n="hero.p">
                 ビルド環境は不要。ライブラリ ID
                 をひとつ追加すれば、毎朝の通知も、返信ボットも、ファイル投稿もすぐに始められます。
               </p>
             </div>
             <div class="actions">
-              <a class="button primary" href="#start">5 分ではじめる</a>
-              <a class="button secondary" href="https://github.com/yhay81/GASlacker"
+              <a class="button primary" href="#start" data-i18n="cta.start">5 分ではじめる</a>
+              <a class="button secondary" href="https://github.com/yhay81/GASlacker" data-i18n="cta.github"
                 >GitHub で見る</a
               >
             </div>
           </div>
         </div>
-        <p class="proof-line" aria-label="プロジェクトの特徴">
-          <span>168 メソッド実在検証済み</span>
-          <span>週次で同期チェック</span>
-          <span>MIT ライセンス</span>
+        <p class="proof-line">
+          <span data-i18n="proof.1">168 メソッド実在検証済み</span>
+          <span data-i18n="proof.2">週次で同期チェック</span>
+          <span data-i18n="proof.3">MIT ライセンス</span>
         </p>
       </section>
 
       <section id="start" class="alt" aria-labelledby="start-title">
         <div class="shell narrow">
-          <h2 id="start-title">5 分ではじめる</h2>
-          <p class="sub">スプレッドシートや GAS エディタが使えれば、ここから先は手順どおりで動きます。</p>
+          <h2 id="start-title" data-i18n="start.title">5 分ではじめる</h2>
+          <p class="sub" data-i18n="start.sub">
+            スプレッドシートや GAS エディタが使えれば、ここから先は手順どおりで動きます。
+          </p>
 
           <div class="step">
             <div class="num">1</div>
             <div>
-              <h3>ライブラリを追加する</h3>
-              <p>
+              <h3 data-i18n="step1.t">ライブラリを追加する</h3>
+              <p data-i18n="step1.p">
                 Apps Script エディタの「ライブラリ」の <b>＋</b>
                 を押して、この ID を貼り付けて「検索」→ 最新バージョンを選んで「追加」。
               </p>
               <div class="codebox">
                 <pre id="script-id">101aZZYpRRnr5AGkVIo8t_yo4kHb7xryLfq3w-HVPpQ4fX0Tkxv3UJyzc</pre>
-                <button class="copy" type="button" data-target="script-id">コピー</button>
+                <button class="copy" type="button" data-target="script-id">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-copy" /></svg>
+                  <span data-i18n="js.copy">コピー</span>
+                </button>
               </div>
             </div>
           </div>
@@ -742,30 +864,30 @@
           <div class="step">
             <div class="num">2</div>
             <div>
-              <h3>Slack のトークンを用意する</h3>
-              <p>Slack 側の準備はここが全部です(初回だけ・約 3 分):</p>
+              <h3 data-i18n="step2.t">Slack のトークンを用意する</h3>
+              <p data-i18n="step2.p">Slack 側の準備はここが全部です(初回だけ・約 3 分):</p>
               <ol>
-                <li>
+                <li data-i18n="step2.li1">
                   <a href="https://api.slack.com/apps" target="_blank" rel="noopener"
                     >api.slack.com/apps</a
                   >
                   で <b>Create New App → From scratch</b>(名前は自由、ワークスペースを選択)
                 </li>
-                <li>
+                <li data-i18n="step2.li2">
                   左メニュー <b>OAuth &amp; Permissions</b> → Bot Token Scopes に
                   <code class="inline">chat:write</code> を追加(ファイルも送るなら
                   <code class="inline">files:write</code> も)
                 </li>
-                <li>同じページ上部の <b>Install to Workspace</b> → 許可</li>
-                <li>
+                <li data-i18n="step2.li3">同じページ上部の <b>Install to Workspace</b> → 許可</li>
+                <li data-i18n="step2.li4">
                   表示された <b>Bot User OAuth Token</b>(<code class="inline">xoxb-</code>
                   で始まる)をコピー
                 </li>
-                <li>
+                <li data-i18n="step2.li5">
                   Apps Script の <b>プロジェクトの設定 → スクリプト プロパティ</b> に、プロパティ名
                   <code class="inline">SLACK_ACCESS_TOKEN</code> として保存
                 </li>
-                <li>
+                <li data-i18n="step2.li6">
                   投稿したいチャンネルで <code class="inline">/invite @アプリ名</code> して bot
                   を招待(忘れると <code class="inline">not_in_channel</code> エラーになります)
                 </li>
@@ -776,13 +898,13 @@
           <div class="step">
             <div class="num">3</div>
             <div>
-              <h3>3 行で投稿する</h3>
-              <p>
+              <h3 data-i18n="step3.t">3 行で投稿する</h3>
+              <p data-i18n="step3.p">
                 エディタに貼り付けて <code class="inline">hello</code> を実行。チャンネル ID
                 はチャンネル名を右クリック →「チャンネル詳細を表示」の最下部にあります。
               </p>
               <div class="codebox">
-                <pre id="code-hello">
+                <pre id="code-hello" data-i18n="step3.code">
 var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
 var slack = GASlacker.methods(token);
 
@@ -790,9 +912,12 @@ function hello() {
   var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });
   Logger.log(res.ok ? '投稿できました' : 'エラー: ' + res.error);
 }</pre>
-                <button class="copy" type="button" data-target="code-hello">コピー</button>
+                <button class="copy" type="button" data-target="code-hello">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-copy" /></svg>
+                  <span data-i18n="js.copy">コピー</span>
+                </button>
               </div>
-              <p class="note">
+              <p class="note" data-i18n="step3.note">
                 うまくいかないときはログの <code class="inline">res.error</code> を見てください。
                 <code class="inline">not_in_channel</code> なら手順 2-6、<code class="inline"
                   >invalid_auth</code
@@ -806,8 +931,8 @@ function hello() {
 
       <section id="examples" aria-labelledby="examples-title">
         <div class="shell narrow">
-          <h2 id="examples-title">できること</h2>
-          <p class="sub">
+          <h2 id="examples-title" data-i18n="ex.title">できること</h2>
+          <p class="sub" data-i18n="ex.sub">
             Slack Web API の 168 メソッドをそのままの名前で呼べます。よく使う形は
             <a href="https://github.com/yhay81/GASlacker/tree/master/examples">examples/</a>
             にコピペ用スクリプトがあります。
@@ -815,76 +940,119 @@ function hello() {
 
           <div class="grid">
             <div class="card">
-              <h3>📊 シートから毎朝通知</h3>
-              <p>
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-calendar" /></svg>
+                <span data-i18n="card1.t">シートから毎朝通知</span>
+              </h3>
+              <p data-i18n="card1.p">
                 時間トリガー + <code class="inline">chat.postMessage</code>。Block Kit
                 で見やすい整形も。
               </p>
             </div>
             <div class="card">
-              <h3>🤖 返事をするボット</h3>
-              <p>Events API を <code class="inline">doPost</code> で受けてスレッドに返信。</p>
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-bot" /></svg>
+                <span data-i18n="card2.t">返事をするボット</span>
+              </h3>
+              <p data-i18n="card2.p">
+                Events API を <code class="inline">doPost</code> で受けてスレッドに返信。
+              </p>
             </div>
             <div class="card">
-              <h3>📎 ファイルを送る</h3>
-              <p>CSV やログを <code class="inline">files.uploadV2</code> で 1 メソッド投稿。</p>
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-clip" /></svg>
+                <span data-i18n="card3.t">ファイルを送る</span>
+              </h3>
+              <p data-i18n="card3.p">
+                CSV やログを <code class="inline">files.uploadV2</code> で 1 メソッド投稿。
+              </p>
             </div>
             <div class="card">
-              <h3>🗂 全チャンネルを集計</h3>
-              <p>
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chart" /></svg>
+                <span data-i18n="card4.t">全チャンネルを集計</span>
+              </h3>
+              <p data-i18n="card4.p">
                 <code class="inline">slack.paginate()</code> がページネーションを自動で辿ります。
               </p>
             </div>
             <div class="card">
-              <h3>📝 Canvas・リスト操作</h3>
-              <p>
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-doc" /></svg>
+                <span data-i18n="card5.t">Canvas・リスト操作</span>
+              </h3>
+              <p data-i18n="card5.p">
                 <code class="inline">canvases.*</code> / <code class="inline">slackLists.*</code>
                 など新しい API にも対応。
               </p>
             </div>
             <div class="card">
-              <h3>🧩 未対応でも呼べる</h3>
-              <p>
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-terminal" /></svg>
+                <span data-i18n="card6.t">未対応でも呼べる</span>
+              </h3>
+              <p data-i18n="card6.p">
                 <code class="inline">slack.call('メソッド名', params)</code> でどの API でも。
               </p>
             </div>
           </div>
 
           <div class="codebox" style="margin-top: 24px">
-            <pre id="code-notify"><span class="comment">// 例: シートの内容を毎朝 Slack へ(時間トリガーに設定)</span>
+            <pre id="code-notify" data-i18n="code.example"><span class="comment">// 例: シートの内容を毎朝 Slack へ(時間トリガーに設定)</span>
 function dailySummary() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');
   var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();
   var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });
   slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\n') });
 }</pre>
-            <button class="copy" type="button" data-target="code-notify">コピー</button>
+            <button class="copy" type="button" data-target="code-notify">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-copy" /></svg>
+              <span data-i18n="js.copy">コピー</span>
+            </button>
           </div>
         </div>
       </section>
 
       <section class="alt" aria-labelledby="safe-title">
         <div class="shell narrow">
-          <h2 id="safe-title">安心して使えます</h2>
+          <h2 id="safe-title" data-i18n="safe.title">安心して使えます</h2>
           <div class="grid">
             <div class="card">
-              <h3>✅ 全メソッド実在検証</h3>
-              <p>
-                168 メソッド全部を実際の Slack API
-                に照合済み。存在しない・廃止された API は入っていません。
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-check" /></svg>
+                <span data-i18n="safe1.t">全メソッド実在検証</span>
+              </h3>
+              <p data-i18n="safe1.p">
+                168 メソッド全部を実際の Slack API に照合済み。存在しない・廃止された API
+                は入っていません。
               </p>
             </div>
             <div class="card">
-              <h3>🔄 週次パリティ監視</h3>
-              <p>毎週 CI が Slack 公式 SDK と突き合わせ。新 API が出ると自動で Issue が立ちます。</p>
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-refresh" /></svg>
+                <span data-i18n="safe2.t">週次パリティ監視</span>
+              </h3>
+              <p data-i18n="safe2.p">
+                毎週 CI が Slack 公式 SDK と突き合わせ。新 API が出ると自動で Issue が立ちます。
+              </p>
             </div>
             <div class="card">
-              <h3>🔒 トークンは手元だけ</h3>
-              <p>通信先は Slack API のみ。トークンはあなたの Script プロパティにだけ保存されます。</p>
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-lock" /></svg>
+                <span data-i18n="safe3.t">トークンは手元だけ</span>
+              </h3>
+              <p data-i18n="safe3.p">
+                通信先は Slack API のみ。トークンはあなたの Script プロパティにだけ保存されます。
+              </p>
             </div>
             <div class="card">
-              <h3>🛠 TypeScript 対応</h3>
-              <p>clasp + TypeScript の人には型定義を同梱。全メソッドが補完されます。</p>
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-braces" /></svg>
+                <span data-i18n="safe4.t">TypeScript 対応</span>
+              </h3>
+              <p data-i18n="safe4.p">
+                clasp + TypeScript の人には型定義を同梱。全メソッドが補完されます。
+              </p>
             </div>
           </div>
         </div>
@@ -892,31 +1060,31 @@ function dailySummary() {
 
       <section id="faq" aria-labelledby="faq-title">
         <div class="shell narrow">
-          <h2 id="faq-title">よくある質問</h2>
+          <h2 id="faq-title" data-i18n="faq.title">よくある質問</h2>
           <details>
-            <summary>無料ですか？</summary>
-            <p>
+            <summary data-i18n="faq1.q">無料ですか？</summary>
+            <p data-i18n="faq1.a">
               はい。MIT ライセンスの OSS で、商用利用も自由です。Google Apps Script と Slack
               アプリも通常の用途では無料枠で動きます。
             </p>
           </details>
           <details>
-            <summary>Node.js やビルド環境は必要ですか？</summary>
-            <p>
+            <summary data-i18n="faq2.q">Node.js やビルド環境は必要ですか？</summary>
+            <p data-i18n="faq2.a">
               不要です。ブラウザの Apps Script エディタだけで完結します。ライブラリ ID
               を追加してお使いください。
             </p>
           </details>
           <details>
-            <summary>Incoming Webhook とは何が違いますか？</summary>
-            <p>
+            <summary data-i18n="faq3.q">Incoming Webhook とは何が違いますか？</summary>
+            <p data-i18n="faq3.a">
               Webhook は決まったチャンネルへの投稿が中心です。GASlacker は Web API
               を呼ぶため、返信、リアクション、ファイル、履歴取得、Canvas など幅広い機能を使えます。
             </p>
           </details>
           <details>
-            <summary>エラーが出たら？</summary>
-            <p>
+            <summary data-i18n="faq4.q">エラーが出たら？</summary>
+            <p data-i18n="faq4.a">
               Slack のレスポンスをそのまま返すため、<code class="inline">res.error</code>
               で原因を確認できます。解決しないときは
               <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> または
@@ -925,8 +1093,8 @@ function dailySummary() {
             </p>
           </details>
           <details>
-            <summary>Slack 公式のライブラリですか？</summary>
-            <p>
+            <summary data-i18n="faq5.q">Slack 公式のライブラリですか？</summary>
+            <p data-i18n="faq5.a">
               いいえ、コミュニティによる非公式 OSS です。Slack は Slack Technologies, LLC
               の商標です。
             </p>
@@ -943,24 +1111,558 @@ function dailySummary() {
         >
         <a href="https://github.com/yhay81/GASlacker#readme">Docs (English)</a>
         <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>
-        <small>MIT License © Yusuke Hayashi — Slack 非公式のコミュニティライブラリです。</small>
+        <small data-i18n="footer.mit"
+          >MIT License © Yusuke Hayashi — Slack 非公式のコミュニティライブラリです。</small
+        >
       </div>
     </footer>
 
     <script>
+      // ---- 多言語辞書(日本語はページ本文が正で、初期化時に DOM から採取する) ----
+      var I18N = {
+        en: {
+          _title: 'GASlacker — Slack from Google Apps Script, made easy',
+          _desc:
+            'No build step — just add one library ID. Post to Slack from your spreadsheet, build bots, and upload files from Google Apps Script in 5 minutes.',
+          skip: 'Skip to content',
+          'nav.start': 'Start in 5 min',
+          'nav.examples': 'What you can do',
+          'nav.faq': 'FAQ',
+          'hero.h2': 'Move your team&rsquo;s conversation,<br />straight from your sheets.',
+          'hero.p':
+            'No build environment needed. Add one library ID and you are ready for morning digests, reply bots, and file uploads.',
+          'cta.start': 'Start in 5 minutes',
+          'cta.github': 'View on GitHub',
+          'proof.1': 'All 168 methods verified live',
+          'proof.2': 'Weekly parity checks',
+          'proof.3': 'MIT License',
+          'start.title': 'Start in 5 minutes',
+          'start.sub': 'If you can use Sheets and the Apps Script editor, just follow along.',
+          'step1.t': 'Add the library',
+          'step1.p':
+            'In the Apps Script editor, press <b>＋</b> next to &ldquo;Libraries&rdquo;, paste this ID, hit &ldquo;Look up&rdquo;, pick the latest version and &ldquo;Add&rdquo;.',
+          'step2.t': 'Get a Slack token',
+          'step2.p': 'This is all the Slack-side setup (one time, about 3 minutes):',
+          'step2.li1':
+            'At <a href="https://api.slack.com/apps" target="_blank" rel="noopener">api.slack.com/apps</a>, <b>Create New App → From scratch</b> (any name, pick your workspace)',
+          'step2.li2':
+            'In <b>OAuth &amp; Permissions</b>, add <code class="inline">chat:write</code> to Bot Token Scopes (add <code class="inline">files:write</code> for file uploads)',
+          'step2.li3': 'At the top of the same page, <b>Install to Workspace</b> → Allow',
+          'step2.li4':
+            'Copy the <b>Bot User OAuth Token</b> (starts with <code class="inline">xoxb-</code>)',
+          'step2.li5':
+            'In Apps Script, save it under <b>Project Settings → Script properties</b> as <code class="inline">SLACK_ACCESS_TOKEN</code>',
+          'step2.li6':
+            'Run <code class="inline">/invite @YourApp</code> in the target channel (skipping this causes <code class="inline">not_in_channel</code>)',
+          'step3.t': 'Post in 3 lines',
+          'step3.p':
+            'Paste into the editor and run <code class="inline">hello</code>. The channel ID is at the bottom of &ldquo;View channel details&rdquo;.',
+          'step3.code':
+            "var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\nvar slack = GASlacker.methods(token);\n\nfunction hello() {\n  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });\n  Logger.log(res.ok ? 'Posted!' : 'Error: ' + res.error);\n}",
+          'step3.note':
+            'If it fails, check <code class="inline">res.error</code> in the log: <code class="inline">not_in_channel</code> → step 2-6, <code class="inline">invalid_auth</code> → check the property name.',
+          'ex.title': 'What you can do',
+          'ex.sub':
+            'Call all 168 Slack Web API methods by their own names. Copy-paste scripts live in <a href="https://github.com/yhay81/GASlacker/tree/master/examples">examples/</a>.',
+          'card1.t': 'Morning digests from Sheets',
+          'card1.p':
+            'A time trigger + <code class="inline">chat.postMessage</code>. Block Kit for pretty formatting.',
+          'card2.t': 'A bot that replies',
+          'card2.p':
+            'Receive the Events API with <code class="inline">doPost</code> and reply in threads.',
+          'card3.t': 'Send files',
+          'card3.p':
+            'Post CSVs and logs with a single <code class="inline">files.uploadV2</code> call.',
+          'card4.t': 'Walk every channel',
+          'card4.p':
+            '<code class="inline">slack.paginate()</code> follows cursor pagination for you.',
+          'card5.t': 'Canvases &amp; Lists',
+          'card5.p':
+            'New APIs such as <code class="inline">canvases.*</code> / <code class="inline">slackLists.*</code> are covered.',
+          'card6.t': 'Call anything',
+          'card6.p':
+            '<code class="inline">slack.call(\'method.name\', params)</code> reaches any API.',
+          'code.example':
+            '<span class="comment">// Example: post sheet contents every morning (set a time trigger)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(\'KPI\');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return \'• \' + r[0] + \': *\' + r[1] + \'*\'; });\n  slack.chat.postMessage({ channel: \'C0123456789\', text: lines.join(\'\\n\') });\n}',
+          'safe.title': 'Built to be trusted',
+          'safe1.t': 'Every method verified',
+          'safe1.p':
+            'All 168 methods are checked against the live Slack API — no dead or discontinued endpoints.',
+          'safe2.t': 'Weekly parity checks',
+          'safe2.p':
+            'CI compares against Slack&rsquo;s official SDK weekly and files an issue when new APIs ship.',
+          'safe3.t': 'Your token stays yours',
+          'safe3.p':
+            'Requests go only to the Slack API. The token lives in your Script properties.',
+          'safe4.t': 'TypeScript ready',
+          'safe4.p': 'Type definitions ship for clasp + TypeScript users — every method autocompletes.',
+          'faq.title': 'FAQ',
+          'faq1.q': 'Is it free?',
+          'faq1.a':
+            'Yes — MIT-licensed OSS, free for commercial use. Apps Script and Slack apps also run within free tiers for typical use.',
+          'faq2.q': 'Do I need Node.js or a build step?',
+          'faq2.a':
+            'No. Everything happens in the browser-based Apps Script editor — just add the library ID.',
+          'faq3.q': 'How is this different from Incoming Webhooks?',
+          'faq3.a':
+            'Webhooks mostly post to one fixed channel. GASlacker calls the Web API, so you also get replies, reactions, files, history, and Canvases.',
+          'faq4.q': 'What if I hit an error?',
+          'faq4.a':
+            'Responses come back as-is, so <code class="inline">res.error</code> tells you why. Still stuck? <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> or <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a> — English or Japanese welcome.',
+          'faq5.q': 'Is this an official Slack library?',
+          'faq5.a':
+            'No — it is an unofficial community OSS. Slack is a trademark of Slack Technologies, LLC.',
+          'footer.mit':
+            'MIT License © Yusuke Hayashi — an unofficial community library, not affiliated with Slack.',
+          'js.copy': 'Copy',
+          'js.copied': 'Copied!',
+          'js.manual': 'Press ⌘C / Ctrl+C',
+        },
+        'zh-CN': {
+          _title: 'GASlacker — 用 Google Apps Script 轻松操作 Slack',
+          _desc:
+            '无需构建环境,只需添加一个库 ID。5 分钟内即可从电子表格向 Slack 发送通知、搭建机器人、上传文件。',
+          skip: '跳到正文',
+          'nav.start': '5 分钟上手',
+          'nav.examples': '能做什么',
+          'nav.faq': '常见问题',
+          'hero.h2': '从熟悉的表格,<br />驱动团队的对话。',
+          'hero.p': '无需构建环境。只要添加一个库 ID,晨报通知、自动回复机器人、文件上传立刻可用。',
+          'cta.start': '5 分钟上手',
+          'cta.github': '在 GitHub 查看',
+          'proof.1': '168 个方法全部实测验证',
+          'proof.2': '每周与官方 SDK 同步检查',
+          'proof.3': 'MIT 许可证',
+          'start.title': '5 分钟上手',
+          'start.sub': '只要会用表格和 Apps Script 编辑器,照着步骤做就能跑起来。',
+          'step1.t': '添加库',
+          'step1.p':
+            '在 Apps Script 编辑器中点击「库」旁的 <b>＋</b>,粘贴此 ID 并「查找」→ 选择最新版本后「添加」。',
+          'step2.t': '准备 Slack 令牌',
+          'step2.p': 'Slack 侧的准备全部在这里(仅首次,约 3 分钟):',
+          'step2.li1':
+            '在 <a href="https://api.slack.com/apps" target="_blank" rel="noopener">api.slack.com/apps</a> 上 <b>Create New App → From scratch</b>(名称随意,选择工作区)',
+          'step2.li2':
+            '在左侧菜单 <b>OAuth &amp; Permissions</b> → Bot Token Scopes 中添加 <code class="inline">chat:write</code>(要传文件的话也加上 <code class="inline">files:write</code>)',
+          'step2.li3': '在同一页面顶部 <b>Install to Workspace</b> → 允许',
+          'step2.li4': '复制显示的 <b>Bot User OAuth Token</b>(以 <code class="inline">xoxb-</code> 开头)',
+          'step2.li5':
+            '在 Apps Script 的<b>项目设置 → 脚本属性</b>中,以属性名 <code class="inline">SLACK_ACCESS_TOKEN</code> 保存',
+          'step2.li6':
+            '在目标频道执行 <code class="inline">/invite @应用名</code> 邀请 bot(忘记会报 <code class="inline">not_in_channel</code>)',
+          'step3.t': '3 行代码发消息',
+          'step3.p':
+            '粘贴到编辑器并运行 <code class="inline">hello</code>。频道 ID 在「查看频道详情」的最底部。',
+          'step3.code':
+            "var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\nvar slack = GASlacker.methods(token);\n\nfunction hello() {\n  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });\n  Logger.log(res.ok ? '发送成功' : '错误: ' + res.error);\n}",
+          'step3.note':
+            '如果失败,查看日志中的 <code class="inline">res.error</code>:<code class="inline">not_in_channel</code> → 步骤 2-6,<code class="inline">invalid_auth</code> → 检查属性名。',
+          'ex.title': '能做什么',
+          'ex.sub':
+            '可以按原名调用 Slack Web API 的 168 个方法。常用示例脚本在 <a href="https://github.com/yhay81/GASlacker/tree/master/examples">examples/</a>。',
+          'card1.t': '每天早晨从表格发通知',
+          'card1.p': '时间触发器 + <code class="inline">chat.postMessage</code>,还可用 Block Kit 排版。',
+          'card2.t': '会回复的机器人',
+          'card2.p': '用 <code class="inline">doPost</code> 接收 Events API,在线程中回复。',
+          'card3.t': '发送文件',
+          'card3.p': 'CSV 和日志用 <code class="inline">files.uploadV2</code> 一个方法搞定。',
+          'card4.t': '汇总所有频道',
+          'card4.p': '<code class="inline">slack.paginate()</code> 自动跟随分页游标。',
+          'card5.t': 'Canvas·列表操作',
+          'card5.p':
+            '<code class="inline">canvases.*</code> / <code class="inline">slackLists.*</code> 等新 API 也已覆盖。',
+          'card6.t': '未封装的也能调',
+          'card6.p': '<code class="inline">slack.call(\'方法名\', params)</code> 可调用任意 API。',
+          'code.example':
+            '<span class="comment">// 示例: 每天早晨把表格内容发到 Slack(设置时间触发器)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(\'KPI\');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return \'• \' + r[0] + \': *\' + r[1] + \'*\'; });\n  slack.chat.postMessage({ channel: \'C0123456789\', text: lines.join(\'\\n\') });\n}',
+          'safe.title': '可以放心使用',
+          'safe1.t': '全方法实测验证',
+          'safe1.p': '168 个方法全部对照真实 Slack API 验证,不含已废弃或不存在的端点。',
+          'safe2.t': '每周同步监控',
+          'safe2.p': 'CI 每周与 Slack 官方 SDK 比对,出现新 API 会自动创建 Issue。',
+          'safe3.t': '令牌只在你手里',
+          'safe3.p': '只与 Slack API 通信。令牌仅保存在你的脚本属性中。',
+          'safe4.t': '支持 TypeScript',
+          'safe4.p': '为 clasp + TypeScript 用户附带类型定义,全部方法可自动补全。',
+          'faq.title': '常见问题',
+          'faq1.q': '免费吗?',
+          'faq1.a': '是的。MIT 许可证的开源软件,可自由商用。Apps Script 与 Slack 应用在一般用途下也在免费额度内。',
+          'faq2.q': '需要 Node.js 或构建环境吗?',
+          'faq2.a': '不需要。全部在浏览器里的 Apps Script 编辑器中完成,添加库 ID 即可。',
+          'faq3.q': '与 Incoming Webhook 有什么区别?',
+          'faq3.a':
+            'Webhook 主要向固定频道发消息。GASlacker 调用 Web API,因此回复、表情、文件、历史记录、Canvas 等都能用。',
+          'faq4.q': '遇到错误怎么办?',
+          'faq4.a':
+            '响应原样返回,查看 <code class="inline">res.error</code> 即可知道原因。仍未解决请到 <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> 或 <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>。',
+          'faq5.q': '这是 Slack 官方库吗?',
+          'faq5.a': '不是,这是社区的非官方开源项目。Slack 是 Slack Technologies, LLC 的商标。',
+          'footer.mit': 'MIT License © Yusuke Hayashi — 非官方社区库,与 Slack 无隶属关系。',
+          'js.copy': '复制',
+          'js.copied': '已复制!',
+          'js.manual': '请按 ⌘C / Ctrl+C',
+        },
+        ko: {
+          _title: 'GASlacker — Google Apps Script에서 Slack을 더 쉽게',
+          _desc:
+            '빌드 불필요, 라이브러리 ID 하나만 추가하면 끝. 스프레드시트에서 Slack 알림, 봇, 파일 업로드를 5분 만에 시작하세요.',
+          skip: '본문으로 이동',
+          'nav.start': '5분 만에 시작',
+          'nav.examples': '할 수 있는 일',
+          'nav.faq': '자주 묻는 질문',
+          'hero.h2': '늘 쓰는 시트에서,<br />팀의 대화를 움직이자.',
+          'hero.p':
+            '빌드 환경은 필요 없습니다. 라이브러리 ID 하나만 추가하면 아침 알림, 답변 봇, 파일 업로드를 바로 시작할 수 있어요.',
+          'cta.start': '5분 만에 시작',
+          'cta.github': 'GitHub에서 보기',
+          'proof.1': '168개 메서드 실측 검증',
+          'proof.2': '매주 공식 SDK와 동기화 확인',
+          'proof.3': 'MIT 라이선스',
+          'start.title': '5분 만에 시작',
+          'start.sub': '스프레드시트와 Apps Script 편집기를 써 봤다면, 순서대로 따라 하면 됩니다.',
+          'step1.t': '라이브러리 추가',
+          'step1.p':
+            'Apps Script 편집기에서 「라이브러리」 옆 <b>＋</b>를 누르고 이 ID를 붙여넣어 「조회」→ 최신 버전을 선택해 「추가」.',
+          'step2.t': 'Slack 토큰 준비',
+          'step2.p': 'Slack 쪽 준비는 이게 전부입니다(최초 1회, 약 3분):',
+          'step2.li1':
+            '<a href="https://api.slack.com/apps" target="_blank" rel="noopener">api.slack.com/apps</a>에서 <b>Create New App → From scratch</b>(이름은 자유, 워크스페이스 선택)',
+          'step2.li2':
+            '왼쪽 메뉴 <b>OAuth &amp; Permissions</b> → Bot Token Scopes에 <code class="inline">chat:write</code> 추가(파일도 보낼 거면 <code class="inline">files:write</code>도)',
+          'step2.li3': '같은 페이지 상단의 <b>Install to Workspace</b> → 허용',
+          'step2.li4':
+            '표시된 <b>Bot User OAuth Token</b>(<code class="inline">xoxb-</code>로 시작)을 복사',
+          'step2.li5':
+            'Apps Script의 <b>프로젝트 설정 → 스크립트 속성</b>에 속성 이름 <code class="inline">SLACK_ACCESS_TOKEN</code>으로 저장',
+          'step2.li6':
+            '게시할 채널에서 <code class="inline">/invite @앱이름</code>으로 봇 초대(잊으면 <code class="inline">not_in_channel</code> 오류)',
+          'step3.t': '3줄로 게시하기',
+          'step3.p':
+            '편집기에 붙여넣고 <code class="inline">hello</code>를 실행하세요. 채널 ID는 「채널 세부정보 보기」 맨 아래에 있습니다.',
+          'step3.code':
+            "var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\nvar slack = GASlacker.methods(token);\n\nfunction hello() {\n  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });\n  Logger.log(res.ok ? '게시 완료' : '오류: ' + res.error);\n}",
+          'step3.note':
+            '실패하면 로그의 <code class="inline">res.error</code>를 확인하세요. <code class="inline">not_in_channel</code>이면 단계 2-6, <code class="inline">invalid_auth</code>면 속성 이름을 확인합니다.',
+          'ex.title': '할 수 있는 일',
+          'ex.sub':
+            'Slack Web API의 168개 메서드를 그대로의 이름으로 호출할 수 있습니다. 자주 쓰는 예시는 <a href="https://github.com/yhay81/GASlacker/tree/master/examples">examples/</a>에 있습니다.',
+          'card1.t': '시트에서 아침 알림',
+          'card1.p':
+            '시간 트리거 + <code class="inline">chat.postMessage</code>. Block Kit으로 보기 좋게.',
+          'card2.t': '답장하는 봇',
+          'card2.p': 'Events API를 <code class="inline">doPost</code>로 받아 스레드에 답장.',
+          'card3.t': '파일 보내기',
+          'card3.p': 'CSV와 로그를 <code class="inline">files.uploadV2</code> 한 번으로 게시.',
+          'card4.t': '모든 채널 집계',
+          'card4.p': '<code class="inline">slack.paginate()</code>가 페이지네이션을 자동으로 따라갑니다.',
+          'card5.t': 'Canvas · 리스트 조작',
+          'card5.p':
+            '<code class="inline">canvases.*</code> / <code class="inline">slackLists.*</code> 같은 새 API도 지원.',
+          'card6.t': '미지원 메서드도 호출',
+          'card6.p': '<code class="inline">slack.call(\'메서드명\', params)</code>로 어떤 API든.',
+          'code.example':
+            '<span class="comment">// 예: 시트 내용을 매일 아침 Slack으로(시간 트리거 설정)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(\'KPI\');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return \'• \' + r[0] + \': *\' + r[1] + \'*\'; });\n  slack.chat.postMessage({ channel: \'C0123456789\', text: lines.join(\'\\n\') });\n}',
+          'safe.title': '안심하고 쓸 수 있어요',
+          'safe1.t': '전 메서드 실측 검증',
+          'safe1.p': '168개 메서드 전부를 실제 Slack API에 대조 완료. 없는·폐지된 API는 없습니다.',
+          'safe2.t': '주간 패리티 모니터링',
+          'safe2.p': '매주 CI가 Slack 공식 SDK와 대조하여, 새 API가 나오면 자동으로 Issue가 생성됩니다.',
+          'safe3.t': '토큰은 내 손안에만',
+          'safe3.p': '통신 대상은 Slack API뿐. 토큰은 내 스크립트 속성에만 저장됩니다.',
+          'safe4.t': 'TypeScript 지원',
+          'safe4.p': 'clasp + TypeScript 사용자를 위한 타입 정의 동봉. 전 메서드 자동 완성.',
+          'faq.title': '자주 묻는 질문',
+          'faq1.q': '무료인가요?',
+          'faq1.a':
+            '네. MIT 라이선스 OSS로 상업적 이용도 자유입니다. Apps Script와 Slack 앱도 일반적인 용도라면 무료 범위에서 동작합니다.',
+          'faq2.q': 'Node.js나 빌드 환경이 필요한가요?',
+          'faq2.a': '아니요. 브라우저의 Apps Script 편집기만으로 끝납니다. 라이브러리 ID만 추가하세요.',
+          'faq3.q': 'Incoming Webhook과 무엇이 다른가요?',
+          'faq3.a':
+            'Webhook은 정해진 채널에 게시하는 것이 중심입니다. GASlacker는 Web API를 호출하므로 답장, 리액션, 파일, 히스토리, Canvas 등 폭넓게 쓸 수 있습니다.',
+          'faq4.q': '오류가 나면?',
+          'faq4.a':
+            '응답을 그대로 돌려주므로 <code class="inline">res.error</code>로 원인을 알 수 있습니다. 해결되지 않으면 <a href="https://github.com/yhay81/GASlacker/issues">Issues</a>나 <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>로 오세요.',
+          'faq5.q': 'Slack 공식 라이브러리인가요?',
+          'faq5.a':
+            '아니요, 커뮤니티의 비공식 OSS입니다. Slack은 Slack Technologies, LLC의 상표입니다.',
+          'footer.mit': 'MIT License © Yusuke Hayashi — Slack과 무관한 비공식 커뮤니티 라이브러리입니다.',
+          'js.copy': '복사',
+          'js.copied': '복사했어요!',
+          'js.manual': '⌘C / Ctrl+C를 누르세요',
+        },
+        es: {
+          _title: 'GASlacker — Slack desde Google Apps Script, sin complicaciones',
+          _desc:
+            'Sin compilación: solo añade un ID de biblioteca. Notificaciones desde tu hoja de cálculo, bots y subida de archivos a Slack en 5 minutos.',
+          skip: 'Ir al contenido',
+          'nav.start': 'Empieza en 5 min',
+          'nav.examples': 'Qué puedes hacer',
+          'nav.faq': 'Preguntas frecuentes',
+          'hero.h2': 'Desde tu hoja de siempre,<br />haz que tu equipo converse.',
+          'hero.p':
+            'No necesitas entorno de compilación. Añade un ID de biblioteca y tendrás avisos matutinos, bots que responden y subida de archivos al instante.',
+          'cta.start': 'Empieza en 5 minutos',
+          'cta.github': 'Ver en GitHub',
+          'proof.1': '168 métodos verificados en vivo',
+          'proof.2': 'Comprobación semanal con el SDK oficial',
+          'proof.3': 'Licencia MIT',
+          'start.title': 'Empieza en 5 minutos',
+          'start.sub':
+            'Si sabes usar Hojas de cálculo y el editor de Apps Script, solo sigue los pasos.',
+          'step1.t': 'Añade la biblioteca',
+          'step1.p':
+            'En el editor de Apps Script, pulsa <b>＋</b> junto a «Bibliotecas», pega este ID, «Buscar» → elige la última versión y «Añadir».',
+          'step2.t': 'Consigue un token de Slack',
+          'step2.p': 'Esta es toda la preparación en Slack (una vez, unos 3 minutos):',
+          'step2.li1':
+            'En <a href="https://api.slack.com/apps" target="_blank" rel="noopener">api.slack.com/apps</a>, <b>Create New App → From scratch</b> (nombre libre, elige tu espacio)',
+          'step2.li2':
+            'En <b>OAuth &amp; Permissions</b>, añade <code class="inline">chat:write</code> a Bot Token Scopes (y <code class="inline">files:write</code> si subirás archivos)',
+          'step2.li3': 'Arriba en la misma página, <b>Install to Workspace</b> → Permitir',
+          'step2.li4':
+            'Copia el <b>Bot User OAuth Token</b> (empieza por <code class="inline">xoxb-</code>)',
+          'step2.li5':
+            'En Apps Script, guárdalo en <b>Configuración del proyecto → Propiedades del script</b> con el nombre <code class="inline">SLACK_ACCESS_TOKEN</code>',
+          'step2.li6':
+            'Ejecuta <code class="inline">/invite @TuApp</code> en el canal de destino (si lo olvidas: <code class="inline">not_in_channel</code>)',
+          'step3.t': 'Publica en 3 líneas',
+          'step3.p':
+            'Pega en el editor y ejecuta <code class="inline">hello</code>. El ID del canal está al final de «Ver detalles del canal».',
+          'step3.code':
+            "var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\nvar slack = GASlacker.methods(token);\n\nfunction hello() {\n  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });\n  Logger.log(res.ok ? '¡Publicado!' : 'Error: ' + res.error);\n}",
+          'step3.note':
+            'Si falla, mira <code class="inline">res.error</code> en el registro: <code class="inline">not_in_channel</code> → paso 2-6, <code class="inline">invalid_auth</code> → revisa el nombre de la propiedad.',
+          'ex.title': 'Qué puedes hacer',
+          'ex.sub':
+            'Llama a los 168 métodos de la Slack Web API con sus propios nombres. Hay scripts listos para copiar en <a href="https://github.com/yhay81/GASlacker/tree/master/examples">examples/</a>.',
+          'card1.t': 'Avisos matutinos desde Hojas',
+          'card1.p':
+            'Activador de tiempo + <code class="inline">chat.postMessage</code>. Block Kit para dar formato.',
+          'card2.t': 'Un bot que responde',
+          'card2.p':
+            'Recibe la Events API con <code class="inline">doPost</code> y responde en hilos.',
+          'card3.t': 'Envía archivos',
+          'card3.p':
+            'CSV y registros con una sola llamada a <code class="inline">files.uploadV2</code>.',
+          'card4.t': 'Recorre todos los canales',
+          'card4.p': '<code class="inline">slack.paginate()</code> sigue la paginación por ti.',
+          'card5.t': 'Canvas y Listas',
+          'card5.p':
+            'APIs nuevas como <code class="inline">canvases.*</code> / <code class="inline">slackLists.*</code> incluidas.',
+          'card6.t': 'Llama a lo que sea',
+          'card6.p':
+            '<code class="inline">slack.call(\'metodo\', params)</code> llega a cualquier API.',
+          'code.example':
+            '<span class="comment">// Ejemplo: publica la hoja cada mañana (con activador de tiempo)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(\'KPI\');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return \'• \' + r[0] + \': *\' + r[1] + \'*\'; });\n  slack.chat.postMessage({ channel: \'C0123456789\', text: lines.join(\'\\n\') });\n}',
+          'safe.title': 'Hecho para confiar',
+          'safe1.t': 'Cada método verificado',
+          'safe1.p':
+            'Los 168 métodos se contrastan con la Slack API real: sin endpoints muertos ni retirados.',
+          'safe2.t': 'Vigilancia semanal',
+          'safe2.p':
+            'La CI compara cada semana con el SDK oficial de Slack y abre un issue si salen APIs nuevas.',
+          'safe3.t': 'Tu token es tuyo',
+          'safe3.p':
+            'Solo se habla con la Slack API. El token vive en tus propiedades del script.',
+          'safe4.t': 'Listo para TypeScript',
+          'safe4.p':
+            'Definiciones de tipos incluidas para clasp + TypeScript: todos los métodos se autocompletan.',
+          'faq.title': 'Preguntas frecuentes',
+          'faq1.q': '¿Es gratis?',
+          'faq1.a':
+            'Sí. OSS con licencia MIT, libre incluso para uso comercial. Apps Script y las apps de Slack también funcionan en sus niveles gratuitos para un uso normal.',
+          'faq2.q': '¿Necesito Node.js o compilar?',
+          'faq2.a':
+            'No. Todo ocurre en el editor de Apps Script del navegador: solo añade el ID de la biblioteca.',
+          'faq3.q': '¿En qué se diferencia de un Incoming Webhook?',
+          'faq3.a':
+            'Los webhooks publican en un canal fijo. GASlacker llama a la Web API, así que también tienes respuestas, reacciones, archivos, historial y Canvas.',
+          'faq4.q': '¿Y si me da un error?',
+          'faq4.a':
+            'Las respuestas llegan tal cual, así que <code class="inline">res.error</code> te dice el porqué. ¿Sigues atascado? <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> o <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>.',
+          'faq5.q': '¿Es una biblioteca oficial de Slack?',
+          'faq5.a':
+            'No: es OSS comunitario no oficial. Slack es una marca de Slack Technologies, LLC.',
+          'footer.mit':
+            'MIT License © Yusuke Hayashi — biblioteca comunitaria no oficial, sin afiliación con Slack.',
+          'js.copy': 'Copiar',
+          'js.copied': '¡Copiado!',
+          'js.manual': 'Pulsa ⌘C / Ctrl+C',
+        },
+        'pt-BR': {
+          _title: 'GASlacker — Slack no Google Apps Script, sem complicação',
+          _desc:
+            'Sem build: basta adicionar um ID de biblioteca. Notificações da sua planilha, bots e upload de arquivos para o Slack em 5 minutos.',
+          skip: 'Pular para o conteúdo',
+          'nav.start': 'Comece em 5 min',
+          'nav.examples': 'O que dá para fazer',
+          'nav.faq': 'Perguntas frequentes',
+          'hero.h2': 'Da sua planilha de sempre,<br />mova a conversa do time.',
+          'hero.p':
+            'Sem ambiente de build. Adicione um ID de biblioteca e já era: resumo matinal, bot que responde e upload de arquivos.',
+          'cta.start': 'Comece em 5 minutos',
+          'cta.github': 'Ver no GitHub',
+          'proof.1': '168 métodos verificados ao vivo',
+          'proof.2': 'Checagem semanal com o SDK oficial',
+          'proof.3': 'Licença MIT',
+          'start.title': 'Comece em 5 minutos',
+          'start.sub': 'Se você usa Planilhas e o editor do Apps Script, é só seguir os passos.',
+          'step1.t': 'Adicione a biblioteca',
+          'step1.p':
+            'No editor do Apps Script, toque em <b>＋</b> ao lado de “Bibliotecas”, cole este ID, “Pesquisar” → escolha a versão mais recente e “Adicionar”.',
+          'step2.t': 'Pegue um token do Slack',
+          'step2.p': 'Toda a preparação no Slack é esta (uma vez só, uns 3 minutos):',
+          'step2.li1':
+            'Em <a href="https://api.slack.com/apps" target="_blank" rel="noopener">api.slack.com/apps</a>, <b>Create New App → From scratch</b> (nome livre, escolha o workspace)',
+          'step2.li2':
+            'Em <b>OAuth &amp; Permissions</b>, adicione <code class="inline">chat:write</code> aos Bot Token Scopes (e <code class="inline">files:write</code> para enviar arquivos)',
+          'step2.li3': 'No topo da mesma página, <b>Install to Workspace</b> → Permitir',
+          'step2.li4':
+            'Copie o <b>Bot User OAuth Token</b> (começa com <code class="inline">xoxb-</code>)',
+          'step2.li5':
+            'No Apps Script, salve em <b>Configurações do projeto → Propriedades do script</b> com o nome <code class="inline">SLACK_ACCESS_TOKEN</code>',
+          'step2.li6':
+            'Rode <code class="inline">/invite @SeuApp</code> no canal de destino (esquecer causa <code class="inline">not_in_channel</code>)',
+          'step3.t': 'Publique em 3 linhas',
+          'step3.p':
+            'Cole no editor e execute <code class="inline">hello</code>. O ID do canal fica no fim de “Ver detalhes do canal”.',
+          'step3.code':
+            "var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\nvar slack = GASlacker.methods(token);\n\nfunction hello() {\n  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });\n  Logger.log(res.ok ? 'Publicado!' : 'Erro: ' + res.error);\n}",
+          'step3.note':
+            'Se falhar, veja <code class="inline">res.error</code> no log: <code class="inline">not_in_channel</code> → passo 2-6, <code class="inline">invalid_auth</code> → confira o nome da propriedade.',
+          'ex.title': 'O que dá para fazer',
+          'ex.sub':
+            'Chame os 168 métodos da Slack Web API pelos próprios nomes. Scripts prontos para copiar em <a href="https://github.com/yhay81/GASlacker/tree/master/examples">examples/</a>.',
+          'card1.t': 'Resumo matinal da planilha',
+          'card1.p':
+            'Acionador de tempo + <code class="inline">chat.postMessage</code>. Block Kit para formatar bonito.',
+          'card2.t': 'Um bot que responde',
+          'card2.p':
+            'Receba a Events API com <code class="inline">doPost</code> e responda nas threads.',
+          'card3.t': 'Envie arquivos',
+          'card3.p':
+            'CSVs e logs com uma única chamada de <code class="inline">files.uploadV2</code>.',
+          'card4.t': 'Percorra todos os canais',
+          'card4.p': '<code class="inline">slack.paginate()</code> segue a paginação por você.',
+          'card5.t': 'Canvas e Listas',
+          'card5.p':
+            'APIs novas como <code class="inline">canvases.*</code> / <code class="inline">slackLists.*</code> incluídas.',
+          'card6.t': 'Chame qualquer coisa',
+          'card6.p':
+            '<code class="inline">slack.call(\'metodo\', params)</code> alcança qualquer API.',
+          'code.example':
+            '<span class="comment">// Exemplo: publique a planilha toda manhã (com acionador de tempo)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(\'KPI\');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return \'• \' + r[0] + \': *\' + r[1] + \'*\'; });\n  slack.chat.postMessage({ channel: \'C0123456789\', text: lines.join(\'\\n\') });\n}',
+          'safe.title': 'Feito para confiar',
+          'safe1.t': 'Cada método verificado',
+          'safe1.p':
+            'Os 168 métodos são checados contra a Slack API real — nada de endpoints mortos ou aposentados.',
+          'safe2.t': 'Vigilância semanal',
+          'safe2.p':
+            'A CI compara toda semana com o SDK oficial do Slack e abre uma issue quando saem APIs novas.',
+          'safe3.t': 'Seu token fica com você',
+          'safe3.p':
+            'A comunicação é só com a Slack API. O token mora nas suas propriedades do script.',
+          'safe4.t': 'Pronto para TypeScript',
+          'safe4.p':
+            'Definições de tipos incluídas para clasp + TypeScript: todos os métodos com autocomplete.',
+          'faq.title': 'Perguntas frequentes',
+          'faq1.q': 'É de graça?',
+          'faq1.a':
+            'Sim. OSS com licença MIT, livre até para uso comercial. Apps Script e apps do Slack também rodam nas cotas gratuitas para uso comum.',
+          'faq2.q': 'Preciso de Node.js ou build?',
+          'faq2.a':
+            'Não. Tudo acontece no editor do Apps Script no navegador — é só adicionar o ID da biblioteca.',
+          'faq3.q': 'Qual a diferença para o Incoming Webhook?',
+          'faq3.a':
+            'Webhooks publicam num canal fixo. O GASlacker chama a Web API, então você também tem respostas, reações, arquivos, histórico e Canvas.',
+          'faq4.q': 'E se der erro?',
+          'faq4.a':
+            'As respostas voltam como são, então <code class="inline">res.error</code> mostra o porquê. Travou? <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> ou <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>.',
+          'faq5.q': 'É uma biblioteca oficial do Slack?',
+          'faq5.a':
+            'Não — é OSS comunitário, não oficial. Slack é marca da Slack Technologies, LLC.',
+          'footer.mit':
+            'MIT License © Yusuke Hayashi — biblioteca comunitária não oficial, sem afiliação com o Slack.',
+          'js.copy': 'Copiar',
+          'js.copied': 'Copiado!',
+          'js.manual': 'Aperte ⌘C / Ctrl+C',
+        },
+      }
+
+      var jaStore = { _title: document.title, _desc: '' }
+      var descMeta = document.querySelector('meta[name="description"]')
+      jaStore._desc = descMeta.getAttribute('content')
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        jaStore[el.dataset.i18n] = el.innerHTML
+      })
+
+      var currentLang = 'ja'
+
+      function t(key) {
+        var dict = currentLang === 'ja' ? jaStore : I18N[currentLang]
+        return (dict && dict[key]) || jaStore[key] || ''
+      }
+
+      function setLang(lang) {
+        if (lang !== 'ja' && !I18N[lang]) return
+        currentLang = lang
+        var dict = lang === 'ja' ? jaStore : I18N[lang]
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          var value = dict[el.dataset.i18n]
+          if (value == null) value = jaStore[el.dataset.i18n]
+          if (value != null) el.innerHTML = value
+        })
+        document.documentElement.lang = lang
+        document.title = dict._title || jaStore._title
+        descMeta.setAttribute('content', dict._desc || jaStore._desc)
+        document.getElementById('lang-select').value = lang
+        try {
+          localStorage.setItem('gaslacker-lang', lang)
+        } catch (e) {}
+      }
+
+      function pickLang() {
+        try {
+          var saved = localStorage.getItem('gaslacker-lang')
+          if (saved && (saved === 'ja' || I18N[saved])) return saved
+        } catch (e) {}
+        var candidates = navigator.languages || [navigator.language || 'ja']
+        for (var i = 0; i < candidates.length; i++) {
+          var l = String(candidates[i]).toLowerCase()
+          if (l.indexOf('ja') === 0) return 'ja'
+          if (l.indexOf('en') === 0) return 'en'
+          if (l.indexOf('zh') === 0) return 'zh-CN'
+          if (l.indexOf('ko') === 0) return 'ko'
+          if (l.indexOf('es') === 0) return 'es'
+          if (l.indexOf('pt') === 0) return 'pt-BR'
+        }
+        return 'ja'
+      }
+
+      document.getElementById('lang-select').addEventListener('change', function (event) {
+        setLang(event.target.value)
+      })
+
+      var initial = pickLang()
+      if (initial !== 'ja') setLang(initial)
+      else document.getElementById('lang-select').value = 'ja'
+
+      // ---- コピーボタン ----
       document.querySelectorAll('.copy').forEach(function (button) {
         button.addEventListener('click', function () {
           var target = document.getElementById(button.dataset.target)
+          var label = button.querySelector('[data-i18n="js.copy"]')
           var reset = function () {
             setTimeout(function () {
-              button.textContent = 'コピー'
+              label.textContent = t('js.copy')
               button.classList.remove('done')
             }, 1600)
           }
 
           navigator.clipboard.writeText(target.innerText).then(
             function () {
-              button.textContent = 'コピーしました'
+              label.textContent = t('js.copied')
               button.classList.add('done')
               reset()
             },
@@ -970,13 +1672,14 @@ function dailySummary() {
               range.selectNodeContents(target)
               selection.removeAllRanges()
               selection.addRange(range)
-              button.textContent = '⌘C / Ctrl+C でコピー'
+              label.textContent = t('js.manual')
               reset()
             },
           )
         })
       })
 
+      // ---- ヒーローのパララックス ----
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         var hero = document.querySelector('.hero')
         var ticking = false

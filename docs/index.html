@@ -755,10 +755,6 @@
           <circle cx="12" cy="12" r="9" />
           <path d="m8 12 3 3 5-6" />
         </g>
-        <g id="i-refresh">
-          <path d="M20 8a8.5 8.5 0 0 0-15-1.5M4 16a8.5 8.5 0 0 0 15 1.5" />
-          <path d="M20 3v5h-5M4 21v-5h5" />
-        </g>
         <g id="i-lock">
           <rect x="5" y="11" width="14" height="9" rx="2.5" />
           <path d="M8 11V8a4 4 0 0 1 8 0v3M12 15v2" />
@@ -830,8 +826,6 @@
           </div>
         </div>
         <p class="proof-line">
-          <span data-i18n="proof.1">168 メソッド実在検証済み</span>
-          <span data-i18n="proof.2">週次で同期チェック</span>
           <span data-i18n="proof.3">MIT ライセンス</span>
         </p>
       </section>
@@ -1029,15 +1023,6 @@ function dailySummary() {
             </div>
             <div class="card">
               <h3>
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-refresh" /></svg>
-                <span data-i18n="safe2.t">週次パリティ監視</span>
-              </h3>
-              <p data-i18n="safe2.p">
-                毎週 CI が Slack 公式 SDK と突き合わせ。新 API が出ると自動で Issue が立ちます。
-              </p>
-            </div>
-            <div class="card">
-              <h3>
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-lock" /></svg>
                 <span data-i18n="safe3.t">トークンは手元だけ</span>
               </h3>
@@ -1133,8 +1118,6 @@ function dailySummary() {
             'No build environment needed. Add one library ID and you are ready for morning digests, reply bots, and file uploads.',
           'cta.start': 'Start in 5 minutes',
           'cta.github': 'View on GitHub',
-          'proof.1': 'All 168 methods verified live',
-          'proof.2': 'Weekly parity checks',
           'proof.3': 'MIT License',
           'start.title': 'Start in 5 minutes',
           'start.sub': 'If you can use Sheets and the Apps Script editor, just follow along.',
@@ -1188,9 +1171,6 @@ function dailySummary() {
           'safe1.t': 'Every method verified',
           'safe1.p':
             'All 168 methods are checked against the live Slack API — no dead or discontinued endpoints.',
-          'safe2.t': 'Weekly parity checks',
-          'safe2.p':
-            'CI compares against Slack&rsquo;s official SDK weekly and files an issue when new APIs ship.',
           'safe3.t': 'Your token stays yours',
           'safe3.p':
             'Requests go only to the Slack API. The token lives in your Script properties.',
@@ -1230,8 +1210,6 @@ function dailySummary() {
           'hero.p': '无需构建环境。只要添加一个库 ID,晨报通知、自动回复机器人、文件上传立刻可用。',
           'cta.start': '5 分钟上手',
           'cta.github': '在 GitHub 查看',
-          'proof.1': '168 个方法全部实测验证',
-          'proof.2': '每周与官方 SDK 同步检查',
           'proof.3': 'MIT 许可证',
           'start.title': '5 分钟上手',
           'start.sub': '只要会用表格和 Apps Script 编辑器,照着步骤做就能跑起来。',
@@ -1278,8 +1256,6 @@ function dailySummary() {
           'safe.title': '可以放心使用',
           'safe1.t': '全方法实测验证',
           'safe1.p': '168 个方法全部对照真实 Slack API 验证,不含已废弃或不存在的端点。',
-          'safe2.t': '每周同步监控',
-          'safe2.p': 'CI 每周与 Slack 官方 SDK 比对,出现新 API 会自动创建 Issue。',
           'safe3.t': '令牌只在你手里',
           'safe3.p': '只与 Slack API 通信。令牌仅保存在你的脚本属性中。',
           'safe4.t': '支持 TypeScript',
@@ -1315,8 +1291,6 @@ function dailySummary() {
             '빌드 환경은 필요 없습니다. 라이브러리 ID 하나만 추가하면 아침 알림, 답변 봇, 파일 업로드를 바로 시작할 수 있어요.',
           'cta.start': '5분 만에 시작',
           'cta.github': 'GitHub에서 보기',
-          'proof.1': '168개 메서드 실측 검증',
-          'proof.2': '매주 공식 SDK와 동기화 확인',
           'proof.3': 'MIT 라이선스',
           'start.title': '5분 만에 시작',
           'start.sub': '스프레드시트와 Apps Script 편집기를 써 봤다면, 순서대로 따라 하면 됩니다.',
@@ -1365,8 +1339,6 @@ function dailySummary() {
           'safe.title': '안심하고 쓸 수 있어요',
           'safe1.t': '전 메서드 실측 검증',
           'safe1.p': '168개 메서드 전부를 실제 Slack API에 대조 완료. 없는·폐지된 API는 없습니다.',
-          'safe2.t': '주간 패리티 모니터링',
-          'safe2.p': '매주 CI가 Slack 공식 SDK와 대조하여, 새 API가 나오면 자동으로 Issue가 생성됩니다.',
           'safe3.t': '토큰은 내 손안에만',
           'safe3.p': '통신 대상은 Slack API뿐. 토큰은 내 스크립트 속성에만 저장됩니다.',
           'safe4.t': 'TypeScript 지원',
@@ -1404,8 +1376,6 @@ function dailySummary() {
             'No necesitas entorno de compilación. Añade un ID de biblioteca y tendrás avisos matutinos, bots que responden y subida de archivos al instante.',
           'cta.start': 'Empieza en 5 minutos',
           'cta.github': 'Ver en GitHub',
-          'proof.1': '168 métodos verificados en vivo',
-          'proof.2': 'Comprobación semanal con el SDK oficial',
           'proof.3': 'Licencia MIT',
           'start.title': 'Empieza en 5 minutos',
           'start.sub':
@@ -1459,9 +1429,6 @@ function dailySummary() {
           'safe1.t': 'Cada método verificado',
           'safe1.p':
             'Los 168 métodos se contrastan con la Slack API real: sin endpoints muertos ni retirados.',
-          'safe2.t': 'Vigilancia semanal',
-          'safe2.p':
-            'La CI compara cada semana con el SDK oficial de Slack y abre un issue si salen APIs nuevas.',
           'safe3.t': 'Tu token es tuyo',
           'safe3.p':
             'Solo se habla con la Slack API. El token vive en tus propiedades del script.',
@@ -1503,8 +1470,6 @@ function dailySummary() {
             'Sem ambiente de build. Adicione um ID de biblioteca e já era: resumo matinal, bot que responde e upload de arquivos.',
           'cta.start': 'Comece em 5 minutos',
           'cta.github': 'Ver no GitHub',
-          'proof.1': '168 métodos verificados ao vivo',
-          'proof.2': 'Checagem semanal com o SDK oficial',
           'proof.3': 'Licença MIT',
           'start.title': 'Comece em 5 minutos',
           'start.sub': 'Se você usa Planilhas e o editor do Apps Script, é só seguir os passos.',
@@ -1557,9 +1522,6 @@ function dailySummary() {
           'safe1.t': 'Cada método verificado',
           'safe1.p':
             'Os 168 métodos são checados contra a Slack API real — nada de endpoints mortos ou aposentados.',
-          'safe2.t': 'Vigilância semanal',
-          'safe2.p':
-            'A CI compara toda semana com o SDK oficial do Slack e abre uma issue quando saem APIs novas.',
           'safe3.t': 'Seu token fica com você',
           'safe3.p':
             'A comunicação é só com a Slack API. O token mora nas suas propriedades do script.',

@@ -17,7 +17,9 @@ Node.js 22.12+ and pnpm are required.
   in `src/methods/BaseAPI.ts`). No new layers, flags, or configuration knobs.
 - Method classes are thin one-line delegations; anything clever belongs in
   `BaseAPI` or `src/util.ts`.
-- Responses are returned as-is; callers check `ok` / `error`.
+- Slack JSON responses are preserved; exhausted HTTP 429 responses and retry sequences that
+  would exceed the five-minute total sleep budget are normalized to a structured
+  `ratelimited` error. Callers check `ok` / `error`.
 - Comments in source code are written in English.
 
 ## Adding a Slack API method

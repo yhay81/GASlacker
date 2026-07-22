@@ -219,6 +219,19 @@ describe('BaseAPI', () => {
     expect(fetch).toHaveBeenCalledTimes(1)
   })
 
+  it.each([NaN, Infinity, -Infinity, -1, 0.5, 11])(
+    'rejects invalid retries limit %s',
+    (retriesLimit) => {
+      expect(() => new TestAPI('token', retriesLimit)).toThrow(
+        'retries_limit must be an integer between 0 and 10',
+      )
+    },
+  )
+
+  it('accepts the maximum retries limit', () => {
+    expect(() => new TestAPI('token', 10)).not.toThrow()
+  })
+
   it('retries on 429 with retry-after header', () => {
     const fetch = vi
       .fn()
@@ -234,6 +247,70 @@ describe('BaseAPI', () => {
     expect(res).toEqual({ ok: true })
     expect(fetch).toHaveBeenCalledTimes(2)
     expect(sleep).toHaveBeenCalledWith(2000)
+  })
+
+  it('allows a Retry-After wait at the Apps Script five-minute limit', () => {
+    const fetch = vi
+      .fn()
+      .mockReturnValueOnce(createResponse(429, '{"ok":false}', { 'retry-after': '300' }))
+      .mockReturnValueOnce(createResponse(200, '{"ok":true}'))
+    const sleep = vi.fn()
+    globalAny.UrlFetchApp = { fetch }
+    globalAny.Utilities = { sleep }
+
+    const api = new TestAPI('token', 1)
+    const res = api.get('conversations.list')
+
+    expect(res).toEqual({ ok: true })
+    expect(fetch).toHaveBeenCalledTimes(2)
+    expect(sleep).toHaveBeenCalledWith(300_000)
+  })
+
+  it('stops before cumulative Retry-After waits exceed five minutes', () => {
+    const fetch = vi.fn().mockReturnValue(
+      createResponse(429, '{"ok":false,"error":"ratelimited","detail":"try later"}', {
+        'retry-after': '300',
+      }),
+    )
+    const sleep = vi.fn()
+    globalAny.UrlFetchApp = { fetch }
+    globalAny.Utilities = { sleep }
+
+    const api = new TestAPI('token', 2)
+    const res = api.get('conversations.list')
+
+    expect(res).toEqual({
+      ok: false,
+      error: 'ratelimited',
+      detail: 'try later',
+      retry_after: 300,
+    })
+    expect(fetch).toHaveBeenCalledTimes(2)
+    expect(sleep).toHaveBeenCalledTimes(1)
+    expect(sleep).toHaveBeenCalledWith(300_000)
+  })
+
+  it('returns the 429 without sleeping past the Apps Script five-minute limit', () => {
+    const fetch = vi.fn().mockReturnValue(
+      createResponse(429, '{"ok":false,"error":"ratelimited","detail":"try later"}', {
+        'retry-after': '301',
+      }),
+    )
+    const sleep = vi.fn()
+    globalAny.UrlFetchApp = { fetch }
+    globalAny.Utilities = { sleep }
+
+    const api = new TestAPI('token', 2)
+    const res = api.get('conversations.list')
+
+    expect(res).toEqual({
+      ok: false,
+      error: 'ratelimited',
+      detail: 'try later',
+      retry_after: 301,
+    })
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(sleep).not.toHaveBeenCalled()
   })
 
   it('retries on 429 without retry-after header using default wait', () => {
@@ -253,21 +330,47 @@ describe('BaseAPI', () => {
     expect(sleep).toHaveBeenCalledWith(1000)
   })
 
-  it('throws after retry limit without waiting past the last attempt', () => {
-    const fetch = vi
-      .fn()
-      .mockReturnValue(createResponse(429, '{"ok":false}', { 'retry-after': '1' }))
+  it('returns a structured rate-limit error without waiting past the last attempt', () => {
+    const fetch = vi.fn().mockReturnValue(
+      createResponse(429, '{"ok":false,"error":"ratelimited","detail":"slow down"}', {
+        'retry-after': '1',
+      }),
+    )
     const sleep = vi.fn()
     globalAny.UrlFetchApp = { fetch }
     globalAny.Utilities = { sleep }
 
     const api = new TestAPI('token', 2)
-    expect(() => api.post('chat.postMessage', { channel: 'C123', text: 'Hi' })).toThrow(
-      'Try limit over',
-    )
+    const res = api.post('chat.postMessage', { channel: 'C123', text: 'Hi' })
+
+    expect(res).toEqual({
+      ok: false,
+      error: 'ratelimited',
+      detail: 'slow down',
+      retry_after: 1,
+    })
     expect(fetch).toHaveBeenCalledTimes(3)
     // One wait between attempts, none after the final one
     expect(sleep).toHaveBeenCalledTimes(2)
+  })
+
+  it('returns a rate-limit error when no Retry-After header or JSON body is available', () => {
+    const fetch = vi.fn().mockReturnValue(createResponse(429, 'not json'))
+    const sleep = vi.fn()
+    globalAny.UrlFetchApp = { fetch }
+    globalAny.Utilities = { sleep }
+
+    const api = new TestAPI('token', 0)
+    const res = api.get('conversations.list')
+
+    expect(res).toEqual({
+      ok: false,
+      error: 'ratelimited',
+      raw: 'not json',
+      retry_after: 1,
+    })
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(sleep).not.toHaveBeenCalled()
   })
 
   it('returns invalid_json on non-JSON response', () => {

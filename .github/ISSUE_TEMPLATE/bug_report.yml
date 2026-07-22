@@ -7,7 +7,7 @@ body:
     attributes:
       label: What happened
       description: Include the method you called and the response (`ok` / `error`). Never paste tokens.
-      placeholder: slack.chat.postMessage({...}) returned { ok: false, error: '...' }
+      placeholder: "slack.chat.postMessage({...}) returned { ok: false, error: '...' }"
     validations:
       required: true
   - type: textarea

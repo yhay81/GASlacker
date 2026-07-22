@@ -14,8 +14,18 @@
   `node scripts/check-parity.mjs | tee parity.txt`, which is `tee`'s exit code, so the
   status was always `0`: no issue was ever filed and the job never failed. It now reads
   `${PIPESTATUS[0]}`.
-- On the final retry attempt, a 429 no longer sleeps for `Retry-After` seconds before
-  throwing `Try limit over` — the wait was pure loss against the GAS execution limit.
+- After the final retry attempt, a 429 now returns
+  `{ ok: false, error: 'ratelimited', retry_after: seconds }` instead of throwing
+  `Try limit over`. It also avoids a final `Retry-After` sleep, which would consume GAS
+  execution time without another request. A `Retry-After` longer than Apps Script's
+  five-minute `Utilities.sleep` limit now returns the same structured response immediately
+  instead of throwing. The five-minute budget now applies to cumulative waits too, preventing
+  repeated long waits from exceeding Apps Script's execution limit. Invalid retry limits are
+  rejected before any request; accepted values are integers from 0 through 10.
+- **`tooling.tokens.rotate` could be blocked by the main client's bearer token.** Rotation
+  authenticates with its `refresh_token`; an `Authorization` header makes Slack validate the
+  unrelated bearer first and answer `invalid_auth`. The tooling client is now token-free,
+  matching `oauth.v2.access` and `openid.connect.token`, with unit and live smoke coverage.
 - Form-encoded requests no longer come back with a `superfluous_charset` warning: Slack
   rejects the `; charset=UTF-8` suffix on form bodies. JSON bodies keep it, because Slack
   warns `missing_charset` without it (both confirmed live), so the two content types
@@ -31,15 +41,17 @@
 
 - **`@google/clasp` is no longer a devDependency.** It is only needed for manual publishing,
   yet it pulled in 248 of the project's 443 packages — an MCP server, an HTTP server and the
-  Google API clients — and was the source of 43 of the 44 open Dependabot alerts. `pnpm run
-  deploy` now fetches the same version on demand with `pnpm dlx @google/clasp@3`, so the
-  command is unchanged. `pnpm dedupe` cleared the one remaining alert (a stale `picomatch`
-  under vitest), leaving 193 packages and no known vulnerabilities. `dist/bundle.js` is
-  byte-identical — GASlacker still ships zero runtime dependencies.
+  Google API clients — and was the source of 43 of the 44 open Dependabot alerts.
+  `pnpm run deploy` now fetches the same version on demand with `pnpm dlx @google/clasp@3`,
+  so the command is unchanged. `pnpm dedupe` cleared the one remaining alert (a stale
+  `picomatch` under vitest), leaving 193 packages and no known vulnerabilities.
+  `dist/bundle.js` is byte-identical — GASlacker still ships zero runtime dependencies.
 - `.gitignore`'s remaining Japanese comment translated (leftover from the 1.3.0
   English unification), `UsersProfile` declared before it is used like every other nested
   class, and the stale CPython reference on `queryEncode` replaced with a description of
   what it does.
+- `.clasp.json` is now ignored as local deployment configuration, with a safe
+  `.clasp.example.json` template. Clones no longer inherit a live Apps Script push target.
 
 ## 1.3.0 (2026-07-22)
 

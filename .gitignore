@@ -12,6 +12,9 @@ node_modules/
 .idea/
 .vscode/
 
+# Local Apps Script deployment target
+.clasp.json
+
 # dist/ is committed on purpose: it is the distributable GAS users paste in, so it is not ignored
 
 coverage/

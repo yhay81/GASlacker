@@ -1,6 +1,8 @@
 import { queryEncode, createPayload, createFormPayload } from '../util'
 
 export const DEFAULT_RETRIES = 3
+const MAX_RETRIES = 10
+const MAX_TOTAL_SLEEP_MILLISECONDS = 300_000
 
 // Arguments passed to a method. Shape follows whatever the Slack API docs specify.
 export type SlackParams = Record<string, any>
@@ -9,6 +11,7 @@ export type SlackParams = Record<string, any>
 export interface SlackResponse {
   ok: boolean
   error?: string
+  retry_after?: number
   [key: string]: any
 }
 
@@ -17,7 +20,15 @@ export default class BaseAPI {
   constructor(
     protected _token: string | null = null,
     private _retries_limit: number = DEFAULT_RETRIES,
-  ) {}
+  ) {
+    if (
+      !Number.isInteger(this._retries_limit) ||
+      this._retries_limit < 0 ||
+      this._retries_limit > MAX_RETRIES
+    ) {
+      throw new Error(`retries_limit must be an integer between 0 and ${MAX_RETRIES}`)
+    }
+  }
 
   protected _get(api: string, args: SlackParams = {}): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
@@ -80,19 +91,39 @@ export default class BaseAPI {
     if (requestParams.muteHttpExceptions == null) {
       requestParams.muteHttpExceptions = true
     }
-    const maxAttempts = Math.max(1, this._retries_limit + 1)
+    const maxAttempts = this._retries_limit + 1
+    let lastRateLimitResponse: any = null
+    let retryAfter = 1
+    let totalSleepMilliseconds = 0
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       const response: any = UrlFetchApp.fetch(url, requestParams)
       // Treat HTTP 429 as a rate limit: wait, then retry
       if (response.getResponseCode() !== 429) return this._parseResponse(response)
+      lastRateLimitResponse = response
+      const retryAfterHeader = this._getHeader(response.getHeaders(), 'retry-after')
+      const parsedRetryAfter = Number(retryAfterHeader)
+      retryAfter =
+        retryAfterHeader != null &&
+        retryAfterHeader.trim() !== '' &&
+        Number.isFinite(parsedRetryAfter) &&
+        parsedRetryAfter >= 0
+          ? parsedRetryAfter
+          : 1
       // No point waiting after the last attempt (GAS caps execution time)
       if (attempt === maxAttempts - 1) break
-      const retryAfterHeader = this._getHeader(response.getHeaders(), 'retry-after')
-      const retryAfter = parseInt(retryAfterHeader ?? '', 10)
-      const waitMs = isNaN(retryAfter) ? 1000 : retryAfter * 1000
-      Utilities.sleep(waitMs)
+      const waitMilliseconds = Math.ceil(retryAfter * 1000)
+      // Apps Script executions are time-limited, and Utilities.sleep rejects a single wait
+      // above five minutes. Keep the whole retry sequence within the same five-minute budget.
+      if (totalSleepMilliseconds + waitMilliseconds > MAX_TOTAL_SLEEP_MILLISECONDS) break
+      Utilities.sleep(waitMilliseconds)
+      totalSleepMilliseconds += waitMilliseconds
     }
-    throw Error('Try limit over')
+    return {
+      ...this._parseResponse(lastRateLimitResponse),
+      ok: false,
+      error: 'ratelimited',
+      retry_after: retryAfter,
+    }
   }
 
   private _getHeader(headers: Record<string, any>, name: string): string | null {

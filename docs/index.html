@@ -11,12 +11,12 @@
     <title>GASlacker — Slack from Google Apps Script, made easy</title>
     <meta
       name="description"
-      content="No build step — just add one library ID. Post to Slack from your spreadsheet, build bots, and upload files from Google Apps Script in 5 minutes."
+      content="No build step — just add one library ID. Post to Slack from your spreadsheet, schedule messages, and upload files from Google Apps Script in 5 minutes."
     />
     <meta property="og:title" content="GASlacker — Slack from Google Apps Script, made easy" />
     <meta
       property="og:description"
-      content="No build step — just add a library ID. Post to Slack from your spreadsheet, build bots, and upload files in 5 minutes."
+      content="No build step — just add a library ID. Post to Slack from your spreadsheet, schedule messages, and upload files in 5 minutes."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://yhay81.github.io/GASlacker/" />
@@ -791,11 +791,9 @@
           <rect x="3" y="5" width="18" height="16" rx="3" />
           <path d="M3 10h18M8 3v4M16 3v4" />
         </g>
-        <g id="i-bot">
-          <rect x="4" y="9" width="16" height="11" rx="3" />
-          <path d="M12 9V5M12 5h.01" />
-          <circle cx="12" cy="4" r="1" />
-          <path d="M9 14h.01M15 14h.01M9.5 17h5" />
+        <g id="i-clock">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3.5 2" />
         </g>
         <g id="i-clip">
           <path
@@ -885,7 +883,7 @@
               </h2>
               <p data-i18n="hero.p">
                 No build environment needed. Add one library ID and you are ready for morning
-                digests, reply bots, and file uploads.
+                digests, scheduled messages, and file uploads.
               </p>
             </div>
             <div class="actions">
@@ -1062,12 +1060,12 @@ function hello() {
                   stroke-linejoin="round"
                   aria-hidden="true"
                 >
-                  <use href="#i-bot" />
+                  <use href="#i-clock" />
                 </svg>
-                <span data-i18n="card2.t">A bot that replies</span>
+                <span data-i18n="card2.t">Scheduled messages</span>
               </h3>
               <p data-i18n="card2.p">
-                Receive the Events API with <code class="inline">doPost</code> and reply in threads.
+                Use <code class="inline">chat.scheduleMessage</code> to post at the right time.
               </p>
             </div>
             <div class="card">
@@ -1160,7 +1158,9 @@ function hello() {
             ><span class="comment">// Example: post sheet contents every morning (set a time trigger)</span>
 function dailySummary() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');
-  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();
+  var lastRow = sheet.getLastRow();
+  if (lastRow &lt; 2) return;
+  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();
   var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });
   slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\n') });
 }</pre>
@@ -1260,8 +1260,8 @@ function dailySummary() {
           <details>
             <summary data-i18n="faq4.q">What if I hit an error?</summary>
             <p data-i18n="faq4.a">
-              Responses come back as-is, so <code class="inline">res.error</code> tells you why.
-              Still stuck? <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> or
+              Errors include a machine-readable <code class="inline">res.error</code> value. Still
+              stuck? <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> or
               <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a> — any
               language welcome.
             </p>
@@ -1296,14 +1296,14 @@ function dailySummary() {
         ja: {
           _title: 'GASlacker — Google Apps Script から Slack をもっと気軽に',
           _desc:
-            'ビルド不要・ライブラリ ID を追加するだけ。スプレッドシートから Slack への通知、ボット、ファイル投稿を 5 分ではじめられる Google Apps Script ライブラリです。',
+            'ビルド不要・ライブラリ ID を追加するだけ。スプレッドシートから Slack への通知、予約投稿、ファイル投稿を 5 分ではじめられる Google Apps Script ライブラリです。',
           skip: '本文へ移動',
           'nav.start': '5 分ではじめる',
           'nav.examples': 'できること',
           'nav.faq': 'よくある質問',
           'hero.h2': 'いつものシートから、<br />チームの会話を動かそう。',
           'hero.p':
-            'ビルド環境は不要。ライブラリ ID をひとつ追加すれば、毎朝の通知も、返信ボットも、ファイル投稿もすぐに始められます。',
+            'ビルド環境は不要。ライブラリ ID をひとつ追加すれば、毎朝の通知も、予約投稿も、ファイル投稿もすぐに始められます。',
           'cta.start': '5 分ではじめる',
           'cta.github': 'GitHub で見る',
           'proof.3': 'MIT ライセンス',
@@ -1339,8 +1339,8 @@ function dailySummary() {
           'card1.t': 'シートから毎朝通知',
           'card1.p':
             '時間トリガー + <code class="inline">chat.postMessage</code>。Block Kit で見やすい整形も。',
-          'card2.t': '返事をするボット',
-          'card2.p': 'Events API を <code class="inline">doPost</code> で受けてスレッドに返信。',
+          'card2.t': 'メッセージを予約投稿',
+          'card2.p': '<code class="inline">chat.scheduleMessage</code> で指定時刻に投稿。',
           'card3.t': 'ファイルを送る',
           'card3.p': 'CSV やログを <code class="inline">files.uploadV2</code> で 1 メソッド投稿。',
           'card4.t': '全チャンネルを集計',
@@ -1353,7 +1353,7 @@ function dailySummary() {
           'card6.p':
             '<code class="inline">slack.call(\'メソッド名\', params)</code> でどの API でも。',
           'code.example':
-            "<span class=\"comment\">// 例: シートの内容を毎朝 Slack へ(時間トリガーに設定)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
+            "<span class=\"comment\">// 例: シートの内容を毎朝 Slack へ(時間トリガーに設定)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': '安心して使えます',
           'safe3.t': 'トークンは手元だけ',
           'safe3.p':
@@ -1372,7 +1372,7 @@ function dailySummary() {
             'Webhook は決まったチャンネルへの投稿が中心です。GASlacker は Web API を呼ぶため、返信、リアクション、ファイル、履歴取得、Canvas など幅広い機能を使えます。',
           'faq4.q': 'エラーが出たら？',
           'faq4.a':
-            'Slack のレスポンスをそのまま返すため、<code class="inline">res.error</code> で原因を確認できます。解決しないときは <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> または <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a> へどうぞ。日本語で大丈夫です。',
+            'エラー時は機械判読可能な <code class="inline">res.error</code> で原因を確認できます。解決しないときは <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> または <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a> へどうぞ。日本語で大丈夫です。',
           'faq5.q': 'Slack 公式のライブラリですか？',
           'faq5.a':
             'いいえ、コミュニティによる非公式 OSS です。Slack は Slack Technologies, LLC の商標です。',
@@ -1384,13 +1384,13 @@ function dailySummary() {
         'zh-CN': {
           _title: 'GASlacker — 用 Google Apps Script 轻松操作 Slack',
           _desc:
-            '无需构建环境,只需添加一个库 ID。5 分钟内即可从电子表格向 Slack 发送通知、搭建机器人、上传文件。',
+            '无需构建环境,只需添加一个库 ID。5 分钟内即可从电子表格向 Slack 发送通知、定时消息、上传文件。',
           skip: '跳到正文',
           'nav.start': '5 分钟上手',
           'nav.examples': '能做什么',
           'nav.faq': '常见问题',
           'hero.h2': '从熟悉的表格,<br />驱动团队的对话。',
-          'hero.p': '无需构建环境。只要添加一个库 ID,晨报通知、自动回复机器人、文件上传立刻可用。',
+          'hero.p': '无需构建环境。只要添加一个库 ID,晨报通知、定时消息、文件上传立刻可用。',
           'cta.start': '5 分钟上手',
           'cta.github': '在 GitHub 查看',
           'proof.3': 'MIT 许可证',
@@ -1425,8 +1425,8 @@ function dailySummary() {
           'card1.t': '每天早晨从表格发通知',
           'card1.p':
             '时间触发器 + <code class="inline">chat.postMessage</code>,还可用 Block Kit 排版。',
-          'card2.t': '会回复的机器人',
-          'card2.p': '用 <code class="inline">doPost</code> 接收 Events API,在线程中回复。',
+          'card2.t': '定时发送消息',
+          'card2.p': '用 <code class="inline">chat.scheduleMessage</code> 在指定时间发送。',
           'card3.t': '发送文件',
           'card3.p': 'CSV 和日志用 <code class="inline">files.uploadV2</code> 一个方法搞定。',
           'card4.t': '汇总所有频道',
@@ -1437,7 +1437,7 @@ function dailySummary() {
           'card6.t': '未封装的也能调',
           'card6.p': '<code class="inline">slack.call(\'方法名\', params)</code> 可调用任意 API。',
           'code.example':
-            "<span class=\"comment\">// 示例: 每天早晨把表格内容发到 Slack(设置时间触发器)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
+            "<span class=\"comment\">// 示例: 每天早晨把表格内容发到 Slack(设置时间触发器)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': '可以放心使用',
           'safe3.t': '令牌只在你手里',
           'safe3.p': '只与 Slack API 通信。令牌仅保存在你的脚本属性中。',
@@ -1454,7 +1454,7 @@ function dailySummary() {
             'Webhook 主要向固定频道发消息。GASlacker 调用 Web API,因此回复、表情、文件、历史记录、Canvas 等都能用。',
           'faq4.q': '遇到错误怎么办?',
           'faq4.a':
-            '响应原样返回,查看 <code class="inline">res.error</code> 即可知道原因。仍未解决请到 <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> 或 <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>。',
+            '错误响应包含机器可读的 <code class="inline">res.error</code>,可用来确认原因。仍未解决请到 <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> 或 <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>。',
           'faq5.q': '这是 Slack 官方库吗?',
           'faq5.a': '不是,这是社区的非官方开源项目。Slack 是 Slack Technologies, LLC 的商标。',
           'footer.mit': 'MIT License © Yusuke Hayashi — 非官方社区库,与 Slack 无隶属关系。',
@@ -1465,14 +1465,14 @@ function dailySummary() {
         es: {
           _title: 'GASlacker — Slack desde Google Apps Script, sin complicaciones',
           _desc:
-            'Sin compilación: solo añade un ID de biblioteca. Notificaciones desde tu hoja de cálculo, bots y subida de archivos a Slack en 5 minutos.',
+            'Sin compilación: solo añade un ID de biblioteca. Notificaciones, mensajes programados y subida de archivos a Slack en 5 minutos.',
           skip: 'Ir al contenido',
           'nav.start': 'Empieza en 5 min',
           'nav.examples': 'Qué puedes hacer',
           'nav.faq': 'Preguntas frecuentes',
           'hero.h2': 'Desde tu hoja de siempre,<br />haz que tu equipo converse.',
           'hero.p':
-            'No necesitas entorno de compilación. Añade un ID de biblioteca y tendrás avisos matutinos, bots que responden y subida de archivos al instante.',
+            'No necesitas entorno de compilación. Añade un ID de biblioteca y tendrás avisos matutinos, mensajes programados y subida de archivos al instante.',
           'cta.start': 'Empieza en 5 minutos',
           'cta.github': 'Ver en GitHub',
           'proof.3': 'Licencia MIT',
@@ -1508,9 +1508,9 @@ function dailySummary() {
           'card1.t': 'Avisos matutinos desde Hojas',
           'card1.p':
             'Activador de tiempo + <code class="inline">chat.postMessage</code>. Block Kit para dar formato.',
-          'card2.t': 'Un bot que responde',
+          'card2.t': 'Mensajes programados',
           'card2.p':
-            'Recibe la Events API con <code class="inline">doPost</code> y responde en hilos.',
+            'Usa <code class="inline">chat.scheduleMessage</code> para publicar a la hora indicada.',
           'card3.t': 'Envía archivos',
           'card3.p':
             'CSV y registros con una sola llamada a <code class="inline">files.uploadV2</code>.',
@@ -1523,7 +1523,7 @@ function dailySummary() {
           'card6.p':
             '<code class="inline">slack.call(\'metodo\', params)</code> llega a cualquier API.',
           'code.example':
-            "<span class=\"comment\">// Ejemplo: publica la hoja cada mañana (con activador de tiempo)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
+            "<span class=\"comment\">// Ejemplo: publica la hoja cada mañana (con activador de tiempo)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': 'Hecho para confiar',
           'safe3.t': 'Tu token es tuyo',
           'safe3.p': 'Solo se habla con la Slack API. El token vive en tus propiedades del script.',
@@ -1542,7 +1542,7 @@ function dailySummary() {
             'Los webhooks publican en un canal fijo. GASlacker llama a la Web API, así que también tienes respuestas, reacciones, archivos, historial y Canvas.',
           'faq4.q': '¿Y si me da un error?',
           'faq4.a':
-            'Las respuestas llegan tal cual, así que <code class="inline">res.error</code> te dice el porqué. ¿Sigues atascado? <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> o <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>.',
+            'Los errores incluyen un valor <code class="inline">res.error</code> legible por máquinas. ¿Sigues atascado? <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> o <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>.',
           'faq5.q': '¿Es una biblioteca oficial de Slack?',
           'faq5.a':
             'No: es OSS comunitario no oficial. Slack es una marca de Slack Technologies, LLC.',
@@ -1555,14 +1555,14 @@ function dailySummary() {
         'pt-BR': {
           _title: 'GASlacker — Slack no Google Apps Script, sem complicação',
           _desc:
-            'Sem build: basta adicionar um ID de biblioteca. Notificações da sua planilha, bots e upload de arquivos para o Slack em 5 minutos.',
+            'Sem build: basta adicionar um ID de biblioteca. Notificações, mensagens agendadas e upload de arquivos para o Slack em 5 minutos.',
           skip: 'Pular para o conteúdo',
           'nav.start': 'Comece em 5 min',
           'nav.examples': 'O que dá para fazer',
           'nav.faq': 'Perguntas frequentes',
           'hero.h2': 'Da sua planilha de sempre,<br />mova a conversa do time.',
           'hero.p':
-            'Sem ambiente de build. Adicione um ID de biblioteca e já era: resumo matinal, bot que responde e upload de arquivos.',
+            'Sem ambiente de build. Adicione um ID de biblioteca e já era: resumo matinal, mensagens agendadas e upload de arquivos.',
           'cta.start': 'Comece em 5 minutos',
           'cta.github': 'Ver no GitHub',
           'proof.3': 'Licença MIT',
@@ -1597,9 +1597,9 @@ function dailySummary() {
           'card1.t': 'Resumo matinal da planilha',
           'card1.p':
             'Acionador de tempo + <code class="inline">chat.postMessage</code>. Block Kit para formatar bonito.',
-          'card2.t': 'Um bot que responde',
+          'card2.t': 'Mensagens agendadas',
           'card2.p':
-            'Receba a Events API com <code class="inline">doPost</code> e responda nas threads.',
+            'Use <code class="inline">chat.scheduleMessage</code> para publicar na hora certa.',
           'card3.t': 'Envie arquivos',
           'card3.p':
             'CSVs e logs com uma única chamada de <code class="inline">files.uploadV2</code>.',
@@ -1612,7 +1612,7 @@ function dailySummary() {
           'card6.p':
             '<code class="inline">slack.call(\'metodo\', params)</code> alcança qualquer API.',
           'code.example':
-            "<span class=\"comment\">// Exemplo: publique a planilha toda manhã (com acionador de tempo)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
+            "<span class=\"comment\">// Exemplo: publique a planilha toda manhã (com acionador de tempo)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': 'Feito para confiar',
           'safe3.t': 'Seu token fica com você',
           'safe3.p':
@@ -1632,7 +1632,7 @@ function dailySummary() {
             'Webhooks publicam num canal fixo. O GASlacker chama a Web API, então você também tem respostas, reações, arquivos, histórico e Canvas.',
           'faq4.q': 'E se der erro?',
           'faq4.a':
-            'As respostas voltam como são, então <code class="inline">res.error</code> mostra o porquê. Travou? <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> ou <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>.',
+            'Os erros incluem um valor <code class="inline">res.error</code> legível por máquina. Travou? <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> ou <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>.',
           'faq5.q': 'É uma biblioteca oficial do Slack?',
           'faq5.a':
             'Não — é OSS comunitário, não oficial. Slack é marca da Slack Technologies, LLC.',
@@ -1645,14 +1645,14 @@ function dailySummary() {
         ko: {
           _title: 'GASlacker — Google Apps Script에서 Slack을 더 쉽게',
           _desc:
-            '빌드 불필요, 라이브러리 ID 하나만 추가하면 끝. 스프레드시트에서 Slack 알림, 봇, 파일 업로드를 5분 만에 시작하세요.',
+            '빌드 불필요, 라이브러리 ID 하나만 추가하면 끝. 스프레드시트에서 Slack 알림, 예약 메시지, 파일 업로드를 5분 만에 시작하세요.',
           skip: '본문으로 이동',
           'nav.start': '5분 만에 시작',
           'nav.examples': '할 수 있는 일',
           'nav.faq': '자주 묻는 질문',
           'hero.h2': '늘 쓰는 시트에서,<br />팀의 대화를 움직이자.',
           'hero.p':
-            '빌드 환경은 필요 없습니다. 라이브러리 ID 하나만 추가하면 아침 알림, 답변 봇, 파일 업로드를 바로 시작할 수 있어요.',
+            '빌드 환경은 필요 없습니다. 라이브러리 ID 하나만 추가하면 아침 알림, 예약 메시지, 파일 업로드를 바로 시작할 수 있어요.',
           'cta.start': '5분 만에 시작',
           'cta.github': 'GitHub에서 보기',
           'proof.3': 'MIT 라이선스',
@@ -1687,8 +1687,8 @@ function dailySummary() {
           'card1.t': '시트에서 아침 알림',
           'card1.p':
             '시간 트리거 + <code class="inline">chat.postMessage</code>. Block Kit으로 보기 좋게.',
-          'card2.t': '답장하는 봇',
-          'card2.p': 'Events API를 <code class="inline">doPost</code>로 받아 스레드에 답장.',
+          'card2.t': '메시지 예약 전송',
+          'card2.p': '<code class="inline">chat.scheduleMessage</code>로 원하는 시간에 게시.',
           'card3.t': '파일 보내기',
           'card3.p': 'CSV와 로그를 <code class="inline">files.uploadV2</code> 한 번으로 게시.',
           'card4.t': '모든 채널 집계',
@@ -1700,7 +1700,7 @@ function dailySummary() {
           'card6.t': '미지원 메서드도 호출',
           'card6.p': '<code class="inline">slack.call(\'메서드명\', params)</code>로 어떤 API든.',
           'code.example':
-            "<span class=\"comment\">// 예: 시트 내용을 매일 아침 Slack으로(시간 트리거 설정)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
+            "<span class=\"comment\">// 예: 시트 내용을 매일 아침 Slack으로(시간 트리거 설정)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': '안심하고 쓸 수 있어요',
           'safe3.t': '토큰은 내 손안에만',
           'safe3.p': '통신 대상은 Slack API뿐. 토큰은 내 스크립트 속성에만 저장됩니다.',
@@ -1718,7 +1718,7 @@ function dailySummary() {
             'Webhook은 정해진 채널에 게시하는 것이 중심입니다. GASlacker는 Web API를 호출하므로 답장, 리액션, 파일, 히스토리, Canvas 등 폭넓게 쓸 수 있습니다.',
           'faq4.q': '오류가 나면?',
           'faq4.a':
-            '응답을 그대로 돌려주므로 <code class="inline">res.error</code>로 원인을 알 수 있습니다. 해결되지 않으면 <a href="https://github.com/yhay81/GASlacker/issues">Issues</a>나 <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>로 오세요.',
+            '오류에는 기계가 읽을 수 있는 <code class="inline">res.error</code> 값이 포함됩니다. 해결되지 않으면 <a href="https://github.com/yhay81/GASlacker/issues">Issues</a>나 <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>로 오세요.',
           'faq5.q': 'Slack 공식 라이브러리인가요?',
           'faq5.a':
             '아니요, 커뮤니티의 비공식 OSS입니다. Slack은 Slack Technologies, LLC의 상표입니다.',

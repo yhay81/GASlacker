@@ -48,9 +48,11 @@ script file and call `methods(token)` directly (no `GASlacker.` prefix).
 
 **C. Push with clasp**
 
-Clone this repository, set your own `scriptId` in `.clasp.json`, then:
+Clone this repository, copy the local clasp configuration template, and replace
+`YOUR_SCRIPT_ID` with your own Apps Script project ID:
 
 ```sh
+cp .clasp.example.json .clasp.json
 pnpm install
 pnpm run deploy   # build + clasp push
 ```
@@ -74,32 +76,32 @@ function hello() {
 }
 ```
 
-Every method returns the Slack API JSON response as-is — check `ok` / `error` yourself.
+Every method returns a response object — check `ok` / `error` yourself. Slack JSON responses
+are preserved; an exhausted HTTP 429 is normalized as described under rate-limit retries below.
 
-### Handling Slack events (Events API)
+### Receiving Slack events safely
 
-```javascript
-function doPost(e) {
-  var body = JSON.parse(e.postData.contents)
-  // Endpoint URL verification during Events API setup
-  if (body.type === 'url_verification') {
-    return ContentService.createTextOutput(body.challenge)
-  }
-  // Verify the request signature yourself in production.
-  var event = body.event
-  if (event && event.type === 'message' && event.text && /hello/.test(event.text)) {
-    slack.chat.postMessage({ channel: event.channel, text: 'Hello World' })
-  }
-  return ContentService.createTextOutput('')
-}
-```
+Do not process Slack Events API requests directly in an Apps Script `doPost` Web App.
+Slack requires the raw request body plus the `X-Slack-Signature` and
+`X-Slack-Request-Timestamp` headers for request verification, but Apps Script does not expose
+incoming request headers to `doPost(e)`. A public handler that acts on the JSON body alone can
+be forged by anyone who learns its URL.
+
+Receive and verify events in an HTTP service that exposes request headers (for example, Cloud
+Run or Cloud Functions), acknowledge them within three seconds, and keep GASlacker for outbound
+Web API calls from trusted Apps Script workflows. See Slack's
+[request verification](https://docs.slack.dev/authentication/verifying-requests-from-slack/)
+and [Events API](https://docs.slack.dev/apis/events-api/) documentation.
 
 ### Calling any method
 
 ```javascript
 slack.call('chat.postMessage', { channel: 'C0123456789', text: 'Hi' })
 slack.call('conversations.list', { limit: 20 }, 'get')
-slack.call('tooling.tokens.rotate', { refresh_token: token }, 'form') // form-encoded methods
+
+// Token rotation is form-encoded and must not carry an Authorization header
+var tokenFree = GASlacker.methods(null)
+tokenFree.call('tooling.tokens.rotate', { refresh_token: refreshToken }, 'form')
 ```
 
 ### Pagination
@@ -142,10 +144,11 @@ slack.oauth.access({
 })
 ```
 
-`oauth.access` and `openid.connect.token` are sent without an `Authorization` header,
-because Slack rejects the code exchange when one is present. `openid.connect.userInfo`
-is the opposite — it needs the user token the exchange returned, so build a client with
-it: `GASlacker.methods(userToken).openid.connect.userInfo()`.
+`oauth.access`, `openid.connect.token`, and `tooling.tokens.rotate` are sent without an
+`Authorization` header because their exchange credentials are in the request body and Slack
+rejects an unrelated bearer token. `openid.connect.userInfo` is the opposite — it needs the
+user token the exchange returned, so build a client with it:
+`GASlacker.methods(userToken).openid.connect.userInfo()`.
 
 ### TypeScript
 
@@ -158,15 +161,18 @@ all 168 methods autocomplete.
 ### Rate-limit retries
 
 `GASlacker.methods(token, retriesLimit)` — `retriesLimit` is the number of extra
-attempts on HTTP 429 (default 3; `0` sends exactly one request). Waits for the
-`Retry-After` header between attempts.
+attempts on HTTP 429 (default 3; integer from 0 to 10; `0` sends exactly one request). Waits
+for the `Retry-After` header between attempts. If every attempt is rate-limited, the method
+returns `{ ok: false, error: 'ratelimited', retry_after: seconds }` without sleeping after the
+final response. Retry waits are capped at five minutes in total, so a longer single wait or
+repeated long waits return that structured response instead of exhausting Apps Script's
+execution time.
 
 ## Examples
 
 Copy-paste-ready scripts live in [`examples/`](examples/):
 
 - [`notify-from-spreadsheet.js`](examples/notify-from-spreadsheet.js) — daily sheet summary with Block Kit
-- [`events-api-bot.js`](examples/events-api-bot.js) — minimal Events API bot that replies in threads
 - [`upload-and-paginate.js`](examples/upload-and-paginate.js) — file upload + walking all channels
 
 ## API coverage

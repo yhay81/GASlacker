@@ -221,7 +221,7 @@ describe('paginate', () => {
 })
 
 // Which clients carry the token, verified against the live API: openid.connect.userInfo
-// answers not_authed without one, while the token exchanges answer invalid_auth with one.
+// requires one, while code exchanges and tooling token rotation reject an unrelated one.
 describe('authorization header', () => {
   const globalAny = globalThis as typeof globalThis & {
     UrlFetchApp?: any
@@ -257,6 +257,10 @@ describe('authorization header', () => {
   it('omits the token on the code exchanges', () => {
     expect(headersOf((m) => m.openid.connect.token({ code: 'c' }))).toEqual({})
     expect(headersOf((m) => m.oauth.access({ code: 'c' }))).toEqual({})
+  })
+
+  it('omits the token on tooling token rotation', () => {
+    expect(headersOf((m) => m.tooling.tokens.rotate({ refresh_token: 'r' }))).toEqual({})
   })
 
   it('sends the token on ordinary methods', () => {

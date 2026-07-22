@@ -93,7 +93,8 @@ export class Methods {
     this.slackLists = new SlackLists(token, retries_limit)
     this.stars = new Stars(token, retries_limit)
     this.team = new Team(token, retries_limit)
-    this.tooling = new Tooling(token, retries_limit)
+    // tooling.tokens.rotate authenticates with refresh_token and rejects a bearer token
+    this.tooling = new Tooling(null, retries_limit)
     this.usergroups = new UserGroups(token, retries_limit)
     this.users = new Users(token, retries_limit)
     this.views = new Views(token, retries_limit)
@@ -120,7 +121,7 @@ declare const global: any
 /**
  * Creates a Slack Web API client.
  * @param {string|null} token Bot/User token (xoxb- / xoxp-). May be null if you only call token-free APIs.
- * @param {number} [retries_limit] Extra retry attempts on HTTP 429 (default 3)
+ * @param {number} [retries_limit] Extra retry attempts on HTTP 429 (integer 0-10; default 3)
  * @return {Object} A client with one property per category (chat, conversations, files, etc.)
  */
 global.methods = (token: string | null, retries_limit: number = DEFAULT_RETRIES) =>

@@ -9,7 +9,9 @@ function dailySummary() {
   var slack = GASlacker.methods(token)
 
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI')
-  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues()
+  var lastRow = sheet.getLastRow()
+  if (lastRow < 2) return // no data rows below the header yet
+  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues()
   var lines = rows.map(function (row) {
     return '• ' + row[0] + ': *' + row[1] + '*'
   })

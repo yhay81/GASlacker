@@ -121,7 +121,15 @@ check(
   `error=${oauth.error} (answered as JSON)`,
 )
 
-// 5. JSON POST route
+// 5. Token-free form POST route (an Authorization header changes this to invalid_auth)
+const tooling = slack.tooling.tokens.rotate({ refresh_token: 'verification-dummy' })
+check(
+  'tooling.tokens.rotate (token-free form POST)',
+  tooling.error === 'invalid_refresh_token',
+  `error=${tooling.error}`,
+)
+
+// 6. JSON POST route
 if (token && channel) {
   const post = slack.chat.postMessage({ channel, text: 'GASlacker verify-live: chat.postMessage' })
   check(
@@ -138,7 +146,7 @@ if (token && channel) {
   )
 }
 
-// 6. File upload (3-step composite)
+// 7. File upload (3-step composite)
 const blob = newBlob('GASlacker verify-live upload\n', 'text/plain', 'gaslacker-verify.txt')
 if (token && channel) {
   const upload = slack.files.uploadV2({

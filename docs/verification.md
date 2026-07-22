@@ -11,7 +11,7 @@ Confirm that GASlacker can reliably call the Slack Web API from Google Apps Scri
 - Waiting and retrying on HTTP 429 rate limits
 - Parsing the response JSON and error representation
 - Calling with argument objects
-- OAuth v2 / Socket Mode / modals / large file uploads
+- OAuth v2 / configuration-token rotation / Socket Mode / modals / large file uploads
 - Usability as a library (`GASlacker.methods`)
 
 ## Prerequisites
@@ -31,7 +31,8 @@ Confirm that GASlacker can reliably call the Slack Web API from Google Apps Scri
 2. `auth.test` succeeds from GAS
 3. `chat.postMessage` succeeds via JSON POST
 4. `slack.call` succeeds via GET
-5. `oauth.v2.access` returns JSON via form POST
+5. `oauth.v2.access` and `tooling.tokens.rotate` return their expected errors via token-free
+   form POST
 6. `files.uploadV2` succeeds via file POST
 
 ## Detailed Verification
@@ -97,15 +98,18 @@ function smoke() {
 - Returns `ok: true`
 - The GET query string is attached correctly
 
-### 5. Form POST check
+### 5. Token-free form POST check
 
-**Purpose**: confirm the form-encoded request path is correct
+**Purpose**: confirm form-encoded exchange requests omit unrelated bearer tokens
 **Steps (example)**
 
 - Run `oauth.v2.access` against a test app
   (even a failure confirms the request path, as long as `ok: false` with `error` comes back)
+- Run `tooling.tokens.rotate` with `refresh_token: 'verification-dummy'` through a client that
+  was constructed with a normal Slack token
   **Expected result**
 - Returns `ok: true`, or `ok: false` with `error`, as JSON
+- `tooling.tokens.rotate` returns `invalid_refresh_token`, not `invalid_auth`
 
 ### 6. File upload check
 
@@ -206,8 +210,13 @@ function openModal(triggerId) {
 **Steps**
 
 - Trigger a 429 with high-frequency calls
+- Unit-test `Retry-After` values at 300 and 301 seconds, repeated 300-second waits, and invalid
+  retry limits
   **Expected result**
 - Retries after waiting for the number of seconds in `retry-after`
+- At 301 seconds, or before cumulative waits exceed five minutes, returns `ratelimited`
+  immediately
+- Rejects retry limits outside the integer range 0 through 10 before making a request
 
 ### 12. Library publication check
 
@@ -308,23 +317,28 @@ pnpm run verify:live                     # with token: real post + real upload
 
 - Run at: 2026-07-22
 - Method: re-ran the `unknown_method` liveness check over all 168 endpoints in the bundle, and
-  probed the OAuth-family endpoints both with and without an `Authorization: Bearer` header
+  probed the OAuth-family and tooling exchange endpoints both with and without an
+  `Authorization: Bearer` header
 - Result: all 168 endpoints are alive (no `unknown_method`). Authorization turns out to be
   required in one direction and rejected in the other:
   `openid.connect.userInfo` answers `not_authed` without a header and `invalid_auth` with one,
   while `openid.connect.token` and `oauth.v2.access` answer `invalid_code` (their normal path)
-  without a header but `invalid_auth` with one.
+  without a header but `invalid_auth` with one. `tooling.tokens.rotate` likewise reaches
+  `invalid_refresh_token` without a header but stops at `invalid_auth` with one.
 - Finding and fix: `openid.*` was constructed with a null token, so `openid.connect.userInfo`
   could never authenticate. `userInfo` now carries the token from `methods()` and the code
   exchange stays token-free; re-running through `dist/bundle.js` against the real API,
   `userInfo` reaches the auth layer (`invalid_auth` on a dummy token) and the two exchanges
   still answer `invalid_code` (v1.4.0)
+- Finding and fix: `tooling.*` inherited the main client's bearer token even though rotation
+  authenticates with `refresh_token`. It is now constructed token-free; re-running through the
+  bundle reaches `invalid_refresh_token` even when the main client has a token (v1.4.0).
 - Also checked: which `Content-Type` each request style should send. A form body with
   `; charset=UTF-8` answers `superfluous_charset`, and a JSON body without it answers
   `missing_charset`, so form POST drops the suffix while JSON POST keeps it. GET carries no
   body and warns either way. Re-running through the bundle, GET / JSON POST / form POST all
   come back with no `warning` field.
-- Notes: `pnpm run verify:live` (no-token) passed all 6 checks afterwards
+- Notes: `pnpm run verify:live` (no-token) passed all 7 checks afterwards
 
 ## Verification Log (toolchain refresh — v1.2.0)
 

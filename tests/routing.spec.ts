@@ -1,3 +1,4 @@
+import { existsSync, readFileSync } from 'node:fs'
 import { Methods } from '../src/index'
 import { describe, expect, it } from 'vitest'
 
@@ -240,5 +241,46 @@ describe('routing', () => {
     const calls = spyAll(methods)
     invoke(methods)
     expect(calls).toEqual([{ type, api: endpoint ?? name }])
+  })
+})
+
+// README and the landing page cite the method count as a literal number;
+// pin every mention (all languages) to the size of the table above.
+describe('docs method count', () => {
+  const MENTIONS: Array<[string, RegExp]> = [
+    ['README.md', /(\d+) Slack Web API methods/g],
+    ['README.md', /all (\d+) methods/g],
+    ['docs/index.html', /(\d+) Slack Web API methods/g],
+    ['docs/index.html', /Web API の (\d+) メソッド/g],
+    ['docs/index.html', /Web API 的 (\d+) 个方法/g],
+    ['docs/index.html', /(\d+) métodos de la Slack Web API/g],
+    ['docs/index.html', /(\d+) métodos da Slack Web API/g],
+    ['docs/index.html', /Web API의 (\d+)개 메서드/g],
+  ]
+
+  it.each(MENTIONS)('%s mentions match the routing table (%s)', (file, pattern) => {
+    const text = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
+    const counts = [...text.matchAll(pattern)].map((match) => Number(match[1]))
+    expect(counts.length).toBeGreaterThan(0)
+    for (const count of counts) expect(count).toBe(CASES.length)
+  })
+})
+
+describe('docs safety regressions', () => {
+  it('guards every landing-page sheet example when there are no data rows', () => {
+    const text = readFileSync(new URL('../docs/index.html', import.meta.url), 'utf8')
+
+    expect(text.match(/if \(lastRow &lt; 2\) return;/g)).toHaveLength(6)
+    expect(text).not.toContain('sheet.getLastRow() - 1')
+  })
+
+  it('does not publish an unverified Apps Script Events API handler', () => {
+    const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8')
+    const landingPage = readFileSync(new URL('../docs/index.html', import.meta.url), 'utf8')
+
+    expect(readme).toContain('X-Slack-Signature')
+    expect(readme).not.toContain('function doPost')
+    expect(landingPage).not.toContain('Events API')
+    expect(existsSync(new URL('../examples/events-api-bot.js', import.meta.url))).toBe(false)
   })
 })

@@ -2,7 +2,7 @@ var global = Function('return this')();
 /**
 	* Creates a Slack Web API client.
 	* @param {string|null} token Bot/User token (xoxb- / xoxp-). May be null if you only call token-free APIs.
-	* @param {number} [retries_limit] Extra retry attempts on HTTP 429 (default 3)
+	* @param {number} [retries_limit] Extra retry attempts on HTTP 429 (integer 0-10; default 3)
 	* @return {Object} A client with one property per category (chat, conversations, files, etc.)
 	*/
 function methods(token, retries_limit = 3) {
@@ -48,10 +48,13 @@ function methods(token, retries_limit = 3) {
 	//#endregion
 	//#region src/methods/BaseAPI.ts
 	var _BaseAPI;
+	var MAX_RETRIES = 10;
+	var MAX_TOTAL_SLEEP_MILLISECONDS = 3e5;
 	var BaseAPI = class BaseAPI {
 		constructor(_token = null, _retries_limit = 3) {
 			this._token = _token;
 			this._retries_limit = _retries_limit;
+			if (!Number.isInteger(this._retries_limit) || this._retries_limit < 0 || this._retries_limit > MAX_RETRIES) throw new Error(`retries_limit must be an integer between 0 and ${MAX_RETRIES}`);
 		}
 		_get(api, args = {}) {
 			const encodedArgs = queryEncode(this._normalizeArgs(args, "params"));
@@ -102,17 +105,29 @@ function methods(token, retries_limit = 3) {
 		_fetch(url, params = {}) {
 			const requestParams = Object.assign({}, params || {});
 			if (requestParams.muteHttpExceptions == null) requestParams.muteHttpExceptions = true;
-			const maxAttempts = Math.max(1, this._retries_limit + 1);
+			const maxAttempts = this._retries_limit + 1;
+			let lastRateLimitResponse = null;
+			let retryAfter = 1;
+			let totalSleepMilliseconds = 0;
 			for (let attempt = 0; attempt < maxAttempts; attempt++) {
 				const response = UrlFetchApp.fetch(url, requestParams);
 				if (response.getResponseCode() !== 429) return this._parseResponse(response);
-				if (attempt === maxAttempts - 1) break;
+				lastRateLimitResponse = response;
 				const retryAfterHeader = this._getHeader(response.getHeaders(), "retry-after");
-				const retryAfter = parseInt(retryAfterHeader !== null && retryAfterHeader !== void 0 ? retryAfterHeader : "", 10);
-				const waitMs = isNaN(retryAfter) ? 1e3 : retryAfter * 1e3;
-				Utilities.sleep(waitMs);
+				const parsedRetryAfter = Number(retryAfterHeader);
+				retryAfter = retryAfterHeader != null && retryAfterHeader.trim() !== "" && Number.isFinite(parsedRetryAfter) && parsedRetryAfter >= 0 ? parsedRetryAfter : 1;
+				if (attempt === maxAttempts - 1) break;
+				const waitMilliseconds = Math.ceil(retryAfter * 1e3);
+				if (totalSleepMilliseconds + waitMilliseconds > MAX_TOTAL_SLEEP_MILLISECONDS) break;
+				Utilities.sleep(waitMilliseconds);
+				totalSleepMilliseconds += waitMilliseconds;
 			}
-			throw Error("Try limit over");
+			return {
+				...this._parseResponse(lastRateLimitResponse),
+				ok: false,
+				error: "ratelimited",
+				retry_after: retryAfter
+			};
 		}
 		_getHeader(headers, name) {
 			if (!headers) return null;
@@ -1029,7 +1044,7 @@ function methods(token, retries_limit = 3) {
 			this.slackLists = new SlackLists(token, retries_limit);
 			this.stars = new Stars(token, retries_limit);
 			this.team = new Team(token, retries_limit);
-			this.tooling = new Tooling(token, retries_limit);
+			this.tooling = new Tooling(null, retries_limit);
 			this.usergroups = new UserGroups(token, retries_limit);
 			this.users = new Users(token, retries_limit);
 			this.views = new Views(token, retries_limit);
@@ -1045,7 +1060,7 @@ function methods(token, retries_limit = 3) {
 	/**
 	* Creates a Slack Web API client.
 	* @param {string|null} token Bot/User token (xoxb- / xoxp-). May be null if you only call token-free APIs.
-	* @param {number} [retries_limit] Extra retry attempts on HTTP 429 (default 3)
+	* @param {number} [retries_limit] Extra retry attempts on HTTP 429 (integer 0-10; default 3)
 	* @return {Object} A client with one property per category (chat, conversations, files, etc.)
 	*/
 	global.methods = (token, retries_limit = 3) => new Methods(token, retries_limit);

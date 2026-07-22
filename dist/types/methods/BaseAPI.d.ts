@@ -3,6 +3,7 @@ export type SlackParams = Record<string, any>;
 export interface SlackResponse {
     ok: boolean;
     error?: string;
+    retry_after?: number;
     [key: string]: any;
 }
 export default class BaseAPI {

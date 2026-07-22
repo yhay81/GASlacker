@@ -239,6 +239,19 @@ function openModal(triggerId) {
 - 結果: Lint/ユーティリティ/メソッド/エントリのテスト成功、`dist/bundle.js` 生成と `global.methods` の存在を確認
 - 補足: GET/JSON POST/フォーム POST/ファイル POST/429 待機・再試行に加え、Authorization ヘッダー無し、Users.setPhoto、ネストクライアントのルーティングをユニットテストで確認（実 API 呼び出しは未実施）
 
+## 自動検証ハーネス
+
+`scripts/verify-live.mjs` が本ドキュメントの最小検証セットを実 Slack API に対して実行する。
+`dist/bundle.js`(配布物そのもの)を GAS グローバルのスタブ付きで評価するため、
+バンドルのスモークテストを兼ねる。
+
+```sh
+pnpm run verify:live                     # トークンなし: 送信経路の生存確認
+SLACK_ACCESS_TOKEN=xoxb-... \
+SLACK_TEST_CHANNEL=C0123456789 \
+pnpm run verify:live                     # トークンあり: 実投稿・実アップロード
+```
+
 ## 検証記録（エンドポイント実在確認）
 
 - 実行日時: 2026-07-22
@@ -249,3 +262,11 @@ function openModal(triggerId) {
   `files.comments.add/edit/delete`、`apps.permissions.*` は削除または合成実装に置き換え。
   新規追加した `canvases.*` / `conversations.canvases.create` / `assistant.threads.*` も実在を確認。
 - 補足: トークンを使う実 API 検証(最小検証セット)は未実施。リリース前に実施を推奨。
+## 検証記録(送信経路の実測 — verify:live)
+
+- 実行日時: 2026-07-22
+- 方法: `pnpm run verify:live`(トークンなしモード)で dist/bundle.js を実 Slack API に対して実行
+- 結果: 6 項目すべて成功 — api.test は ok:true、認証付き GET / call GET / フォーム POST /
+  JSON POST / uploadV2 1 段目はいずれも正しいエラー(not_authed / invalid_code)で応答し、
+  送信経路とレスポンス解釈の生存を確認
+- 補足: 実投稿・実アップロード(トークンありモード)は未実施

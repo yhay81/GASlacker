@@ -25,6 +25,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "verify:live": "node scripts/verify-live.mjs",
     "build": "pnpm run lint && pnpm run typecheck && pnpm run test && rimraf dist && vite build && cpx appsscript.json dist",
     "deploy": "pnpm run build && clasp push",
     "fmt": "oxfmt --write ."

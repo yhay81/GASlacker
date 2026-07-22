@@ -22,13 +22,19 @@ Every endpoint name in this library is verified to exist on the live Slack API
 No build step is required — [`dist/bundle.js`](dist/bundle.js) in this
 repository is the ready-to-use distributable. Choose one:
 
-**A. Use as a library (recommended)**
+**A. Add the published library (easiest)**
 
-1. Create a standalone Apps Script project and paste the contents of
-   [`dist/bundle.js`](dist/bundle.js) into it.
-2. Deploy it as a library and note the script ID.
-3. In the consuming project, add the library with identifier `GASlacker`.
-4. Call `GASlacker.methods(token)`.
+1. In your Apps Script project, open **Libraries** and add this script ID:
+
+   ```
+   101aZZYpRRnr5AGkVIo8t_yo4kHb7xryLfq3w-HVPpQ4fX0Tkxv3UJyzc
+   ```
+
+2. Pick the latest version, keep the identifier `GASlacker`, and call
+   `GASlacker.methods(token)`.
+
+To pin your own copy instead, create a standalone Apps Script project, paste
+[`dist/bundle.js`](dist/bundle.js) into it, and deploy it as your own library.
 
 **B. Paste directly into your project**
 

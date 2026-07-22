@@ -427,6 +427,20 @@
         background: var(--surface);
       }
 
+      /* A small accent bar marks the start of each section heading (not the hero tagline) */
+      #start-title::before,
+      #examples-title::before,
+      #safe-title::before,
+      #faq-title::before {
+        content: '';
+        display: block;
+        width: 32px;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--coral);
+        margin-bottom: 12px;
+      }
+
       h2 {
         margin: 0 0 8px;
         font-size: 1.5rem;

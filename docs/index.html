@@ -1,1554 +1,399 @@
 <!doctype html>
 <html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f8f2e8" />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='8' y='5' width='26' height='48' rx='11' fill='%23d84d39'/%3E%3Crect x='25' y='22' width='31' height='34' rx='11' fill='%23287976' fill-opacity='.95'/%3E%3C/svg%3E"
-    />
-    <title>GASlacker — Google Apps Script から Slack をもっと気軽に</title>
-    <meta
-      name="description"
-      content="ビルド不要・ライブラリ ID を追加するだけ。スプレッドシートから Slack への通知、ボット、ファイル投稿を 5 分ではじめられる Google Apps Script ライブラリです。"
-    />
-    <meta property="og:title" content="GASlacker — Google Apps Script から Slack をもっと気軽に" />
-    <meta
-      property="og:description"
-      content="シートのデータも、毎朝の通知も、3 行のコードから。Slack Web API を Google Apps Script でやさしく使えます。"
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://yhay81.github.io/GASlacker/" />
-    <meta
-      property="og:image"
-      content="https://yhay81.github.io/GASlacker/assets/hero-automation.webp"
-    />
-    <script>
-      document.documentElement.classList.add('js')
-    </script>
-    <style>
-      :root {
-        color-scheme: light;
-        --paper: #f8f2e8;
-        --paper-deep: #efe4d2;
-        --surface: #fffdf8;
-        --ink: #25231f;
-        --muted: #686259;
-        --line: rgba(37, 35, 31, 0.14);
-        --coral: #d84d39;
-        --coral-dark: #a83225;
-        --teal: #287976;
-        --teal-dark: #173f3d;
-        --yellow: #e0a625;
-        --violet: #75608f;
-        --code-bg: #1d211f;
-        --code-fg: #f7f3ea;
-        --radius: 30px;
-        --shadow: 0 24px 70px rgba(76, 57, 37, 0.14);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html {
-        scroll-behavior: smooth;
-      }
-
-      body {
-        margin: 0;
-        background: var(--paper);
-        color: var(--ink);
-        font-family:
-          'Avenir Next', Avenir, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, sans-serif;
-        font-size: 16px;
-        line-height: 1.8;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      img {
-        display: block;
-        max-width: 100%;
-      }
-      a {
-        color: inherit;
-      }
-      button {
-        font: inherit;
-      }
-      code {
-        font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
-      }
-
-      .skip-link {
-        position: fixed;
-        z-index: 100;
-        top: 12px;
-        left: 12px;
-        transform: translateY(-150%);
-        padding: 10px 16px;
-        border-radius: 999px;
-        background: var(--ink);
-        color: #fff;
-      }
-
-      .skip-link:focus {
-        transform: translateY(0);
-      }
-
-      .shell {
-        width: min(1160px, calc(100% - 48px));
-        margin-inline: auto;
-      }
-
-      .site-header {
-        position: absolute;
-        z-index: 10;
-        inset: 0 0 auto;
-        height: 78px;
-      }
-
-      .site-header .shell {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-        border-bottom: 1px solid rgba(37, 35, 31, 0.12);
-      }
-
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        text-decoration: none;
-        font-size: 1.12rem;
-        font-weight: 800;
-        letter-spacing: -0.03em;
-      }
-
-      .brand-mark {
-        position: relative;
-        width: 28px;
-        height: 28px;
-        transform: rotate(-7deg);
-      }
-
-      .brand-mark::before,
-      .brand-mark::after {
-        content: '';
-        position: absolute;
-        border-radius: 8px;
-      }
-
-      .brand-mark::before {
-        inset: 2px 9px 2px 3px;
-        background: var(--coral);
-      }
-
-      .brand-mark::after {
-        inset: 9px 2px 2px 9px;
-        background: var(--teal);
-        mix-blend-mode: multiply;
-      }
-
-      .brand span {
-        color: var(--coral);
-      }
-
-      .site-nav {
-        display: flex;
-        align-items: center;
-        gap: 28px;
-        font-size: 0.88rem;
-        font-weight: 700;
-      }
-
-      .site-nav a {
-        text-decoration: none;
-        transition: color 0.2s ease;
-      }
-
-      .site-nav a:hover {
-        color: var(--coral);
-      }
-
-      .nav-cta {
-        padding: 8px 16px;
-        border: 1px solid var(--ink);
-        border-radius: 999px;
-      }
-
-      .hero {
-        position: relative;
-        min-height: 100svh;
-        overflow: hidden;
-        background: #eadcc6;
-        isolation: isolate;
-      }
-
-      .hero-media {
-        position: absolute;
-        z-index: -2;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center bottom;
-        transform: scale(1.035) translate3d(0, calc(var(--hero-shift, 0) * 1px), 0);
-        transform-origin: center bottom;
-        will-change: transform;
-      }
-
-      .hero::before {
-        content: '';
-        position: absolute;
-        z-index: -1;
-        inset: 0;
-        background:
-          linear-gradient(
-            180deg,
-            rgba(248, 242, 232, 0.99) 0%,
-            rgba(248, 242, 232, 0.91) 19%,
-            rgba(248, 242, 232, 0.2) 52%,
-            rgba(37, 35, 31, 0.1) 100%
-          ),
-          linear-gradient(
-            90deg,
-            rgba(248, 242, 232, 0.25),
-            transparent 35%,
-            rgba(248, 242, 232, 0.16)
-          );
-        pointer-events: none;
-      }
-
-      .hero .shell {
-        min-height: 100svh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        padding-top: clamp(116px, 15vh, 156px);
-        padding-bottom: 64px;
-        text-align: center;
-      }
-
-      .hero-kicker {
-        margin: 0 0 5px;
-        font-size: clamp(0.75rem, 1.2vw, 0.9rem);
-        font-weight: 800;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-
-      .hero h1 {
-        margin: 0;
-        font-size: clamp(4.2rem, 10vw, 8.5rem);
-        line-height: 0.9;
-        letter-spacing: -0.08em;
-        font-weight: 900;
-      }
-
-      .hero h1 span {
-        color: var(--coral);
-      }
-
-      .hero-copy {
-        max-width: 700px;
-        margin-top: 20px;
-      }
-
-      .hero-copy h2 {
-        margin: 0;
-        font-size: clamp(1.35rem, 2.7vw, 2.25rem);
-        line-height: 1.4;
-        letter-spacing: -0.04em;
-      }
-
-      .hero-copy p {
-        max-width: 630px;
-        margin: 13px auto 0;
-        color: #4f4a43;
-        font-size: clamp(0.94rem, 1.3vw, 1.05rem);
-        font-weight: 600;
-      }
-
-      .actions {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 24px;
-      }
-
-      .button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 50px;
-        padding: 11px 22px;
-        border: 1px solid var(--ink);
-        border-radius: 999px;
-        text-decoration: none;
-        font-weight: 800;
-        line-height: 1.2;
-        transition:
-          transform 0.22s ease,
-          background-color 0.22s ease,
-          color 0.22s ease,
-          box-shadow 0.22s ease;
-      }
-
-      .button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 28px rgba(37, 35, 31, 0.15);
-      }
-
-      .button.primary {
-        border-color: var(--coral-dark);
-        background: var(--coral);
-        color: #fff;
-      }
-
-      .button.secondary {
-        background: rgba(255, 253, 248, 0.74);
-      }
-
-      .proof-line {
-        position: absolute;
-        right: 0;
-        bottom: 24px;
-        left: 0;
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin: 0;
-        color: rgba(255, 255, 255, 0.95);
-        font-size: 0.8rem;
-        font-weight: 800;
-        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
-      }
-
-      .proof-line span + span::before {
-        content: '•';
-        margin-right: 12px;
-        color: var(--yellow);
-      }
-
-      .section {
-        padding: clamp(80px, 10vw, 140px) 0;
-      }
-
-      .section.white {
-        background: var(--surface);
-      }
-
-      .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        margin: 0 0 12px;
-        color: var(--coral-dark);
-        font-size: 0.76rem;
-        font-weight: 900;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .eyebrow::before {
-        content: '';
-        width: 28px;
-        height: 3px;
-        border-radius: 99px;
-        background: var(--coral);
-      }
-
-      .section-heading {
-        max-width: 820px;
-        margin: 0;
-        font-size: clamp(2rem, 5vw, 4rem);
-        line-height: 1.22;
-        letter-spacing: -0.055em;
-      }
-
-      .section-lead {
-        max-width: 680px;
-        margin: 18px 0 0;
-        color: var(--muted);
-        font-size: clamp(1rem, 1.8vw, 1.16rem);
-      }
-
-      .story-primary {
-        display: grid;
-        grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.55fr);
-        align-items: center;
-        gap: clamp(32px, 6vw, 80px);
-        margin-top: 64px;
-      }
-
-      .story-secondary {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: clamp(28px, 4vw, 54px);
-        margin-top: clamp(52px, 7vw, 88px);
-      }
-
-      .story-image {
-        overflow: hidden;
-        border-radius: var(--radius);
-        background: var(--paper-deep);
-        box-shadow: var(--shadow);
-      }
-
-      .story-image img {
-        width: 100%;
-        aspect-ratio: 4 / 3;
-        object-fit: cover;
-        transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-
-      .story-item:hover .story-image img {
-        transform: scale(1.035);
-      }
-
-      .story-number {
-        display: block;
-        margin-bottom: 13px;
-        color: var(--coral);
-        font-size: 0.8rem;
-        font-weight: 900;
-        letter-spacing: 0.14em;
-      }
-
-      .story-copy h3 {
-        margin: 0;
-        font-size: clamp(1.35rem, 2.5vw, 2rem);
-        line-height: 1.35;
-        letter-spacing: -0.035em;
-      }
-
-      .story-copy p {
-        margin: 12px 0 0;
-        color: var(--muted);
-      }
-
-      .story-secondary .story-copy {
-        margin-top: 24px;
-      }
-
-      .inline-code {
-        padding: 2px 6px;
-        border: 1px solid var(--line);
-        border-radius: 6px;
-        background: rgba(255, 255, 255, 0.56);
-        color: #403c36;
-        font-size: 0.88em;
-      }
-
-      .start-layout {
-        display: grid;
-        grid-template-columns: minmax(250px, 0.68fr) minmax(0, 1.32fr);
-        gap: clamp(48px, 8vw, 110px);
-        align-items: start;
-      }
-
-      .start-intro {
-        position: sticky;
-        top: 36px;
-      }
-
-      .start-intro .section-heading {
-        font-size: clamp(2rem, 4.4vw, 3.7rem);
-      }
-
-      .time-note {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 25px;
-        color: var(--teal-dark);
-        font-size: 0.88rem;
-        font-weight: 800;
-      }
-
-      .time-note::before {
-        content: '';
-        width: 11px;
-        height: 11px;
-        border: 3px solid var(--teal);
-        border-radius: 50%;
-      }
-
-      .steps {
-        counter-reset: step;
-        min-width: 0;
-      }
-
-      .step {
-        position: relative;
-        min-width: 0;
-        padding: 0 0 52px 58px;
-        counter-increment: step;
-      }
-
-      .step:last-child {
-        padding-bottom: 0;
-      }
-
-      .step::before {
-        content: counter(step, decimal-leading-zero);
-        position: absolute;
-        top: -1px;
-        left: 0;
-        display: grid;
-        place-items: center;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background: var(--coral);
-        color: #fff;
-        font-size: 0.75rem;
-        font-weight: 900;
-      }
-
-      .step:not(:last-child)::after {
-        content: '';
-        position: absolute;
-        top: 44px;
-        bottom: 8px;
-        left: 18px;
-        width: 1px;
-        background: var(--line);
-      }
-
-      .step h3 {
-        margin: 0;
-        font-size: 1.22rem;
-        letter-spacing: -0.02em;
-      }
-
-      .step p,
-      .step ol {
-        color: var(--muted);
-        font-size: 0.94rem;
-      }
-
-      .step p {
-        margin: 8px 0 0;
-      }
-      .step ol {
-        margin: 10px 0 0;
-        padding-left: 1.35em;
-      }
-      .step li + li {
-        margin-top: 6px;
-      }
-      .step a {
-        color: var(--coral-dark);
-        font-weight: 700;
-      }
-
-      .codebox {
-        position: relative;
-        min-width: 0;
-        margin-top: 14px;
-      }
-
-      .codebox pre {
-        margin: 0;
-        overflow-x: auto;
-        padding: 20px 94px 20px 20px;
-        border-radius: 18px;
-        background: var(--code-bg);
-        color: var(--code-fg);
-        font-size: 0.83rem;
-        line-height: 1.72;
-        white-space: pre;
-        box-shadow: 0 18px 38px rgba(29, 33, 31, 0.16);
-      }
-
-      .codebox .comment {
-        color: #9ba7a0;
-      }
-
-      .copy {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        padding: 6px 11px;
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.08);
-        color: var(--code-fg);
-        font-size: 0.73rem;
-        font-weight: 800;
-        cursor: pointer;
-        transition:
-          background 0.2s ease,
-          color 0.2s ease;
-      }
-
-      .copy:hover {
-        background: rgba(255, 255, 255, 0.16);
-      }
-      .copy.done {
-        color: #7ee2a8;
-        border-color: #7ee2a8;
-      }
-
-      .note {
-        color: var(--muted);
-        font-size: 0.82rem !important;
-      }
-
-      .api-section {
-        overflow: hidden;
-        background: var(--teal-dark);
-        color: #fff;
-      }
-
-      .api-layout {
-        display: grid;
-        grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
-        align-items: center;
-        gap: clamp(40px, 7vw, 96px);
-      }
-
-      .api-section .eyebrow {
-        color: #ffb7aa;
-      }
-      .api-section .eyebrow::before {
-        background: #ff7762;
-      }
-      .api-section .section-heading {
-        font-size: clamp(2.2rem, 5.2vw, 4.4rem);
-      }
-
-      .api-section .section-lead {
-        color: rgba(255, 255, 255, 0.72);
-      }
-
-      .api-image {
-        overflow: hidden;
-        border-radius: var(--radius);
-        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.28);
-        transform: rotate(1.4deg);
-        transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-
-      .api-image:hover {
-        transform: rotate(0deg) translateY(-6px);
-      }
-
-      .api-image img {
-        width: 100%;
-        aspect-ratio: 1400 / 857;
-        object-fit: cover;
-      }
-
-      .method-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 7px 14px;
-        margin-top: 28px;
-        color: rgba(255, 255, 255, 0.68);
-        font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
-        font-size: 0.76rem;
-      }
-
-      .method-list span::before {
-        content: '↗';
-        margin-right: 5px;
-        color: #ff8876;
-      }
-
-      .reassurance {
-        display: grid;
-        grid-template-columns: 0.8fr 1.2fr;
-        gap: clamp(48px, 8vw, 110px);
-        align-items: start;
-      }
-
-      .reassurance-list {
-        border-top: 1px solid var(--line);
-      }
-
-      .reassurance-item {
-        display: grid;
-        grid-template-columns: 42px 1fr;
-        gap: 16px;
-        padding: 24px 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .reassurance-icon {
-        display: grid;
-        place-items: center;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background: var(--paper-deep);
-        color: var(--teal);
-        font-weight: 900;
-      }
-
-      .reassurance-item h3 {
-        margin: 0;
-        font-size: 1rem;
-      }
-      .reassurance-item p {
-        margin: 4px 0 0;
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
-
-      .example-code {
-        margin-top: 42px;
-      }
-
-      .faq-layout {
-        display: grid;
-        grid-template-columns: 0.65fr 1.35fr;
-        gap: clamp(48px, 8vw, 110px);
-        align-items: start;
-      }
-
-      .faq-list {
-        border-top: 1px solid var(--line);
-      }
-
-      details {
-        border-bottom: 1px solid var(--line);
-      }
-
-      summary {
-        position: relative;
-        padding: 22px 42px 22px 0;
-        list-style: none;
-        cursor: pointer;
-        font-weight: 800;
-      }
-
-      summary::-webkit-details-marker {
-        display: none;
-      }
-
-      summary::after {
-        content: '+';
-        position: absolute;
-        top: 20px;
-        right: 4px;
-        color: var(--coral);
-        font-size: 1.35rem;
-        line-height: 1;
-        transition: transform 0.2s ease;
-      }
-
-      details[open] summary::after {
-        transform: rotate(45deg);
-      }
-
-      details p,
-      details ol {
-        margin: -4px 0 24px;
-        color: var(--muted);
-        font-size: 0.94rem;
-      }
-
-      details a {
-        color: var(--coral-dark);
-        font-weight: 700;
-      }
-
-      .closing {
-        position: relative;
-        min-height: min(760px, 82svh);
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        background: #e7d7bf;
-      }
-
-      .closing img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-      }
-
-      .closing::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          90deg,
-          rgba(248, 242, 232, 0.98) 0%,
-          rgba(248, 242, 232, 0.94) 29%,
-          rgba(248, 242, 232, 0.35) 54%,
-          transparent 72%
-        );
-      }
-
-      .closing .shell {
-        position: relative;
-        z-index: 1;
-      }
-
-      .closing-copy {
-        max-width: 480px;
-      }
-
-      .closing h2 {
-        margin: 0;
-        font-size: clamp(2.5rem, 5.8vw, 5rem);
-        line-height: 1.08;
-        letter-spacing: -0.065em;
-      }
-
-      .closing p {
-        margin: 20px 0 0;
-        color: var(--muted);
-        font-weight: 600;
-      }
-      .closing .actions {
-        justify-content: flex-start;
-      }
-
-      footer {
-        padding: 42px 0 56px;
-        background: var(--ink);
-        color: rgba(255, 255, 255, 0.72);
-        font-size: 0.83rem;
-      }
-
-      .footer-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 36px;
-      }
-
-      footer .brand {
-        color: #fff;
-      }
-
-      .footer-links {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 12px 22px;
-      }
-
-      .footer-links a {
-        text-decoration: none;
-      }
-      .footer-links a:hover {
-        color: #fff;
-      }
-      footer small {
-        display: block;
-        margin-top: 26px;
-      }
-
-      .js .reveal {
-        opacity: 0;
-        transform: translateY(28px);
-        transition:
-          opacity 0.7s ease,
-          transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-
-      .js .reveal.is-visible {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      .hero-kicker,
-      .hero h1,
-      .hero-copy,
-      .hero .actions {
-        animation: hero-in 0.8s both cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-
-      .hero h1 {
-        animation-delay: 0.08s;
-      }
-      .hero-copy {
-        animation-delay: 0.16s;
-      }
-      .hero .actions {
-        animation-delay: 0.24s;
-      }
-
-      @keyframes hero-in {
-        from {
-          opacity: 0;
-          transform: translateY(22px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @media (max-width: 820px) {
-        .site-nav a:not(.nav-cta) {
-          display: none;
-        }
-        .hero .shell {
-          padding-top: 116px;
-        }
-        .hero h1 {
-          font-size: clamp(4rem, 18vw, 6.3rem);
-        }
-        .hero::before {
-          background: linear-gradient(
-            180deg,
-            rgba(248, 242, 232, 0.99) 0%,
-            rgba(248, 242, 232, 0.94) 32%,
-            rgba(248, 242, 232, 0.25) 67%,
-            rgba(37, 35, 31, 0.12) 100%
-          );
-        }
-        .hero-media {
-          object-position: 38% bottom;
-        }
-        .story-primary,
-        .start-layout,
-        .api-layout,
-        .reassurance,
-        .faq-layout {
-          grid-template-columns: minmax(0, 1fr);
-        }
-        .story-primary {
-          gap: 28px;
-        }
-        .story-secondary {
-          gap: 32px;
-        }
-        .start-intro {
-          position: static;
-          min-width: 0;
-        }
-        .api-layout {
-          gap: 46px;
-        }
-        .api-copy {
-          max-width: 640px;
-        }
-        .faq-layout {
-          gap: 36px;
-        }
-        .closing::after {
-          background: linear-gradient(
-            90deg,
-            rgba(248, 242, 232, 0.96),
-            rgba(248, 242, 232, 0.52) 64%,
-            rgba(248, 242, 232, 0.18)
-          );
-        }
-        .closing img {
-          object-position: 58% center;
-        }
-      }
-
-      @media (max-width: 580px) {
-        .shell {
-          width: min(100% - 32px, 1160px);
-        }
-        .site-header {
-          height: 68px;
-        }
-        .site-header .shell {
-          gap: 12px;
-        }
-        .brand {
-          font-size: 1rem;
-        }
-        .nav-cta {
-          padding: 6px 12px;
-        }
-        .hero {
-          min-height: 780px;
-        }
-        .hero .shell {
-          min-height: 780px;
-          padding-top: 100px;
-        }
-        .hero-copy {
-          margin-top: 16px;
-        }
-        .hero-copy h2 {
-          font-size: 1.25rem;
-        }
-        .hero-copy p {
-          max-width: 390px;
-          font-size: 0.88rem;
-          line-height: 1.65;
-        }
-        .actions {
-          margin-top: 20px;
-        }
-        .button {
-          width: 100%;
-          max-width: 310px;
-          min-height: 48px;
-        }
-        .proof-line {
-          bottom: 16px;
-          gap: 4px;
-          flex-direction: column;
-          align-items: center;
-          font-size: 0.72rem;
-          line-height: 1.4;
-        }
-        .proof-line span + span::before {
-          display: none;
-        }
-        .section {
-          padding: 76px 0;
-        }
-        .story-primary {
-          margin-top: 42px;
-        }
-        .story-secondary {
-          grid-template-columns: 1fr;
-          margin-top: 48px;
-        }
-        .story-image {
-          border-radius: 22px;
-        }
-        .step {
-          padding-left: 50px;
-        }
-        .codebox {
-          margin-left: -50px;
-        }
-        .codebox pre {
-          padding: 54px 16px 18px;
-          border-radius: 15px;
-          font-size: 0.76rem;
-        }
-        .copy {
-          top: 10px;
-          right: 10px;
-        }
-        .api-image {
-          border-radius: 22px;
-          transform: none;
-        }
-        .closing {
-          min-height: 720px;
-          align-items: flex-start;
-          padding-top: 74px;
-        }
-        .closing img {
-          object-position: 60% bottom;
-        }
-        .closing::after {
-          background: linear-gradient(
-            180deg,
-            rgba(248, 242, 232, 0.99) 0%,
-            rgba(248, 242, 232, 0.93) 39%,
-            rgba(248, 242, 232, 0.15) 70%
-          );
-        }
-        .closing-copy {
-          max-width: 100%;
-          text-align: center;
-        }
-        .closing .actions {
-          justify-content: center;
-        }
-        .footer-top {
-          flex-direction: column;
-        }
-        .footer-links {
-          justify-content: flex-start;
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        html {
-          scroll-behavior: auto;
-        }
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-          scroll-behavior: auto !important;
-        }
-        .hero-media {
-          transform: none;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <a class="skip-link" href="#main">本文へ移動</a>
-
-    <header class="site-header">
-      <div class="shell">
-        <a class="brand" href="#top" aria-label="GASlacker トップへ">
-          <span class="brand-mark" aria-hidden="true"></span>
-          <b>GAS<span>lacker</span></b>
-        </a>
-        <nav class="site-nav" aria-label="メインナビゲーション">
-          <a href="#examples">できること</a>
-          <a href="#start">導入手順</a>
-          <a href="#faq">よくある質問</a>
-          <a class="nav-cta" href="https://github.com/yhay81/GASlacker">GitHub</a>
-        </nav>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GASlacker — Google Apps Script から Slack を動かす、いちばん簡単な方法</title>
+<meta name="description" content="ビルド不要・ライブラリ ID を追加するだけ。スプレッドシートから Slack へ通知、ボット作成、ファイル投稿まで 5 分で。168 メソッド全部実在検証済み。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yhay81.github.io/GASlacker/">
+<meta property="og:title" content="GASlacker — Google Apps Script から Slack を動かす、いちばん簡単な方法">
+<meta property="og:description" content="ビルド不要・ライブラリ ID を追加するだけ。通知もボットもファイル投稿も 5 分で。168 メソッド全部実在検証済み。">
+<meta property="og:image" content="https://yhay81.github.io/GASlacker/assets/hero-automation.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf5ec;
+    --bg-alt: #f3ecdf;
+    --card: #fffdf8;
+    --fg: #3b332b;
+    --muted: #857767;
+    --teal: #2f8f88;
+    --teal-strong: #257a74;
+    --coral: #e8756a;
+    --yellow: #eebd5c;
+    --border: #e7dcc9;
+    --code-bg: #322b22;
+    --code-fg: #f4ecdd;
+    --shadow: 0 12px 32px rgba(148, 118, 78, 0.14);
+    --shadow-soft: 0 6px 18px rgba(148, 118, 78, 0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #221c14;
+      --bg-alt: #292217;
+      --card: #2f271c;
+      --fg: #f2ead9;
+      --muted: #b0a28d;
+      --teal: #5cb8af;
+      --teal-strong: #79ccc4;
+      --coral: #ef8d82;
+      --yellow: #e9c576;
+      --border: #40372a;
+      --code-bg: #171310;
+      --code-fg: #ede4d3;
+      --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.35);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: var(--bg); color: var(--fg); line-height: 1.85;
+  }
+  h1, h2, h3, .logo, .btn, .num {
+    font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", -apple-system, sans-serif;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 22px; }
+  .narrow { max-width: 780px; margin: 0 auto; }
+
+  header.site { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; flex-wrap: wrap; gap: 8px; }
+  .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: .02em; }
+  .logo span { color: var(--teal); }
+  nav { display: flex; flex-wrap: wrap; }
+  nav a { color: var(--muted); text-decoration: none; margin-left: 18px; font-size: .92rem; }
+  nav a:hover { color: var(--fg); }
+
+  .hero { padding: 40px 0 56px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center; }
+  .hero h1 { font-size: clamp(1.55rem, 3.6vw, 2.35rem); font-weight: 800; line-height: 1.45; }
+  .hero h1 em { font-style: normal; color: var(--teal); }
+  .hero p.lead { margin-top: 16px; color: var(--muted); font-size: 1.02rem; }
+  .hero-img img { width: 100%; height: auto; border-radius: 22px; box-shadow: var(--shadow); }
+  .cta { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 13px 26px; border-radius: 999px; font-weight: 800;
+    text-decoration: none; font-size: .98rem; border: 2px solid transparent;
+  }
+  .btn.primary { background: var(--teal); color: #fffdf8; box-shadow: var(--shadow-soft); }
+  .btn.primary:hover { background: var(--teal-strong); }
+  .btn.ghost { color: var(--fg); background: var(--card); border-color: var(--border); }
+  .badges { margin-top: 22px; display: flex; gap: 8px; flex-wrap: wrap; font-size: .84rem; color: var(--muted); }
+  .badges span { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 4px 13px; }
+
+  section { padding: 56px 0; }
+  section.alt { background: var(--bg-alt); }
+  h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+  .sub { color: var(--muted); margin-bottom: 28px; }
+
+  .step { display: flex; gap: 18px; margin: 28px 0; }
+  .step > div:last-child { min-width: 0; flex: 1; }
+  .step .num {
+    flex: none; width: 38px; height: 38px; border-radius: 50%;
+    background: var(--coral); color: #fffdf8;
+    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.05rem;
+    box-shadow: var(--shadow-soft);
+  }
+  .step h3 { font-size: 1.1rem; margin-bottom: 6px; }
+  .step p { color: var(--muted); font-size: .95rem; }
+  .step ol { margin: 8px 0 0 1.2em; color: var(--muted); font-size: .95rem; }
+  .step li { margin: 5px 0; }
+  code.inline {
+    background: var(--card); border: 1px solid var(--border); border-radius: 7px;
+    padding: 1px 7px; font-size: .88em;
+  }
+
+  .codebox { position: relative; margin-top: 12px; }
+  .codebox pre {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: 16px; padding: 18px 96px 18px 20px; overflow-x: auto;
+    font-size: .86rem; line-height: 1.7;
+    font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    box-shadow: var(--shadow-soft);
+  }
+  .codebox .copy {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(255, 253, 248, .12); color: var(--code-fg);
+    border: 1px solid rgba(255, 253, 248, .3); border-radius: 999px;
+    padding: 5px 14px; font-size: .8rem; cursor: pointer; font-weight: 700;
+  }
+  .codebox .copy:hover { background: rgba(255, 253, 248, .22); }
+  .codebox .copy.done { color: #8fe0b2; border-color: #8fe0b2; }
+  pre .c { color: #a99a83; }
+
+  .done-banner { display: flex; gap: 22px; align-items: center; margin-top: 40px; background: var(--card); border: 1px solid var(--border); border-radius: 22px; padding: 22px; box-shadow: var(--shadow-soft); }
+  .done-banner img { width: 300px; max-width: 42%; height: auto; border-radius: 16px; flex: none; }
+  .done-banner h3 { font-size: 1.15rem; margin-bottom: 6px; }
+  .done-banner p { color: var(--muted); font-size: .95rem; }
+
+  .usecases { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; margin-top: 10px; }
+  .ucard {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+    overflow: hidden; box-shadow: var(--shadow-soft);
+  }
+  .ucard img { width: 100%; height: auto; display: block; }
+  .ucard .body { padding: 16px 18px 18px; }
+  .ucard h3 { font-size: 1.02rem; margin-bottom: 5px; }
+  .ucard p { color: var(--muted); font-size: .9rem; }
+
+  .minis { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 18px; }
+  .mini { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 15px 17px; }
+  .mini h3 { font-size: .98rem; margin-bottom: 4px; }
+  .mini p { color: var(--muted); font-size: .88rem; }
+
+  .toolbox { display: grid; grid-template-columns: .95fr 1.05fr; gap: 40px; align-items: center; }
+  .toolbox img { width: 100%; height: auto; border-radius: 22px; box-shadow: var(--shadow); }
+  .checks { list-style: none; margin-top: 14px; }
+  .checks li { padding-left: 30px; position: relative; margin: 10px 0; color: var(--muted); font-size: .96rem; }
+  .checks li::before { content: '✓'; position: absolute; left: 2px; top: 0; color: var(--teal); font-weight: 800; }
+  .checks li b { color: var(--fg); }
+
+  details { margin: 10px 0; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 15px 20px; }
+  summary { cursor: pointer; font-weight: 700; }
+  details p { color: var(--muted); font-size: .95rem; margin-top: 8px; }
+  a { color: var(--teal); }
+
+  footer { padding: 36px 0 56px; color: var(--muted); font-size: .9rem; background: var(--bg-alt); }
+  footer a { text-decoration: none; margin-right: 16px; }
+  .note { font-size: .85rem; color: var(--muted); margin-top: 8px; }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; gap: 26px; padding: 24px 0 44px; }
+    .toolbox { grid-template-columns: 1fr; gap: 24px; }
+    .done-banner { flex-direction: column; align-items: stretch; }
+    .done-banner img { max-width: 100%; width: 100%; }
+    section { padding: 44px 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <div class="logo">GAS<span>lacker</span></div>
+    <nav>
+      <a href="#start">5 分ではじめる</a>
+      <a href="#examples">できること</a>
+      <a href="https://github.com/yhay81/GASlacker">GitHub</a>
+      <a href="https://github.com/yhay81/GASlacker#readme">English</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1>Google Apps Script から<br>Slack を動かす、<br><em>いちばん簡単な方法。</em></h1>
+      <p class="lead">
+        ビルド環境は不要。Apps Script にライブラリ ID をひとつ追加するだけで、
+        スプレッドシートからの通知も、ボットも、ファイル投稿も動きます。
+        プログラミングが本業でなくても大丈夫です。
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="#start">5 分ではじめる</a>
+        <a class="btn ghost" href="https://github.com/yhay81/GASlacker">GitHub で見る</a>
       </div>
-    </header>
+      <div class="badges">
+        <span>✅ 168 メソッド実在検証済み</span>
+        <span>🔄 週次で公式 SDK と同期</span>
+        <span>🆓 MIT</span>
+      </div>
+    </div>
+    <div class="hero-img">
+      <img src="assets/hero-automation.webp" width="1600" height="835" fetchpriority="high"
+           alt="スプレッドシートのデータがコードを通って Slack のメッセージになる自動化のイラスト">
+    </div>
+  </div>
+</div>
 
-    <main id="main">
-      <section class="hero" id="top" aria-labelledby="hero-title">
-        <img
-          class="hero-media"
-          src="assets/hero-automation.webp"
-          width="1600"
-          height="835"
-          alt="スプレッドシートの情報がスクリプトを通ってチームの会話へ届く様子"
-          fetchpriority="high"
-        />
-        <div class="shell">
-          <p class="hero-kicker">Google Apps Script × Slack</p>
-          <h1 id="hero-title">GAS<span>lacker</span></h1>
-          <div class="hero-copy">
-            <h2>いつものシートから、<br />チームの会話を動かそう。</h2>
-            <p>
-              ビルド環境は不要。ライブラリ ID
-              をひとつ追加すれば、毎朝の通知も、返信ボットも、ファイル投稿もすぐに始められます。
-            </p>
-          </div>
-          <div class="actions">
-            <a class="button primary" href="#start">5 分ではじめる</a>
-            <a class="button secondary" href="https://github.com/yhay81/GASlacker">GitHub で見る</a>
-          </div>
+<section id="start" class="alt">
+  <div class="wrap narrow">
+    <h2>5 分ではじめる</h2>
+    <p class="sub">スプレッドシートや GAS エディタが使えれば、ここから先は手順どおりで動きます。</p>
+
+    <div class="step">
+      <div class="num">1</div>
+      <div>
+        <h3>ライブラリを追加する</h3>
+        <p>Apps Script エディタの「ライブラリ」の <b>＋</b> を押して、この ID を貼り付けて「検索」→ 最新バージョンを選んで「追加」。</p>
+        <div class="codebox">
+          <pre id="script-id">101aZZYpRRnr5AGkVIo8t_yo4kHb7xryLfq3w-HVPpQ4fX0Tkxv3UJyzc</pre>
+          <button class="copy" data-target="script-id">コピー</button>
         </div>
-        <p class="proof-line" aria-label="プロジェクトの特徴">
-          <span>168 メソッド実在検証済み</span>
-          <span>週次で同期チェック</span>
-          <span>MIT ライセンス</span>
-        </p>
-      </section>
+      </div>
+    </div>
 
-      <section class="section white" id="examples" aria-labelledby="examples-title">
-        <div class="shell">
-          <div class="reveal">
-            <p class="eyebrow">Everyday automation</p>
-            <h2 class="section-heading" id="examples-title">
-              小さな自動化が、<br />毎日の仕事を軽くする。
-            </h2>
-            <p class="section-lead">
-              Slack Web API
-              をそのままの名前で呼べます。プログラミングが本業でなくても、まずは身近な作業から。
-            </p>
-          </div>
+    <div class="step">
+      <div class="num">2</div>
+      <div>
+        <h3>Slack のトークンを用意する</h3>
+        <p>Slack 側の準備はここが全部です(初回だけ・約 3 分):</p>
+        <ol>
+          <li><a href="https://api.slack.com/apps" target="_blank" rel="noopener">api.slack.com/apps</a> で <b>Create New App → From scratch</b>(名前は自由、ワークスペースを選択)</li>
+          <li>左メニュー <b>OAuth &amp; Permissions</b> → Bot Token Scopes に <code class="inline">chat:write</code> を追加(ファイルも送るなら <code class="inline">files:write</code> も)</li>
+          <li>同じページ上部の <b>Install to Workspace</b> → 許可</li>
+          <li>表示された <b>Bot User OAuth Token</b>(<code class="inline">xoxb-</code> で始まる)をコピー</li>
+          <li>Apps Script の <b>プロジェクトの設定 → スクリプト プロパティ</b> に、プロパティ名 <code class="inline">SLACK_ACCESS_TOKEN</code> として保存</li>
+          <li>投稿したいチャンネルで <code class="inline">/invite @アプリ名</code> して bot を招待(忘れると <code class="inline">not_in_channel</code> エラーになります)</li>
+        </ol>
+      </div>
+    </div>
 
-          <article class="story-item story-primary reveal">
-            <div class="story-image">
-              <img
-                src="assets/usecase-morning-update.webp"
-                width="1120"
-                height="840"
-                alt="表計算のデータから朝のチーム通知が作られる様子"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <div class="story-copy">
-              <span class="story-number">01 / MORNING UPDATE</span>
-              <h3>シートの数字を、毎朝ちょうどよく届ける。</h3>
-              <p>
-                時間トリガーと
-                <code class="inline-code">chat.postMessage</code> を組み合わせれば、KPI
-                や当番表の共有を自動化できます。
-              </p>
-            </div>
-          </article>
-
-          <div class="story-secondary">
-            <article class="story-item reveal">
-              <div class="story-image">
-                <img
-                  src="assets/usecase-reply-bot.webp"
-                  width="1120"
-                  height="840"
-                  alt="小さなボットが会話のスレッドへ返信する様子"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div class="story-copy">
-                <span class="story-number">02 / HELPFUL BOT</span>
-                <h3>問い合わせに、そっと返事をするボット。</h3>
-                <p>
-                  Events API を
-                  <code class="inline-code">doPost</code>
-                  で受けて、質問に応じた案内を同じスレッドへ返せます。
-                </p>
-              </div>
-            </article>
-
-            <article class="story-item reveal">
-              <div class="story-image">
-                <img
-                  src="assets/usecase-file-upload.webp"
-                  width="1120"
-                  height="840"
-                  alt="レポートファイルがチームの会話へ送られる様子"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div class="story-copy">
-                <span class="story-number">03 / FILE DELIVERY</span>
-                <h3>できたレポートを、そのままチームへ。</h3>
-                <p>
-                  CSV やログは
-                  <code class="inline-code">files.uploadV2</code>
-                  で投稿。複雑なアップロード手順はライブラリが引き受けます。
-                </p>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="start" aria-labelledby="start-title">
-        <div class="shell start-layout">
-          <div class="start-intro reveal">
-            <p class="eyebrow">Quick start</p>
-            <h2 class="section-heading" id="start-title">5 分で、<br />最初の投稿まで。</h2>
-            <p class="section-lead">
-              スプレッドシートや Apps Script
-              エディタを使ったことがあれば、あとは手順どおりで動きます。
-            </p>
-            <p class="time-note">ブラウザだけで完結</p>
-          </div>
-
-          <div class="steps">
-            <article class="step reveal">
-              <h3>ライブラリを追加する</h3>
-              <p>
-                Apps Script エディタの「ライブラリ」の <b>＋</b> を押し、この ID
-                を貼り付けて「検索」→ 最新バージョンを選んで「追加」。
-              </p>
-              <div class="codebox">
-                <pre id="script-id">101aZZYpRRnr5AGkVIo8t_yo4kHb7xryLfq3w-HVPpQ4fX0Tkxv3UJyzc</pre>
-                <button class="copy" type="button" data-target="script-id">コピー</button>
-              </div>
-            </article>
-
-            <article class="step reveal">
-              <h3>Slack のトークンを用意する</h3>
-              <p>Slack 側の準備は初回だけ、約 3 分です。</p>
-              <ol>
-                <li>
-                  <a href="https://api.slack.com/apps" target="_blank" rel="noopener"
-                    >Slack API のアプリ管理画面</a
-                  >で <b>Create New App → From scratch</b>
-                </li>
-                <li>
-                  <b>OAuth &amp; Permissions</b> で
-                  <code class="inline-code">chat:write</code> を追加
-                </li>
-                <li><b>Install to Workspace</b> からアプリをインストール</li>
-                <li>
-                  <code class="inline-code">xoxb-</code> で始まる Bot User OAuth Token をコピー
-                </li>
-                <li>
-                  スクリプト プロパティへ
-                  <code class="inline-code">SLACK_ACCESS_TOKEN</code> の名前で保存
-                </li>
-                <li>投稿先で <code class="inline-code">/invite @アプリ名</code> を実行</li>
-              </ol>
-            </article>
-
-            <article class="step reveal">
-              <h3>3 行で投稿する</h3>
-              <p>
-                エディタへ貼り付けて <code class="inline-code">hello</code> を実行。チャンネル ID
-                はチャンネル詳細の最下部で確認できます。
-              </p>
-              <div class="codebox">
-                <pre id="code-hello">
-var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
+    <div class="step">
+      <div class="num">3</div>
+      <div>
+        <h3>3 行で投稿する</h3>
+        <p>エディタに貼り付けて <code class="inline">hello</code> を実行。チャンネル ID はチャンネル名を右クリック →「チャンネル詳細を表示」の最下部にあります。</p>
+        <div class="codebox">
+          <pre id="code-hello">var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
 var slack = GASlacker.methods(token);
 
 function hello() {
   var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });
   Logger.log(res.ok ? '投稿できました' : 'エラー: ' + res.error);
 }</pre>
-                <button class="copy" type="button" data-target="code-hello">コピー</button>
-              </div>
-              <p class="note">
-                <code class="inline-code">not_in_channel</code> なら bot の招待、<code
-                  class="inline-code"
-                  >invalid_auth</code
-                >
-                ならトークンの保存名を確認してください。
-              </p>
-            </article>
-          </div>
+          <button class="copy" data-target="code-hello">コピー</button>
         </div>
-      </section>
+        <p class="note">うまくいかないときはログの <code class="inline">res.error</code> を見てください。<code class="inline">not_in_channel</code> なら手順 2-6、<code class="inline">invalid_auth</code> ならトークンの保存名を確認します。</p>
+      </div>
+    </div>
 
-      <section class="section api-section" aria-labelledby="api-title">
-        <div class="shell api-layout">
-          <div class="api-copy reveal">
-            <p class="eyebrow">One familiar toolbox</p>
-            <h2 class="section-heading" id="api-title">やりたいことが増えても、同じ書き方で。</h2>
-            <p class="section-lead">
-              投稿だけでなく、会話、リアクション、ファイル、Canvas、リストまで。Slack Web API の 168
-              メソッドを扱えます。
-            </p>
-            <div class="method-list" aria-label="対応機能の例">
-              <span>chat</span><span>conversations</span><span>files</span><span>reactions</span
-              ><span>canvases</span><span>lists</span><span>workflows</span>
-            </div>
-          </div>
-          <div class="api-image reveal">
-            <img
-              src="assets/api-toolbox.webp"
-              width="1400"
-              height="857"
-              alt="会話、ファイル、通知などの機能が一つの道具箱に集まる様子"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </div>
-      </section>
+    <div class="done-banner">
+      <img src="assets/get-started-together.webp" width="1500" height="824" loading="lazy"
+           alt="投稿が成功してチェックマークを見ながら喜ぶ二人のイラスト">
+      <div>
+        <h3>投稿できたら、もう完了です 🎉</h3>
+        <p>ここまでできれば、あとは同じ書き方で Slack のほぼ全機能が使えます。
+        毎朝の自動通知にするなら、時計アイコンの「トリガー」から <code class="inline">hello</code> を時間主導型で登録するだけ。</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <section class="section white" aria-labelledby="safe-title">
-        <div class="shell reassurance">
-          <div class="reveal">
-            <p class="eyebrow">Built with care</p>
-            <h2 class="section-heading" id="safe-title">長く、安心して使えるように。</h2>
-            <p class="section-lead">見えないところの確認とメンテナンスも、継続して行っています。</p>
-          </div>
+<section id="examples">
+  <div class="wrap">
+    <h2>できること</h2>
+    <p class="sub">Slack Web API の 168 メソッドをそのままの名前で呼べます。よく使う形は <a href="https://github.com/yhay81/GASlacker/tree/master/examples">examples/</a> にコピペ用スクリプトがあります。</p>
 
-          <div>
-            <div class="reassurance-list reveal">
-              <article class="reassurance-item">
-                <span class="reassurance-icon" aria-hidden="true">✓</span>
-                <div>
-                  <h3>全メソッドを実在検証</h3>
-                  <p>168 メソッドを実際の Slack API に照合し、存在しない API は含めません。</p>
-                </div>
-              </article>
-              <article class="reassurance-item">
-                <span class="reassurance-icon" aria-hidden="true">↻</span>
-                <div>
-                  <h3>週次でパリティ監視</h3>
-                  <p>Slack 公式 SDK と毎週突き合わせ、新しい API があれば自動で検知します。</p>
-                </div>
-              </article>
-              <article class="reassurance-item">
-                <span class="reassurance-icon" aria-hidden="true">⌁</span>
-                <div>
-                  <h3>トークンは手元だけ</h3>
-                  <p>通信先は Slack API のみ。トークンは Script プロパティに保存されます。</p>
-                </div>
-              </article>
-              <article class="reassurance-item">
-                <span class="reassurance-icon" aria-hidden="true">T</span>
-                <div>
-                  <h3>TypeScript にも対応</h3>
-                  <p>clasp を使う方向けに型定義を同梱し、全メソッドを補完できます。</p>
-                </div>
-              </article>
-            </div>
+    <div class="usecases">
+      <div class="ucard">
+        <img src="assets/usecase-morning-update.webp" width="1120" height="840" loading="lazy"
+             alt="シートのデータをロボットが Slack のメッセージへ運ぶイラスト">
+        <div class="body"><h3>シートから毎朝通知</h3><p>時間トリガー + <code class="inline">chat.postMessage</code>。Block Kit で見やすい整形も。</p></div>
+      </div>
+      <div class="ucard">
+        <img src="assets/usecase-reply-bot.webp" width="1120" height="840" loading="lazy"
+             alt="小さなロボットがスレッドに返信を書き込むイラスト">
+        <div class="body"><h3>返事をするボット</h3><p>Events API を <code class="inline">doPost</code> で受けてスレッドに返信。</p></div>
+      </div>
+      <div class="ucard">
+        <img src="assets/usecase-file-upload.webp" width="1120" height="840" loading="lazy"
+             alt="フォルダからレポートが Slack の会話に届くイラスト">
+        <div class="body"><h3>ファイルを送る</h3><p>CSV やログを <code class="inline">files.uploadV2</code> で 1 メソッド投稿。</p></div>
+      </div>
+    </div>
 
-            <div class="codebox example-code reveal">
-              <pre id="code-notify"><span class="comment">// シートの内容を毎朝 Slack へ</span>
+    <div class="minis">
+      <div class="mini"><h3>🗂 全チャンネルを集計</h3><p><code class="inline">slack.paginate()</code> がページネーションを自動で辿ります。</p></div>
+      <div class="mini"><h3>📝 Canvas・リスト操作</h3><p><code class="inline">canvases.*</code> / <code class="inline">slackLists.*</code> など新しい API にも対応。</p></div>
+      <div class="mini"><h3>🧩 未対応でも呼べる</h3><p><code class="inline">slack.call('メソッド名', params)</code> でどの API でも。</p></div>
+    </div>
+
+    <div class="codebox" style="margin-top:24px">
+      <pre id="code-notify"><span class="c">// 例: シートの内容を毎朝 Slack へ(時間トリガーに設定)</span>
 function dailySummary() {
-  var sheet = SpreadsheetApp.getActive().getSheetByName('KPI');
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');
   var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();
   var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });
   slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\n') });
 }</pre>
-              <button class="copy" type="button" data-target="code-notify">コピー</button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <button class="copy" data-target="code-notify">コピー</button>
+    </div>
+  </div>
+</section>
 
-      <section class="section" id="faq" aria-labelledby="faq-title">
-        <div class="shell faq-layout">
-          <div class="reveal">
-            <p class="eyebrow">Questions</p>
-            <h2 class="section-heading" id="faq-title">よくある質問</h2>
-          </div>
-          <div class="faq-list reveal">
-            <details>
-              <summary>無料ですか？</summary>
-              <p>
-                はい。MIT ライセンスの OSS で、商用利用も自由です。Google Apps Script と Slack
-                アプリも通常の用途では無料枠で動きます。
-              </p>
-            </details>
-            <details>
-              <summary>Node.js やビルド環境は必要ですか？</summary>
-              <p>
-                不要です。ブラウザの Apps Script エディタだけで完結します。ライブラリ ID
-                を追加してお使いください。
-              </p>
-            </details>
-            <details>
-              <summary>Incoming Webhook とは何が違いますか？</summary>
-              <p>
-                Webhook は決まったチャンネルへの投稿が中心です。GASlacker は Web API
-                を呼ぶため、返信、リアクション、ファイル、履歴取得、Canvas
-                など幅広い機能を使えます。
-              </p>
-            </details>
-            <details>
-              <summary>エラーが出たら？</summary>
-              <p>
-                Slack のレスポンスをそのまま返すため、<code class="inline-code">res.error</code>
-                で原因を確認できます。解決しないときは
-                <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> または
-                <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>
-                へどうぞ。日本語で大丈夫です。
-              </p>
-            </details>
-            <details>
-              <summary>Slack 公式のライブラリですか？</summary>
-              <p>
-                いいえ、コミュニティによる非公式 OSS です。Slack は Slack Technologies, LLC
-                の商標です。
-              </p>
-            </details>
-          </div>
-        </div>
-      </section>
+<section class="alt">
+  <div class="wrap toolbox">
+    <img src="assets/api-toolbox.webp" width="1400" height="857" loading="lazy"
+         alt="道具箱から Slack のさまざまな機能のアイコンが飛び出すイラスト">
+    <div>
+      <h2>168 メソッド、全部入り。</h2>
+      <p class="sub">メッセージ・ファイル・リアクション・Canvas・通話まで、Slack 公式 SDK と同じ顔ぶれをそのままの名前で。</p>
+      <ul class="checks">
+        <li><b>全メソッド実在検証済み。</b>存在しない・廃止された API は入っていません。</li>
+        <li><b>週次パリティ監視。</b>毎週 CI が公式 SDK と突き合わせ、新 API が出ると自動で Issue が立ちます。</li>
+        <li><b>トークンは手元だけ。</b>通信先は Slack API のみ。あなたの Script プロパティにだけ保存されます。</li>
+        <li><b>TypeScript 対応。</b>clasp 派には型定義を同梱。全メソッドが補完されます。</li>
+      </ul>
+    </div>
+  </div>
+</section>
 
-      <section class="closing" aria-labelledby="closing-title">
-        <img
-          src="assets/get-started-together.webp"
-          width="1500"
-          height="824"
-          alt="自動投稿の成功を見て喜ぶ二人のチームメンバー"
-          loading="lazy"
-          decoding="async"
-        />
-        <div class="shell">
-          <div class="closing-copy reveal">
-            <p class="eyebrow">Start small</p>
-            <h2 id="closing-title">まずは、<br />ひとつの通知から。</h2>
-            <p>便利になったら、次の自動化へ。GASlacker は小さく始めるチームを応援します。</p>
-            <div class="actions">
-              <a class="button primary" href="#start">5 分ではじめる</a>
-              <a
-                class="button secondary"
-                href="https://github.com/yhay81/GASlacker/tree/master/examples"
-                >作例を見る</a
-              >
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+<section>
+  <div class="wrap narrow">
+    <h2>よくある質問</h2>
+    <details>
+      <summary>無料ですか?</summary>
+      <p>はい。MIT ライセンスの OSS で、商用利用も自由です。Google Apps Script と Slack アプリも通常の用途では無料枠で動きます。</p>
+    </details>
+    <details>
+      <summary>Node.js やビルド環境は必要?</summary>
+      <p>不要です。ブラウザの Apps Script エディタだけで完結します(ライブラリ ID を追加するだけ)。</p>
+    </details>
+    <details>
+      <summary>Incoming Webhook と何が違う?</summary>
+      <p>Webhook は「決まったチャンネルへ投稿」しかできません。GASlacker はトークンで Web API を呼ぶので、返信・リアクション・ファイル・履歴取得・Canvas など Slack のほぼ全機能が使えます。</p>
+    </details>
+    <details>
+      <summary>エラーが出たら?</summary>
+      <p>すべてのメソッドは Slack のレスポンスをそのまま返します。<code class="inline">res.ok</code> が false のとき <code class="inline">res.error</code> に原因(例: <code class="inline">channel_not_found</code>)が入っています。解決しないときは <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> か <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a> へどうぞ(日本語 OK)。</p>
+    </details>
+    <details>
+      <summary>Slack 公式のライブラリですか?</summary>
+      <p>いいえ、コミュニティによる非公式 OSS です。Slack は Slack Technologies, LLC の商標です。</p>
+    </details>
+  </div>
+</section>
 
-    <footer>
-      <div class="shell">
-        <div class="footer-top">
-          <a class="brand" href="#top">
-            <span class="brand-mark" aria-hidden="true"></span>
-            <b>GAS<span>lacker</span></b>
-          </a>
-          <nav class="footer-links" aria-label="フッターナビゲーション">
-            <a href="https://github.com/yhay81/GASlacker">GitHub</a>
-            <a href="https://github.com/yhay81/GASlacker/blob/master/README.ja.md"
-              >ドキュメント（日本語）</a
-            >
-            <a href="https://github.com/yhay81/GASlacker#readme">Docs (English)</a>
-            <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>
-          </nav>
-        </div>
-        <small>MIT License © Yusuke Hayashi — Slack 非公式のコミュニティライブラリです。</small>
-      </div>
-    </footer>
+<footer>
+  <div class="wrap">
+    <a href="https://github.com/yhay81/GASlacker">GitHub</a>
+    <a href="https://github.com/yhay81/GASlacker/blob/master/README.ja.md">ドキュメント(日本語)</a>
+    <a href="https://github.com/yhay81/GASlacker#readme">Docs (English)</a>
+    <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>
+    <p style="margin-top:10px">MIT License © Yusuke Hayashi — Slack 非公式のコミュニティライブラリです。</p>
+  </div>
+</footer>
 
-    <script>
-      document.querySelectorAll('.copy').forEach(function (button) {
-        button.addEventListener('click', function () {
-          var target = document.getElementById(button.dataset.target)
-          var reset = function () {
-            setTimeout(function () {
-              button.textContent = 'コピー'
-              button.classList.remove('done')
-            }, 1600)
-          }
-
-          navigator.clipboard.writeText(target.innerText).then(
-            function () {
-              button.textContent = 'コピーしました'
-              button.classList.add('done')
-              reset()
-            },
-            function () {
-              var range = document.createRange()
-              var selection = window.getSelection()
-              range.selectNodeContents(target)
-              selection.removeAllRanges()
-              selection.addRange(range)
-              button.textContent = '⌘C / Ctrl+C でコピー'
-              reset()
-            },
-          )
-        })
-      })
-
-      var reveals = document.querySelectorAll('.reveal')
-      if ('IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(
-          function (entries) {
-            entries.forEach(function (entry) {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible')
-                observer.unobserve(entry.target)
-              }
-            })
-          },
-          { threshold: 0.12 },
-        )
-        reveals.forEach(function (element) {
-          observer.observe(element)
-        })
-      } else {
-        reveals.forEach(function (element) {
-          element.classList.add('is-visible')
-        })
-      }
-
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        var hero = document.querySelector('.hero')
-        var ticking = false
-        window.addEventListener(
-          'scroll',
-          function () {
-            if (!ticking) {
-              window.requestAnimationFrame(function () {
-                hero.style.setProperty('--hero-shift', Math.min(window.scrollY * 0.035, 24))
-                ticking = false
-              })
-              ticking = true
-            }
-          },
-          { passive: true },
-        )
-      }
-    </script>
-  </body>
+<script>
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var el = document.getElementById(btn.dataset.target);
+      var reset = function () {
+        setTimeout(function () {
+          btn.textContent = 'コピー';
+          btn.classList.remove('done');
+        }, 1600);
+      };
+      navigator.clipboard.writeText(el.innerText).then(
+        function () {
+          btn.textContent = 'コピーしました';
+          btn.classList.add('done');
+          reset();
+        },
+        function () {
+          // クリップボードが使えない環境では選択だけして手動コピーを促す
+          var range = document.createRange();
+          range.selectNodeContents(el);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          btn.textContent = '⌘C / Ctrl+C でコピー';
+          reset();
+        },
+      );
+    });
+  });
+</script>
+</body>
 </html>

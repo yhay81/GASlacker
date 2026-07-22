@@ -64,6 +64,8 @@
   .sub { color: var(--muted); margin-bottom: 26px; }
 
   .step { display: flex; gap: 16px; margin: 26px 0; }
+  /* flex アイテム内の pre がアイテム幅を押し広げないようにする */
+  .step > div:last-child { min-width: 0; flex: 1; }
   .step .num {
     flex: none; width: 34px; height: 34px; border-radius: 50%;
     background: var(--accent); color: var(--accent-fg);

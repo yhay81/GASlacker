@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
 
 English version: [README.md](README.md)
+**はじめての方へ: [5 分ではじめるガイド](https://yhay81.github.io/GASlacker/)** — トークンの作り方から丁寧に説明しています
 
 Google Apps Script から Slack Web API を呼び出すための軽量クライアントライブラリです。
 

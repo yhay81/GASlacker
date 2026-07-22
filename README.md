@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
 
 日本語版は [README.ja.md](README.ja.md) を参照してください。
+**はじめての方へ: [5 分ではじめるガイド(日本語)](https://yhay81.github.io/GASlacker/)**
 
 A lightweight Slack Web API client for Google Apps Script.
 

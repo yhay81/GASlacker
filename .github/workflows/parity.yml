@@ -1,0 +1,37 @@
+name: API parity
+
+# Slack 公式 SDK のメソッド一覧と週次で突き合わせ、新 API が出たら Issue を起票する
+on:
+  schedule:
+    - cron: '0 3 * * 1' # 毎週月曜 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - id: check
+        name: Check parity against node-slack-sdk
+        run: |
+          set +e
+          node scripts/check-parity.mjs | tee parity.txt
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+      - name: File an issue when new methods appear
+        if: steps.check.outputs.status == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="New Slack API methods detected by the weekly parity check"
+          existing=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq length)
+          if [ "$existing" = "0" ]; then
+            gh issue create --title "$title" --label enhancement \
+              --body "$(printf 'The weekly parity check found methods in the official Slack SDK that GASlacker does not cover yet:\n\n```\n%s\n```\nSee CONTRIBUTING.md for how to add them (verify liveness, one line in the class, one line in the routing table).' "$(cat parity.txt)")"
+          fi
+      - name: Fail the run when parity is broken
+        if: steps.check.outputs.status != '0'
+        run: exit 1

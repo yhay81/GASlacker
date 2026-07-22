@@ -27,7 +27,7 @@
 - 新規 API は `src/methods/` に追加し、`PascalCase` のクラス名と `camelCase` のメソッド名に揃えます。
 - メソッド名は Slack と同名にします(`delete` もそのまま使えます)。`delete` には後方互換の
   `delete_` エイリアスを併設します。
-- コード内のコメントは日本語で記述します。
+- `src/` のコード内コメントは日本語で記述します。`examples/` は利用者向け配布物のため英語コメントとします。
 
 ## テスト指針
 
@@ -46,7 +46,7 @@
 - `files.uploadV2` は存在しない HTTP エンドポイントのため、
   `files.getUploadURLExternal` → アップロード → `files.completeUploadExternal`
   の 3 ステップを 1 メソッドに合成しています(`src/methods/Files.ts`)。
-- `src/config.ts` の `DEFAULT_RETRIES` を `GASlacker.methods(token, retries)` から上書きできます。
+- `DEFAULT_RETRIES`(`BaseAPI.ts`)を `GASlacker.methods(token, retries)` から上書きできます。
 
 ## 変更方針
 

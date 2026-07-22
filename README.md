@@ -17,7 +17,9 @@ A lightweight Slack Web API client for Google Apps Script.
 - Escape hatch for any method: `slack.call('some.method', params)`
 
 Every endpoint name in this library is verified to exist on the live Slack API
-(dead endpoints answer `unknown_method`; see [tests/routing.spec.ts](tests/routing.spec.ts)).
+(dead endpoints answer `unknown_method`; see [tests/routing.spec.ts](tests/routing.spec.ts)),
+and a [weekly CI job](.github/workflows/parity.yml) checks parity against Slack's
+official SDK method list — when Slack ships new APIs, an issue is filed automatically.
 
 ## Installation
 
@@ -152,6 +154,14 @@ all 168 methods autocomplete.
 `GASlacker.methods(token, retriesLimit)` — `retriesLimit` is the number of extra
 attempts on HTTP 429 (default 3; `0` sends exactly one request). Waits for the
 `Retry-After` header between attempts.
+
+## Examples
+
+Copy-paste-ready scripts live in [`examples/`](examples/):
+
+- [`notify-from-spreadsheet.js`](examples/notify-from-spreadsheet.js) — daily sheet summary with Block Kit
+- [`events-api-bot.js`](examples/events-api-bot.js) — minimal Events API bot that replies in threads
+- [`upload-and-paginate.js`](examples/upload-and-paginate.js) — file upload + walking all channels
 
 ## API coverage
 

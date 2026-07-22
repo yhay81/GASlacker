@@ -1,0 +1,17 @@
+name: Feature request
+description: A missing Slack API method or a usability idea (English or Japanese welcome / 日本語歓迎)
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What you need
+      description: For a missing method, include the Slack API method name (e.g. `chat.postMessage`).
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Why / use case
+    validations:
+      required: false

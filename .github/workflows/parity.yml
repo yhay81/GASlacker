@@ -20,7 +20,8 @@ jobs:
         run: |
           set +e
           node scripts/check-parity.mjs | tee parity.txt
-          echo "status=$?" >> "$GITHUB_OUTPUT"
+          # $? would be tee's status, so read the script's own exit code
+          echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
       - name: File an issue when new methods appear
         if: steps.check.outputs.status == '1'
         env:

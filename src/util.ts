@@ -7,14 +7,14 @@ const normalizeFormValue = (value: unknown): string | null => {
   return String(value)
 }
 
-// Reference: https://github.com/python/cpython/blob/3.6/Lib/urllib/parse.py#L846
+// Builds a percent-encoded query string, dropping null / undefined entries
 export const queryEncode = (params: Record<string, any> | null): string => {
   if (params == null) return ''
   const param_list: string[] = []
   for (const [key, rawValue] of Object.entries(params)) {
     const value = normalizeFormValue(rawValue)
     if (value === null) continue
-    param_list.push(`${encodeURIComponent(String(key))}=${encodeURIComponent(value)}`)
+    param_list.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
   }
   return param_list.join('&')
 }

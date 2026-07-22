@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.4.0 (2026-07-22)
+
+### Fixed
+
+- **`openid.connect.userInfo` could never succeed.** The whole `openid.*` client was built
+  with a null token, so the request went out without an `Authorization` header and Slack
+  always answered `not_authed`. `userInfo` now carries the token passed to `methods()`,
+  while `openid.connect.token` keeps going out token-free — Slack answers `invalid_auth`
+  if the code exchange carries an `Authorization` header (both directions confirmed against
+  the live API). A test now pins the header for each of these endpoints.
+- **The weekly parity job could never report anything.** It read `$?` after
+  `node scripts/check-parity.mjs | tee parity.txt`, which is `tee`'s exit code, so the
+  status was always `0`: no issue was ever filed and the job never failed. It now reads
+  `${PIPESTATUS[0]}`.
+- On the final retry attempt, a 429 no longer sleeps for `Retry-After` seconds before
+  throwing `Try limit over` — the wait was pure loss against the GAS execution limit.
+- Form-encoded requests no longer come back with a `superfluous_charset` warning: Slack
+  rejects the `; charset=UTF-8` suffix on form bodies. JSON bodies keep it, because Slack
+  warns `missing_charset` without it (both confirmed live), so the two content types
+  intentionally differ. GET / JSON POST / form POST are now all warning-free.
+
+### Added
+
+- `chat.scheduledMessages.list`, matching how every other dotted endpoint is nested
+  (`files.remote.*`, `apps.manifest.*`, …) and how the official SDK names it. The previous
+  flat `chat.scheduledMessagesList` remains as an alias, like the `delete_` ones.
+
+### Changed
+
+- `.gitignore`'s remaining Japanese comment translated (leftover from the 1.3.0
+  English unification), `UsersProfile` declared before it is used like every other nested
+  class, and the stale CPython reference on `queryEncode` replaced with a description of
+  what it does.
+
 ## 1.3.0 (2026-07-22)
 
 ### Changed (breaking)

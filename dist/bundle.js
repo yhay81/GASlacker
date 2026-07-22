@@ -22,7 +22,7 @@ function methods(token, retries_limit = 3) {
 		for (const [key, rawValue] of Object.entries(params)) {
 			const value = normalizeFormValue(rawValue);
 			if (value === null) continue;
-			param_list.push(`${encodeURIComponent(String(key))}=${encodeURIComponent(value)}`);
+			param_list.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
 		}
 		return param_list.join("&");
 	};
@@ -81,7 +81,7 @@ function methods(token, retries_limit = 3) {
 			const params = {
 				headers: this._buildHeaders(),
 				method: "post",
-				contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+				contentType: "application/x-www-form-urlencoded",
 				payload
 			};
 			return this._fetch(url, params);
@@ -103,17 +103,14 @@ function methods(token, retries_limit = 3) {
 			const requestParams = Object.assign({}, params || {});
 			if (requestParams.muteHttpExceptions == null) requestParams.muteHttpExceptions = true;
 			const maxAttempts = Math.max(1, this._retries_limit + 1);
-			let response = null;
 			for (let attempt = 0; attempt < maxAttempts; attempt++) {
-				response = UrlFetchApp.fetch(url, requestParams);
-				if (response.getResponseCode() === 429) {
-					const retryAfterHeader = this._getHeader(response.getHeaders(), "retry-after");
-					const retryAfter = parseInt(retryAfterHeader !== null && retryAfterHeader !== void 0 ? retryAfterHeader : "", 10);
-					const waitMs = isNaN(retryAfter) ? 1e3 : retryAfter * 1e3;
-					Utilities.sleep(waitMs);
-					continue;
-				}
-				return this._parseResponse(response);
+				const response = UrlFetchApp.fetch(url, requestParams);
+				if (response.getResponseCode() !== 429) return this._parseResponse(response);
+				if (attempt === maxAttempts - 1) break;
+				const retryAfterHeader = this._getHeader(response.getHeaders(), "retry-after");
+				const retryAfter = parseInt(retryAfterHeader !== null && retryAfterHeader !== void 0 ? retryAfterHeader : "", 10);
+				const waitMs = isNaN(retryAfter) ? 1e3 : retryAfter * 1e3;
+				Utilities.sleep(waitMs);
 			}
 			throw Error("Try limit over");
 		}
@@ -368,7 +365,16 @@ function methods(token, retries_limit = 3) {
 	};
 	//#endregion
 	//#region src/methods/Chat.ts
+	var ChatScheduledMessages = class extends BaseAPI {
+		list(params = {}) {
+			return this._get("chat.scheduledMessages.list", params);
+		}
+	};
 	var Chat = class extends BaseAPI {
+		constructor(token, retries_limit) {
+			super(token, retries_limit);
+			this.scheduledMessages = new ChatScheduledMessages(token, retries_limit);
+		}
 		appendStream(params = {}) {
 			return this._post("chat.appendStream", params);
 		}
@@ -403,7 +409,7 @@ function methods(token, retries_limit = 3) {
 			return this._post("chat.scheduleMessage", params);
 		}
 		scheduledMessagesList(params = {}) {
-			return this._get("chat.scheduledMessages.list", params);
+			return this.scheduledMessages.list(params);
 		}
 		unfurl(params = {}) {
 			return this._post("chat.unfurl", params);
@@ -655,9 +661,18 @@ function methods(token, retries_limit = 3) {
 	};
 	//#endregion
 	//#region src/methods/OpenID.ts
-	var OpenIDConnect = class extends BaseAPI {
+	var OpenIDConnectExchange = class extends BaseAPI {
 		token(params = {}) {
 			return this._post_form("openid.connect.token", params);
+		}
+	};
+	var OpenIDConnect = class extends BaseAPI {
+		constructor(token, retries_limit) {
+			super(token, retries_limit);
+			this._exchange = new OpenIDConnectExchange(null, retries_limit);
+		}
+		token(params = {}) {
+			return this._exchange.token(params);
 		}
 		userInfo(params = {}) {
 			return this._post("openid.connect.userInfo", params);
@@ -896,6 +911,14 @@ function methods(token, retries_limit = 3) {
 	};
 	//#endregion
 	//#region src/methods/Users.ts
+	var UsersProfile = class extends BaseAPI {
+		get(params = {}) {
+			return this._get("users.profile.get", params);
+		}
+		set(params = {}) {
+			return this._post("users.profile.set", params);
+		}
+	};
 	var UsersDiscoverableContacts = class extends BaseAPI {
 		lookup(params = {}) {
 			return this._post("users.discoverableContacts.lookup", params);
@@ -937,14 +960,6 @@ function methods(token, retries_limit = 3) {
 		}
 		setPresence(params = {}) {
 			return this._post("users.setPresence", params);
-		}
-	};
-	var UsersProfile = class extends BaseAPI {
-		get(params = {}) {
-			return this._get("users.profile.get", params);
-		}
-		set(params = {}) {
-			return this._post("users.profile.set", params);
 		}
 	};
 	//#endregion
@@ -1006,7 +1021,7 @@ function methods(token, retries_limit = 3) {
 			this.files = new Files(token, retries_limit);
 			this.functions = new Functions(token, retries_limit);
 			this.oauth = new OAuth(null, retries_limit);
-			this.openid = new OpenID(null, retries_limit);
+			this.openid = new OpenID(token, retries_limit);
 			this.pins = new Pins(token, retries_limit);
 			this.reactions = new Reactions(token, retries_limit);
 			this.reminders = new Reminders(token, retries_limit);

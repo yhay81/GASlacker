@@ -91,12 +91,7 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
   ['chat.postEphemeral', (m) => m.chat.postEphemeral(), 'post'],
   ['chat.postMessage', (m) => m.chat.postMessage(), 'post'],
   ['chat.scheduleMessage', (m) => m.chat.scheduleMessage(), 'post'],
-  [
-    'chat.scheduledMessagesList',
-    (m) => m.chat.scheduledMessagesList(),
-    'get',
-    'chat.scheduledMessages.list',
-  ],
+  ['chat.scheduledMessages.list', (m) => m.chat.scheduledMessages.list(), 'get'],
   ['chat.unfurl', (m) => m.chat.unfurl(), 'post'],
   ['chat.update', (m) => m.chat.update(), 'post'],
   ['conversations.archive', (m) => m.conversations.archive(), 'post'],

@@ -153,6 +153,19 @@ describe('methods', () => {
       expect(calls).toEqual([api, api])
     }
   })
+
+  it('scheduledMessagesList alias calls chat.scheduledMessages.list', () => {
+    const methods = new Methods('token')
+    const calls: string[] = []
+    ;(methods.chat.scheduledMessages as any)._get = (endpoint: string) => {
+      calls.push(endpoint)
+      return { ok: true }
+    }
+    methods.chat.scheduledMessages.list()
+    methods.chat.scheduledMessagesList()
+
+    expect(calls).toEqual(['chat.scheduledMessages.list', 'chat.scheduledMessages.list'])
+  })
 })
 
 describe('paginate', () => {
@@ -207,6 +220,52 @@ describe('paginate', () => {
   })
 })
 
+// Which clients carry the token, verified against the live API: openid.connect.userInfo
+// answers not_authed without one, while the token exchanges answer invalid_auth with one.
+describe('authorization header', () => {
+  const globalAny = globalThis as typeof globalThis & {
+    UrlFetchApp?: any
+    Utilities?: any
+  }
+  let originalUrlFetchApp: any
+  let originalUtilities: any
+
+  beforeEach(() => {
+    originalUrlFetchApp = globalAny.UrlFetchApp
+    originalUtilities = globalAny.Utilities
+  })
+
+  afterEach(() => {
+    globalAny.UrlFetchApp = originalUrlFetchApp
+    globalAny.Utilities = originalUtilities
+  })
+
+  const headersOf = (invoke: (m: Methods) => unknown): Record<string, string> => {
+    const fetch = vi.fn().mockReturnValue(jsonResponse({ ok: true }))
+    globalAny.UrlFetchApp = { fetch }
+    globalAny.Utilities = { sleep: vi.fn() }
+    invoke(new Methods('xoxp-token'))
+    return fetch.mock.calls[0][1].headers
+  }
+
+  it('sends the token on openid.connect.userInfo', () => {
+    expect(headersOf((m) => m.openid.connect.userInfo())).toEqual({
+      Authorization: 'Bearer xoxp-token',
+    })
+  })
+
+  it('omits the token on the code exchanges', () => {
+    expect(headersOf((m) => m.openid.connect.token({ code: 'c' }))).toEqual({})
+    expect(headersOf((m) => m.oauth.access({ code: 'c' }))).toEqual({})
+  })
+
+  it('sends the token on ordinary methods', () => {
+    expect(headersOf((m) => m.chat.postMessage({ channel: 'C123', text: 'Hi' }))).toEqual({
+      Authorization: 'Bearer xoxp-token',
+    })
+  })
+})
+
 describe('Files.uploadV2', () => {
   const globalAny = globalThis as typeof globalThis & {
     UrlFetchApp?: any
@@ -251,7 +310,7 @@ describe('Files.uploadV2', () => {
     const [url1, params1] = fetch.mock.calls[0]
     expect(url1).toBe('https://slack.com/api/files.getUploadURLExternal')
     // getUploadURLExternal is form-encoded because it rejects JSON (values become strings)
-    expect(params1.contentType).toBe('application/x-www-form-urlencoded; charset=UTF-8')
+    expect(params1.contentType).toBe('application/x-www-form-urlencoded')
     expect(params1.payload).toEqual({ filename: 'hello.txt', length: '3' })
 
     const [url2, params2] = fetch.mock.calls[1]

@@ -304,6 +304,28 @@ pnpm run verify:live                     # with token: real post + real upload
   methods was also confirmed live.
 - Notes: the `pnpm run verify:live` (no-token) request-path smoke test also passed
 
+## Verification Log (authorization requirements — v1.4.0)
+
+- Run at: 2026-07-22
+- Method: re-ran the `unknown_method` liveness check over all 168 endpoints in the bundle, and
+  probed the OAuth-family endpoints both with and without an `Authorization: Bearer` header
+- Result: all 168 endpoints are alive (no `unknown_method`). Authorization turns out to be
+  required in one direction and rejected in the other:
+  `openid.connect.userInfo` answers `not_authed` without a header and `invalid_auth` with one,
+  while `openid.connect.token` and `oauth.v2.access` answer `invalid_code` (their normal path)
+  without a header but `invalid_auth` with one.
+- Finding and fix: `openid.*` was constructed with a null token, so `openid.connect.userInfo`
+  could never authenticate. `userInfo` now carries the token from `methods()` and the code
+  exchange stays token-free; re-running through `dist/bundle.js` against the real API,
+  `userInfo` reaches the auth layer (`invalid_auth` on a dummy token) and the two exchanges
+  still answer `invalid_code` (v1.4.0)
+- Also checked: which `Content-Type` each request style should send. A form body with
+  `; charset=UTF-8` answers `superfluous_charset`, and a JSON body without it answers
+  `missing_charset`, so form POST drops the suffix while JSON POST keeps it. GET carries no
+  body and warns either way. Re-running through the bundle, GET / JSON POST / form POST all
+  come back with no `warning` field.
+- Notes: `pnpm run verify:live` (no-token) passed all 6 checks afterwards
+
 ## Verification Log (toolchain refresh — v1.2.0)
 
 - Run at: 2026-07-22

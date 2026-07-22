@@ -1,5 +1,15 @@
 import BaseAPI, { SlackParams } from './BaseAPI'
 
+class UsersProfile extends BaseAPI {
+  public get(params: SlackParams = {}) {
+    return this._get('users.profile.get', params)
+  }
+
+  public set(params: SlackParams = {}) {
+    return this._post('users.profile.set', params)
+  }
+}
+
 class UsersDiscoverableContacts extends BaseAPI {
   public lookup(params: SlackParams = {}) {
     return this._post('users.discoverableContacts.lookup', params)
@@ -54,15 +64,5 @@ export default class Users extends BaseAPI {
 
   public setPresence(params: SlackParams = {}) {
     return this._post('users.setPresence', params)
-  }
-}
-
-class UsersProfile extends BaseAPI {
-  public get(params: SlackParams = {}) {
-    return this._get('users.profile.get', params)
-  }
-
-  public set(params: SlackParams = {}) {
-    return this._post('users.profile.set', params)
   }
 }

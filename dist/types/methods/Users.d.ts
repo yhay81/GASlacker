@@ -1,4 +1,8 @@
 import BaseAPI, { SlackParams } from './BaseAPI';
+declare class UsersProfile extends BaseAPI {
+    get(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    set(params?: SlackParams): import("./BaseAPI").SlackResponse;
+}
 declare class UsersDiscoverableContacts extends BaseAPI {
     lookup(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
@@ -16,9 +20,5 @@ export default class Users extends BaseAPI {
     setActive(params?: SlackParams): import("./BaseAPI").SlackResponse;
     setPhoto(params?: SlackParams): import("./BaseAPI").SlackResponse;
     setPresence(params?: SlackParams): import("./BaseAPI").SlackResponse;
-}
-declare class UsersProfile extends BaseAPI {
-    get(params?: SlackParams): import("./BaseAPI").SlackResponse;
-    set(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 export {};

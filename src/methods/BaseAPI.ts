@@ -39,6 +39,8 @@ export default class BaseAPI {
     const params: Record<string, any> = {
       headers: this._buildHeaders(),
       method: 'post',
+      // Slack warns missing_charset on JSON without it, and superfluous_charset on
+      // form bodies with it, so the two content types differ on purpose (confirmed live)
       contentType: 'application/json; charset=UTF-8',
       payload: JSON.stringify(payload),
     }
@@ -52,7 +54,8 @@ export default class BaseAPI {
     const params: Record<string, any> = {
       headers: this._buildHeaders(),
       method: 'post',
-      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+      // No charset here: Slack answers superfluous_charset when a form body carries one
+      contentType: 'application/x-www-form-urlencoded',
       payload,
     }
     return this._fetch(url, params)
@@ -78,18 +81,16 @@ export default class BaseAPI {
       requestParams.muteHttpExceptions = true
     }
     const maxAttempts = Math.max(1, this._retries_limit + 1)
-    let response: any = null
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      response = UrlFetchApp.fetch(url, requestParams)
+      const response: any = UrlFetchApp.fetch(url, requestParams)
       // Treat HTTP 429 as a rate limit: wait, then retry
-      if (response.getResponseCode() === 429) {
-        const retryAfterHeader = this._getHeader(response.getHeaders(), 'retry-after')
-        const retryAfter = parseInt(retryAfterHeader ?? '', 10)
-        const waitMs = isNaN(retryAfter) ? 1000 : retryAfter * 1000
-        Utilities.sleep(waitMs)
-        continue
-      }
-      return this._parseResponse(response)
+      if (response.getResponseCode() !== 429) return this._parseResponse(response)
+      // No point waiting after the last attempt (GAS caps execution time)
+      if (attempt === maxAttempts - 1) break
+      const retryAfterHeader = this._getHeader(response.getHeaders(), 'retry-after')
+      const retryAfter = parseInt(retryAfterHeader ?? '', 10)
+      const waitMs = isNaN(retryAfter) ? 1000 : retryAfter * 1000
+      Utilities.sleep(waitMs)
     }
     throw Error('Try limit over')
   }

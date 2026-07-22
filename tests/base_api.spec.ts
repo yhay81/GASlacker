@@ -152,7 +152,8 @@ describe('BaseAPI', () => {
 
     expect(res).toEqual({ ok: true })
     const [, params] = fetch.mock.calls[0] as FetchCall
-    expect(params.contentType).toBe('application/x-www-form-urlencoded; charset=UTF-8')
+    // Form bodies carry no charset; Slack answers superfluous_charset when they do
+    expect(params.contentType).toBe('application/x-www-form-urlencoded')
     const expectedPayload: Record<string, string> = {
       scope: 'chat:write,files:write',
       extra: '{"foo":"bar"}',
@@ -252,17 +253,21 @@ describe('BaseAPI', () => {
     expect(sleep).toHaveBeenCalledWith(1000)
   })
 
-  it('throws after retry limit', () => {
+  it('throws after retry limit without waiting past the last attempt', () => {
     const fetch = vi
       .fn()
       .mockReturnValue(createResponse(429, '{"ok":false}', { 'retry-after': '1' }))
+    const sleep = vi.fn()
     globalAny.UrlFetchApp = { fetch }
-    globalAny.Utilities = { sleep: vi.fn() }
+    globalAny.Utilities = { sleep }
 
     const api = new TestAPI('token', 2)
     expect(() => api.post('chat.postMessage', { channel: 'C123', text: 'Hi' })).toThrow(
       'Try limit over',
     )
+    expect(fetch).toHaveBeenCalledTimes(3)
+    // One wait between attempts, none after the final one
+    expect(sleep).toHaveBeenCalledTimes(2)
   })
 
   it('returns invalid_json on non-JSON response', () => {

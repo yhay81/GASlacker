@@ -84,7 +84,8 @@ export class Methods {
     this.functions = new Functions(token, retries_limit)
     // oauth.v2.access needs no token (it uses client_id / client_secret), so pass null
     this.oauth = new OAuth(null, retries_limit)
-    this.openid = new OpenID(null, retries_limit)
+    // openid.connect.userInfo needs the user token; the code exchange stays token-free (OpenID.ts)
+    this.openid = new OpenID(token, retries_limit)
     this.pins = new Pins(token, retries_limit)
     this.reactions = new Reactions(token, retries_limit)
     this.reminders = new Reminders(token, retries_limit)

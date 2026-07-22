@@ -142,6 +142,11 @@ slack.oauth.access({
 })
 ```
 
+`oauth.access` and `openid.connect.token` are sent without an `Authorization` header,
+because Slack rejects the code exchange when one is present. `openid.connect.userInfo`
+is the opposite — it needs the user token the exchange returned, so build a client with
+it: `GASlacker.methods(userToken).openid.connect.userInfo()`.
+
 ### TypeScript
 
 Type definitions are generated into [`dist/types/`](dist/types/). In a

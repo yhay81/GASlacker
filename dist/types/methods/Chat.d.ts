@@ -1,17 +1,17 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 export default class Chat extends BaseAPI {
-    appendStream(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    startStream(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    stopStream(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    delete(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    delete_(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    deleteScheduledMessage(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    getPermalink(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    meMessage(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    postEphemeral(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    postMessage(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    scheduleMessage(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    scheduledMessagesList(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    unfurl(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    update(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    appendStream(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    startStream(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    stopStream(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    delete(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    delete_(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    deleteScheduledMessage(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    getPermalink(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    meMessage(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    postEphemeral(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    postMessage(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    scheduleMessage(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    scheduledMessagesList(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    unfurl(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    update(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

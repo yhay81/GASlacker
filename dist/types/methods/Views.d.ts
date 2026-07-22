@@ -1,7 +1,7 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 export default class Views extends BaseAPI {
-    open(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    publish(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    push(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    update(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    open(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    publish(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    push(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    update(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

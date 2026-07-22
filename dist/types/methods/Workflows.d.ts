@@ -1,9 +1,9 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 declare class WorkflowsFeatured extends BaseAPI {
-    add(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    list(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    remove(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    set(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    add(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    list(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    remove(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    set(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 export default class Workflows extends BaseAPI {
     featured: WorkflowsFeatured;

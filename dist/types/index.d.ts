@@ -28,6 +28,8 @@ import UserGroups from './methods/UserGroups';
 import Users from './methods/Users';
 import Views from './methods/Views';
 import Workflows from './methods/Workflows';
+import { type SlackParams } from './methods/BaseAPI';
+export type { SlackParams, SlackResponse } from './methods/BaseAPI';
 export declare class Methods {
     api: API;
     apps: Apps;
@@ -60,6 +62,6 @@ export declare class Methods {
     views: Views;
     workflows: Workflows;
     constructor(token: string | null, retries_limit?: number);
-    call(api: string, params?: Record<string, any>, method?: 'get' | 'post' | 'form'): import("./methods/BaseAPI").SlackResponse;
-    paginate(api: string, params?: Record<string, any>, method?: 'get' | 'post', max_pages?: number): import("./methods/BaseAPI").SlackResponse[];
+    call(api: string, params?: SlackParams, method?: 'get' | 'post' | 'form'): import(".").SlackResponse;
+    paginate(api: string, params?: SlackParams, method?: 'get' | 'post', max_pages?: number): import(".").SlackResponse[];
 }

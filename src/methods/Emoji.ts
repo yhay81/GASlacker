@@ -1,7 +1,7 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 export default class Emoji extends BaseAPI {
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('emoji.list', params)
   }
 }

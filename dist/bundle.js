@@ -865,7 +865,7 @@ function methods(token, retries_limit = 3) {
 	};
 	//#endregion
 	//#region src/methods/UserGroups.ts
-	var UsergroupsUsers = class extends BaseAPI {
+	var UserGroupsUsers = class extends BaseAPI {
 		list(params = {}) {
 			return this._get("usergroups.users.list", params);
 		}
@@ -876,7 +876,7 @@ function methods(token, retries_limit = 3) {
 	var UserGroups = class extends BaseAPI {
 		constructor(token, retries_limit) {
 			super(token, retries_limit);
-			this.users = new UsergroupsUsers(token, retries_limit);
+			this.users = new UserGroupsUsers(token, retries_limit);
 		}
 		create(params = {}) {
 			return this._post("usergroups.create", params);
@@ -932,9 +932,7 @@ function methods(token, retries_limit = 3) {
 			return this._post("users.setActive", params);
 		}
 		setPhoto(params = {}) {
-			const args = params ? Object.assign({}, params) : {};
-			const image = args.image;
-			delete args.image;
+			const { image, ...args } = this._normalizeArgs(params, "params");
 			return this._post_file("users.setPhoto", { image }, args);
 		}
 		setPresence(params = {}) {

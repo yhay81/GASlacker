@@ -1,4 +1,4 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 export default class Dialog extends BaseAPI {
-    open(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    open(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

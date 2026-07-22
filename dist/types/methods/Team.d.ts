@@ -1,16 +1,16 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 declare class TeamProfile extends BaseAPI {
-    get(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    get(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 declare class TeamBilling extends BaseAPI {
-    info(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    info(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 declare class TeamPreferences extends BaseAPI {
-    list(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    list(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 declare class TeamExternalTeams extends BaseAPI {
-    disconnect(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    list(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    disconnect(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    list(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 export default class Team extends BaseAPI {
     profile: TeamProfile;
@@ -18,9 +18,9 @@ export default class Team extends BaseAPI {
     preferences: TeamPreferences;
     externalTeams: TeamExternalTeams;
     constructor(token: string | null, retries_limit?: number);
-    accessLogs(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    billableInfo(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    info(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    integrationLogs(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    accessLogs(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    billableInfo(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    info(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    integrationLogs(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 export {};

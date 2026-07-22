@@ -1,15 +1,15 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 export default class Pins extends BaseAPI {
-  public add(params: Record<string, any> = {}) {
+  public add(params: SlackParams = {}) {
     return this._post('pins.add', params)
   }
 
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('pins.list', params)
   }
 
-  public remove(params: Record<string, any> = {}) {
+  public remove(params: SlackParams = {}) {
     return this._post('pins.remove', params)
   }
 }

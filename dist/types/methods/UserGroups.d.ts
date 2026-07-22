@@ -1,15 +1,15 @@
-import BaseAPI from './BaseAPI';
-declare class UsergroupsUsers extends BaseAPI {
-    list(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    update(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+import BaseAPI, { SlackParams } from './BaseAPI';
+declare class UserGroupsUsers extends BaseAPI {
+    list(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    update(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 export default class UserGroups extends BaseAPI {
-    users: UsergroupsUsers;
+    users: UserGroupsUsers;
     constructor(token: string | null, retries_limit?: number);
-    create(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    disable(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    enable(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    list(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    update(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    create(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    disable(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    enable(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    list(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    update(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 export {};

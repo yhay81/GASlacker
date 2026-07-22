@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.1 (2026-07-22)
+
+### Changed (internal refactoring)
+
+- Introduce the `SlackParams` type alias for every method signature, and
+  re-export `SlackParams` / `SlackResponse` from the entry point (also set
+  `types` in package.json).
+- Fold `config.ts` into `BaseAPI.ts` (one less file for one constant).
+- `users.setPhoto` now uses the same destructuring style as `uploadV2` and
+  rejects non-object params like every other method.
+- Rename internal class `UsergroupsUsers` → `UserGroupsUsers`; drop stray
+  `any` return annotations in `Apps`.
+- Routing test table no longer repeats the endpoint name when it matches the
+  method path; `verify-live` sleeps via `Atomics.wait` (Windows-friendly).
+
 ## 1.2.0 (2026-07-22)
 
 ### Added

@@ -1,7 +1,7 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 declare class OpenIDConnect extends BaseAPI {
-    token(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    userInfo(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    token(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    userInfo(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 export default class OpenID extends BaseAPI {
     connect: OpenIDConnect;

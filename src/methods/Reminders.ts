@@ -1,28 +1,28 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 export default class Reminders extends BaseAPI {
-  public add(params: Record<string, any> = {}) {
+  public add(params: SlackParams = {}) {
     return this._post('reminders.add', params)
   }
 
-  public complete(params: Record<string, any> = {}) {
+  public complete(params: SlackParams = {}) {
     return this._post('reminders.complete', params)
   }
 
-  public delete(params: Record<string, any> = {}) {
+  public delete(params: SlackParams = {}) {
     return this._post('reminders.delete', params)
   }
 
   // 後方互換エイリアス
-  public delete_(params: Record<string, any> = {}) {
+  public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }
 
-  public info(params: Record<string, any> = {}) {
+  public info(params: SlackParams = {}) {
     return this._get('reminders.info', params)
   }
 
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('reminders.list', params)
   }
 }

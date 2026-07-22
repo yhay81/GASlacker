@@ -1,7 +1,7 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 export default class Bookmarks extends BaseAPI {
-    add(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    edit(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    list(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    remove(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    add(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    edit(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    list(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    remove(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

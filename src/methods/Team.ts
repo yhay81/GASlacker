@@ -1,29 +1,29 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 class TeamProfile extends BaseAPI {
-  public get(params: Record<string, any> = {}) {
+  public get(params: SlackParams = {}) {
     return this._get('team.profile.get', params)
   }
 }
 
 class TeamBilling extends BaseAPI {
-  public info(params: Record<string, any> = {}) {
+  public info(params: SlackParams = {}) {
     return this._get('team.billing.info', params)
   }
 }
 
 class TeamPreferences extends BaseAPI {
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('team.preferences.list', params)
   }
 }
 
 class TeamExternalTeams extends BaseAPI {
-  public disconnect(params: Record<string, any> = {}) {
+  public disconnect(params: SlackParams = {}) {
     return this._post('team.externalTeams.disconnect', params)
   }
 
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('team.externalTeams.list', params)
   }
 }
@@ -41,19 +41,19 @@ export default class Team extends BaseAPI {
     this.externalTeams = new TeamExternalTeams(token, retries_limit)
   }
 
-  public accessLogs(params: Record<string, any> = {}) {
+  public accessLogs(params: SlackParams = {}) {
     return this._get('team.accessLogs', params)
   }
 
-  public billableInfo(params: Record<string, any> = {}) {
+  public billableInfo(params: SlackParams = {}) {
     return this._get('team.billableInfo', params)
   }
 
-  public info(params: Record<string, any> = {}) {
+  public info(params: SlackParams = {}) {
     return this._get('team.info', params)
   }
 
-  public integrationLogs(params: Record<string, any> = {}) {
+  public integrationLogs(params: SlackParams = {}) {
     return this._get('team.integrationLogs', params)
   }
 }

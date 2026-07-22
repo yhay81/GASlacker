@@ -1,27 +1,27 @@
-import BaseAPI, { SlackResponse } from './BaseAPI'
+import BaseAPI, { SlackParams, SlackResponse } from './BaseAPI'
 
 class FilesRemote extends BaseAPI {
-  public add(params: Record<string, any> = {}) {
+  public add(params: SlackParams = {}) {
     return this._post('files.remote.add', params)
   }
 
-  public info(params: Record<string, any> = {}) {
+  public info(params: SlackParams = {}) {
     return this._get('files.remote.info', params)
   }
 
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('files.remote.list', params)
   }
 
-  public remove(params: Record<string, any> = {}) {
+  public remove(params: SlackParams = {}) {
     return this._post('files.remote.remove', params)
   }
 
-  public share(params: Record<string, any> = {}) {
+  public share(params: SlackParams = {}) {
     return this._post('files.remote.share', params)
   }
 
-  public update(params: Record<string, any> = {}) {
+  public update(params: SlackParams = {}) {
     return this._post('files.remote.update', params)
   }
 }
@@ -33,35 +33,35 @@ export default class Files extends BaseAPI {
     this.remote = new FilesRemote(token, retries_limit)
   }
 
-  public delete(params: Record<string, any> = {}) {
+  public delete(params: SlackParams = {}) {
     return this._post('files.delete', params)
   }
 
   // 後方互換エイリアス
-  public delete_(params: Record<string, any> = {}) {
+  public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }
 
-  public info(params: Record<string, any> = {}) {
+  public info(params: SlackParams = {}) {
     return this._get('files.info', params)
   }
 
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('files.list', params)
   }
 
-  public revokePublicURL(params: Record<string, any> = {}) {
+  public revokePublicURL(params: SlackParams = {}) {
     return this._post('files.revokePublicURL', params)
   }
 
-  public sharedPublicURL(params: Record<string, any> = {}) {
+  public sharedPublicURL(params: SlackParams = {}) {
     return this._post('files.sharedPublicURL', params)
   }
 
   // files.uploadV2 という HTTP エンドポイントは存在しないため、公式推奨の
   // 3 ステップ(URL 取得 → アップロード → 完了通知)を 1 メソッドにまとめている。
   // file には GAS の Blob、content には文字列を指定する。
-  public uploadV2(params: Record<string, any> = {}): SlackResponse {
+  public uploadV2(params: SlackParams = {}): SlackResponse {
     const safeParams = this._normalizeArgs(params, 'params')
     const { file, content, filename, snippet_type, alt_txt, title, ...completeArgs } = safeParams
     if (file == null && content == null) {
@@ -95,11 +95,11 @@ export default class Files extends BaseAPI {
   }
 
   // JSON ボディ非対応のためフォーム送信(実測で確認)
-  public getUploadURLExternal(params: Record<string, any> = {}) {
+  public getUploadURLExternal(params: SlackParams = {}) {
     return this._post_form('files.getUploadURLExternal', params)
   }
 
-  public completeUploadExternal(params: Record<string, any> = {}) {
+  public completeUploadExternal(params: SlackParams = {}) {
     return this._post('files.completeUploadExternal', params)
   }
 }

@@ -1,61 +1,61 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 export default class Chat extends BaseAPI {
   // AI アシスタント向けストリーミング投稿
-  public appendStream(params: Record<string, any> = {}) {
+  public appendStream(params: SlackParams = {}) {
     return this._post('chat.appendStream', params)
   }
 
-  public startStream(params: Record<string, any> = {}) {
+  public startStream(params: SlackParams = {}) {
     return this._post('chat.startStream', params)
   }
 
-  public stopStream(params: Record<string, any> = {}) {
+  public stopStream(params: SlackParams = {}) {
     return this._post('chat.stopStream', params)
   }
 
-  public delete(params: Record<string, any> = {}) {
+  public delete(params: SlackParams = {}) {
     return this._post('chat.delete', params)
   }
 
   // 後方互換エイリアス
-  public delete_(params: Record<string, any> = {}) {
+  public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }
 
-  public deleteScheduledMessage(params: Record<string, any> = {}) {
+  public deleteScheduledMessage(params: SlackParams = {}) {
     return this._post('chat.deleteScheduledMessage', params)
   }
 
-  public getPermalink(params: Record<string, any> = {}) {
+  public getPermalink(params: SlackParams = {}) {
     return this._get('chat.getPermalink', params)
   }
 
-  public meMessage(params: Record<string, any> = {}) {
+  public meMessage(params: SlackParams = {}) {
     return this._post('chat.meMessage', params)
   }
 
-  public postEphemeral(params: Record<string, any> = {}) {
+  public postEphemeral(params: SlackParams = {}) {
     return this._post('chat.postEphemeral', params)
   }
 
-  public postMessage(params: Record<string, any> = {}) {
+  public postMessage(params: SlackParams = {}) {
     return this._post('chat.postMessage', params)
   }
 
-  public scheduleMessage(params: Record<string, any> = {}) {
+  public scheduleMessage(params: SlackParams = {}) {
     return this._post('chat.scheduleMessage', params)
   }
 
-  public scheduledMessagesList(params: Record<string, any> = {}) {
+  public scheduledMessagesList(params: SlackParams = {}) {
     return this._get('chat.scheduledMessages.list', params)
   }
 
-  public unfurl(params: Record<string, any> = {}) {
+  public unfurl(params: SlackParams = {}) {
     return this._post('chat.unfurl', params)
   }
 
-  public update(params: Record<string, any> = {}) {
+  public update(params: SlackParams = {}) {
     return this._post('chat.update', params)
   }
 }

@@ -1,23 +1,23 @@
-import BaseAPI, { SlackResponse } from './BaseAPI';
+import BaseAPI, { SlackParams, SlackResponse } from './BaseAPI';
 declare class FilesRemote extends BaseAPI {
-    add(params?: Record<string, any>): SlackResponse;
-    info(params?: Record<string, any>): SlackResponse;
-    list(params?: Record<string, any>): SlackResponse;
-    remove(params?: Record<string, any>): SlackResponse;
-    share(params?: Record<string, any>): SlackResponse;
-    update(params?: Record<string, any>): SlackResponse;
+    add(params?: SlackParams): SlackResponse;
+    info(params?: SlackParams): SlackResponse;
+    list(params?: SlackParams): SlackResponse;
+    remove(params?: SlackParams): SlackResponse;
+    share(params?: SlackParams): SlackResponse;
+    update(params?: SlackParams): SlackResponse;
 }
 export default class Files extends BaseAPI {
     remote: FilesRemote;
     constructor(token: string | null, retries_limit?: number);
-    delete(params?: Record<string, any>): SlackResponse;
-    delete_(params?: Record<string, any>): SlackResponse;
-    info(params?: Record<string, any>): SlackResponse;
-    list(params?: Record<string, any>): SlackResponse;
-    revokePublicURL(params?: Record<string, any>): SlackResponse;
-    sharedPublicURL(params?: Record<string, any>): SlackResponse;
-    uploadV2(params?: Record<string, any>): SlackResponse;
-    getUploadURLExternal(params?: Record<string, any>): SlackResponse;
-    completeUploadExternal(params?: Record<string, any>): SlackResponse;
+    delete(params?: SlackParams): SlackResponse;
+    delete_(params?: SlackParams): SlackResponse;
+    info(params?: SlackParams): SlackResponse;
+    list(params?: SlackParams): SlackResponse;
+    revokePublicURL(params?: SlackParams): SlackResponse;
+    sharedPublicURL(params?: SlackParams): SlackResponse;
+    uploadV2(params?: SlackParams): SlackResponse;
+    getUploadURLExternal(params?: SlackParams): SlackResponse;
+    completeUploadExternal(params?: SlackParams): SlackResponse;
 }
 export {};

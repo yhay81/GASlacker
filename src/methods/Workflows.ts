@@ -1,19 +1,19 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 class WorkflowsFeatured extends BaseAPI {
-  public add(params: Record<string, any> = {}) {
+  public add(params: SlackParams = {}) {
     return this._post('workflows.featured.add', params)
   }
 
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('workflows.featured.list', params)
   }
 
-  public remove(params: Record<string, any> = {}) {
+  public remove(params: SlackParams = {}) {
     return this._post('workflows.featured.remove', params)
   }
 
-  public set(params: Record<string, any> = {}) {
+  public set(params: SlackParams = {}) {
     return this._post('workflows.featured.set', params)
   }
 }

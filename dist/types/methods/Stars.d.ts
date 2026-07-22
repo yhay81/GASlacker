@@ -1,6 +1,6 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 export default class Stars extends BaseAPI {
-    add(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    list(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    remove(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    add(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    list(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    remove(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

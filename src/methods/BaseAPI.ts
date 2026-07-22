@@ -1,5 +1,9 @@
 import { queryEncode, createPayload, createFormPayload } from '../util'
-import { DEFAULT_RETRIES } from '../config'
+
+export const DEFAULT_RETRIES = 3
+
+// メソッドに渡す引数。内容は Slack 公式ドキュメント準拠の自由形式。
+export type SlackParams = Record<string, any>
 
 // Slack Web API の共通レスポンス。ok / error 以外のフィールドはメソッドごとに異なる。
 export interface SlackResponse {
@@ -15,7 +19,7 @@ export default class BaseAPI {
     private _retries_limit: number = DEFAULT_RETRIES,
   ) {}
 
-  protected _get(api: string, args: Record<string, any> = {}): SlackResponse {
+  protected _get(api: string, args: SlackParams = {}): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
     const encodedArgs: string = queryEncode(safeArgs)
     const query = encodedArgs ? `?${encodedArgs}` : ''
@@ -28,7 +32,7 @@ export default class BaseAPI {
     return this._fetch(url, params)
   }
 
-  protected _post(api: string, args: Record<string, any> = {}): SlackResponse {
+  protected _post(api: string, args: SlackParams = {}): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
     const payload: Record<string, any> = createPayload(safeArgs)
     const url = `${BaseAPI.API_ENDPOINT}${api}`
@@ -41,7 +45,7 @@ export default class BaseAPI {
     return this._fetch(url, params)
   }
 
-  protected _post_form(api: string, args: Record<string, any> = {}): SlackResponse {
+  protected _post_form(api: string, args: SlackParams = {}): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
     const payload: Record<string, any> = createFormPayload(safeArgs)
     const url = `${BaseAPI.API_ENDPOINT}${api}`
@@ -54,11 +58,7 @@ export default class BaseAPI {
     return this._fetch(url, params)
   }
 
-  protected _post_file(
-    api: string,
-    file_args: Record<string, any>,
-    args: Record<string, any> = {},
-  ): SlackResponse {
+  protected _post_file(api: string, file_args: SlackParams, args: SlackParams = {}): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
     const safeFileArgs = this._normalizeArgs(file_args, 'file_params')
     const payload: Record<string, any> = createFormPayload(safeArgs)
@@ -106,7 +106,7 @@ export default class BaseAPI {
     return { Authorization: `Bearer ${this._token}` }
   }
 
-  protected _normalizeArgs(args: Record<string, any>, name: string): Record<string, any> {
+  protected _normalizeArgs(args: SlackParams, name: string): SlackParams {
     if (args == null) return {}
     if (typeof args !== 'object' || Array.isArray(args)) {
       throw new Error(`${name} はオブジェクトで指定してください`)

@@ -1,47 +1,47 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 class AppsConnections extends BaseAPI {
-  public open(params: Record<string, any> = {}): any {
+  public open(params: SlackParams = {}) {
     return this._post('apps.connections.open', params)
   }
 }
 
 class AppsEventAuthorizations extends BaseAPI {
-  public list(params: Record<string, any> = {}): any {
+  public list(params: SlackParams = {}) {
     return this._get('apps.event.authorizations.list', params)
   }
 }
 
 // App Configuration Token(xoxe-)で使うマニフェスト管理 API
 class AppsManifest extends BaseAPI {
-  public create(params: Record<string, any> = {}) {
+  public create(params: SlackParams = {}) {
     return this._post('apps.manifest.create', params)
   }
 
-  public delete(params: Record<string, any> = {}) {
+  public delete(params: SlackParams = {}) {
     return this._post('apps.manifest.delete', params)
   }
 
   // 後方互換エイリアス
-  public delete_(params: Record<string, any> = {}) {
+  public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }
 
-  public export(params: Record<string, any> = {}) {
+  public export(params: SlackParams = {}) {
     return this._get('apps.manifest.export', params)
   }
 
-  public update(params: Record<string, any> = {}) {
+  public update(params: SlackParams = {}) {
     return this._post('apps.manifest.update', params)
   }
 
-  public validate(params: Record<string, any> = {}) {
+  public validate(params: SlackParams = {}) {
     return this._post('apps.manifest.validate', params)
   }
 }
 
 class AppsUserConnection extends BaseAPI {
-  public update(params: Record<string, any> = {}) {
+  public update(params: SlackParams = {}) {
     return this._post('apps.user.connection.update', params)
   }
 }
@@ -67,7 +67,7 @@ export default class Apps extends BaseAPI {
     this.user = new AppsUser(token, retries_limit)
   }
 
-  public uninstall(params: Record<string, any> = {}): any {
+  public uninstall(params: SlackParams = {}) {
     return this._post_form('apps.uninstall', params)
   }
 }

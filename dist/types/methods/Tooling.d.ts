@@ -1,6 +1,6 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 declare class ToolingTokens extends BaseAPI {
-    rotate(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    rotate(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 export default class Tooling extends BaseAPI {
     tokens: ToolingTokens;

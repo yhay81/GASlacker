@@ -1,6 +1,6 @@
 {
   "name": "gaslacker",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "description": "Slack Web API client library for Google Apps Script.",
   "keywords": [
@@ -19,6 +19,7 @@
     "url": "git+https://github.com/yhay81/GASlacker.git"
   },
   "main": "dist/bundle.js",
+  "types": "dist/types/index.d.ts",
   "scripts": {
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",

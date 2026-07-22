@@ -1,11 +1,11 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 class CallsParticipants extends BaseAPI {
-  public add(params: Record<string, any> = {}) {
+  public add(params: SlackParams = {}) {
     return this._post('calls.participants.add', params)
   }
 
-  public remove(params: Record<string, any> = {}) {
+  public remove(params: SlackParams = {}) {
     return this._post('calls.participants.remove', params)
   }
 }
@@ -17,19 +17,19 @@ export default class Calls extends BaseAPI {
     this.participants = new CallsParticipants(token, retries_limit)
   }
 
-  public add(params: Record<string, any> = {}) {
+  public add(params: SlackParams = {}) {
     return this._post('calls.add', params)
   }
 
-  public end(params: Record<string, any> = {}) {
+  public end(params: SlackParams = {}) {
     return this._post('calls.end', params)
   }
 
-  public info(params: Record<string, any> = {}) {
+  public info(params: SlackParams = {}) {
     return this._get('calls.info', params)
   }
 
-  public update(params: Record<string, any> = {}) {
+  public update(params: SlackParams = {}) {
     return this._post('calls.update', params)
   }
 }

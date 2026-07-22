@@ -1,23 +1,23 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 export default class DND extends BaseAPI {
-  public endDnd(params: Record<string, any> = {}) {
+  public endDnd(params: SlackParams = {}) {
     return this._post('dnd.endDnd', params)
   }
 
-  public endSnooze(params: Record<string, any> = {}) {
+  public endSnooze(params: SlackParams = {}) {
     return this._post('dnd.endSnooze', params)
   }
 
-  public info(params: Record<string, any> = {}) {
+  public info(params: SlackParams = {}) {
     return this._get('dnd.info', params)
   }
 
-  public setSnooze(params: Record<string, any> = {}) {
+  public setSnooze(params: SlackParams = {}) {
     return this._post('dnd.setSnooze', params)
   }
 
-  public teamInfo(params: Record<string, any> = {}) {
+  public teamInfo(params: SlackParams = {}) {
     return this._get('dnd.teamInfo', params)
   }
 }

@@ -1,6 +1,6 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 export default class Search extends BaseAPI {
-    all(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    files(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    messages(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    all(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    files(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    messages(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

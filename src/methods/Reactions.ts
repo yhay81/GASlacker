@@ -1,19 +1,19 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 export default class Reactions extends BaseAPI {
-  public add(params: Record<string, any> = {}) {
+  public add(params: SlackParams = {}) {
     return this._post('reactions.add', params)
   }
 
-  public get(params: Record<string, any> = {}) {
+  public get(params: SlackParams = {}) {
     return this._get('reactions.get', params)
   }
 
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('reactions.list', params)
   }
 
-  public remove(params: Record<string, any> = {}) {
+  public remove(params: SlackParams = {}) {
     return this._post('reactions.remove', params)
   }
 }

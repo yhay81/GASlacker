@@ -1,8 +1,8 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 class ToolingTokens extends BaseAPI {
   // refresh_token を使うためフォーム送信
-  public rotate(params: Record<string, any> = {}) {
+  public rotate(params: SlackParams = {}) {
     return this._post_form('tooling.tokens.rotate', params)
   }
 }

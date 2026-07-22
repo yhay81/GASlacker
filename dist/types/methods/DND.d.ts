@@ -1,8 +1,8 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 export default class DND extends BaseAPI {
-    endDnd(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    endSnooze(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    info(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    setSnooze(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    teamInfo(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    endDnd(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    endSnooze(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    info(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    setSnooze(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    teamInfo(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

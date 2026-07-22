@@ -1,4 +1,4 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 export default class OAuth extends BaseAPI {
-    access(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    access(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

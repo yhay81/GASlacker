@@ -29,7 +29,9 @@ import Users from './methods/Users'
 import Views from './methods/Views'
 import Workflows from './methods/Workflows'
 
-import { DEFAULT_RETRIES } from './config'
+import { DEFAULT_RETRIES, type SlackParams } from './methods/BaseAPI'
+
+export type { SlackParams, SlackResponse } from './methods/BaseAPI'
 
 export class Methods {
   public api
@@ -97,18 +99,14 @@ export class Methods {
     this.workflows = new Workflows(token, retries_limit)
   }
 
-  public call(
-    api: string,
-    params: Record<string, any> = {},
-    method: 'get' | 'post' | 'form' = 'post',
-  ) {
+  public call(api: string, params: SlackParams = {}, method: 'get' | 'post' | 'form' = 'post') {
     return this.api.call(api, params, method)
   }
 
   // カーソルページネーションを辿り、各ページのレスポンスを配列で返す
   public paginate(
     api: string,
-    params: Record<string, any> = {},
+    params: SlackParams = {},
     method: 'get' | 'post' = 'post',
     max_pages: number = 20,
   ) {

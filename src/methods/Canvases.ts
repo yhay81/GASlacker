@@ -1,22 +1,22 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 class CanvasesAccess extends BaseAPI {
-  public set(params: Record<string, any> = {}) {
+  public set(params: SlackParams = {}) {
     return this._post('canvases.access.set', params)
   }
 
-  public delete(params: Record<string, any> = {}) {
+  public delete(params: SlackParams = {}) {
     return this._post('canvases.access.delete', params)
   }
 
   // 後方互換エイリアス
-  public delete_(params: Record<string, any> = {}) {
+  public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }
 }
 
 class CanvasesSections extends BaseAPI {
-  public lookup(params: Record<string, any> = {}) {
+  public lookup(params: SlackParams = {}) {
     return this._post('canvases.sections.lookup', params)
   }
 }
@@ -30,20 +30,20 @@ export default class Canvases extends BaseAPI {
     this.sections = new CanvasesSections(token, retries_limit)
   }
 
-  public create(params: Record<string, any> = {}) {
+  public create(params: SlackParams = {}) {
     return this._post('canvases.create', params)
   }
 
-  public edit(params: Record<string, any> = {}) {
+  public edit(params: SlackParams = {}) {
     return this._post('canvases.edit', params)
   }
 
-  public delete(params: Record<string, any> = {}) {
+  public delete(params: SlackParams = {}) {
     return this._post('canvases.delete', params)
   }
 
   // 後方互換エイリアス
-  public delete_(params: Record<string, any> = {}) {
+  public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }
 }

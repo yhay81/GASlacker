@@ -1,27 +1,27 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 class ConversationsCanvases extends BaseAPI {
-  public create(params: Record<string, any> = {}) {
+  public create(params: SlackParams = {}) {
     return this._post('conversations.canvases.create', params)
   }
 }
 
 class ConversationsExternalInvitePermissions extends BaseAPI {
-  public set(params: Record<string, any> = {}) {
+  public set(params: SlackParams = {}) {
     return this._post('conversations.externalInvitePermissions.set', params)
   }
 }
 
 class ConversationsRequestSharedInvite extends BaseAPI {
-  public approve(params: Record<string, any> = {}) {
+  public approve(params: SlackParams = {}) {
     return this._post('conversations.requestSharedInvite.approve', params)
   }
 
-  public deny(params: Record<string, any> = {}) {
+  public deny(params: SlackParams = {}) {
     return this._post('conversations.requestSharedInvite.deny', params)
   }
 
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('conversations.requestSharedInvite.list', params)
   }
 }
@@ -41,95 +41,95 @@ export default class Conversations extends BaseAPI {
   }
 
   // Slack Connect(外部共有チャンネル)関連
-  public acceptSharedInvite(params: Record<string, any> = {}) {
+  public acceptSharedInvite(params: SlackParams = {}) {
     return this._post('conversations.acceptSharedInvite', params)
   }
 
-  public approveSharedInvite(params: Record<string, any> = {}) {
+  public approveSharedInvite(params: SlackParams = {}) {
     return this._post('conversations.approveSharedInvite', params)
   }
 
-  public declineSharedInvite(params: Record<string, any> = {}) {
+  public declineSharedInvite(params: SlackParams = {}) {
     return this._post('conversations.declineSharedInvite', params)
   }
 
-  public inviteShared(params: Record<string, any> = {}) {
+  public inviteShared(params: SlackParams = {}) {
     return this._post('conversations.inviteShared', params)
   }
 
-  public listConnectInvites(params: Record<string, any> = {}) {
+  public listConnectInvites(params: SlackParams = {}) {
     return this._get('conversations.listConnectInvites', params)
   }
 
-  public archive(params: Record<string, any> = {}) {
+  public archive(params: SlackParams = {}) {
     return this._post('conversations.archive', params)
   }
 
-  public close(params: Record<string, any> = {}) {
+  public close(params: SlackParams = {}) {
     return this._post('conversations.close', params)
   }
 
-  public create(params: Record<string, any> = {}) {
+  public create(params: SlackParams = {}) {
     return this._post('conversations.create', params)
   }
 
-  public history(params: Record<string, any> = {}) {
+  public history(params: SlackParams = {}) {
     return this._get('conversations.history', params)
   }
 
-  public info(params: Record<string, any> = {}) {
+  public info(params: SlackParams = {}) {
     return this._get('conversations.info', params)
   }
 
-  public invite(params: Record<string, any> = {}) {
+  public invite(params: SlackParams = {}) {
     return this._post('conversations.invite', params)
   }
 
-  public join(params: Record<string, any> = {}) {
+  public join(params: SlackParams = {}) {
     return this._post('conversations.join', params)
   }
 
-  public kick(params: Record<string, any> = {}) {
+  public kick(params: SlackParams = {}) {
     return this._post('conversations.kick', params)
   }
 
-  public leave(params: Record<string, any> = {}) {
+  public leave(params: SlackParams = {}) {
     return this._post('conversations.leave', params)
   }
 
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('conversations.list', params)
   }
 
-  public mark(params: Record<string, any> = {}) {
+  public mark(params: SlackParams = {}) {
     return this._post('conversations.mark', params)
   }
 
-  public members(params: Record<string, any> = {}) {
+  public members(params: SlackParams = {}) {
     return this._get('conversations.members', params)
   }
 
-  public open(params: Record<string, any> = {}) {
+  public open(params: SlackParams = {}) {
     return this._post('conversations.open', params)
   }
 
-  public rename(params: Record<string, any> = {}) {
+  public rename(params: SlackParams = {}) {
     return this._post('conversations.rename', params)
   }
 
-  public replies(params: Record<string, any> = {}) {
+  public replies(params: SlackParams = {}) {
     return this._get('conversations.replies', params)
   }
 
-  public setPurpose(params: Record<string, any> = {}) {
+  public setPurpose(params: SlackParams = {}) {
     return this._post('conversations.setPurpose', params)
   }
 
-  public setTopic(params: Record<string, any> = {}) {
+  public setTopic(params: SlackParams = {}) {
     return this._post('conversations.setTopic', params)
   }
 
-  public unarchive(params: Record<string, any> = {}) {
+  public unarchive(params: SlackParams = {}) {
     return this._post('conversations.unarchive', params)
   }
 }

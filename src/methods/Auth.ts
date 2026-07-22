@@ -1,7 +1,7 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 class AuthTeams extends BaseAPI {
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('auth.teams.list', params)
   }
 }
@@ -13,11 +13,11 @@ export default class Auth extends BaseAPI {
     this.teams = new AuthTeams(token, retries_limit)
   }
 
-  public revoke(params: Record<string, any> = {}) {
+  public revoke(params: SlackParams = {}) {
     return this._post('auth.revoke', params)
   }
 
-  public test(params: Record<string, any> = {}) {
+  public test(params: SlackParams = {}) {
     return this._get('auth.test', params)
   }
 }

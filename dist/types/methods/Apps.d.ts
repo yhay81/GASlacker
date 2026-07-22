@@ -1,20 +1,20 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 declare class AppsConnections extends BaseAPI {
-    open(params?: Record<string, any>): any;
+    open(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 declare class AppsEventAuthorizations extends BaseAPI {
-    list(params?: Record<string, any>): any;
+    list(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 declare class AppsManifest extends BaseAPI {
-    create(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    delete(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    delete_(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    export(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    update(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    validate(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    create(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    delete(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    delete_(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    export(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    update(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    validate(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 declare class AppsUserConnection extends BaseAPI {
-    update(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    update(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 declare class AppsUser extends BaseAPI {
     connection: AppsUserConnection;
@@ -26,6 +26,6 @@ export default class Apps extends BaseAPI {
     manifest: AppsManifest;
     user: AppsUser;
     constructor(token: string | null, retries_limit?: number);
-    uninstall(params?: Record<string, any>): any;
+    uninstall(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 export {};

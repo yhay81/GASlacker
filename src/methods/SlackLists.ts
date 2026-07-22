@@ -1,57 +1,57 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 class SlackListsAccess extends BaseAPI {
-  public delete(params: Record<string, any> = {}) {
+  public delete(params: SlackParams = {}) {
     return this._post('slackLists.access.delete', params)
   }
 
   // 後方互換エイリアス
-  public delete_(params: Record<string, any> = {}) {
+  public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }
 
-  public set(params: Record<string, any> = {}) {
+  public set(params: SlackParams = {}) {
     return this._post('slackLists.access.set', params)
   }
 }
 
 class SlackListsDownload extends BaseAPI {
-  public get(params: Record<string, any> = {}) {
+  public get(params: SlackParams = {}) {
     return this._get('slackLists.download.get', params)
   }
 
-  public start(params: Record<string, any> = {}) {
+  public start(params: SlackParams = {}) {
     return this._post('slackLists.download.start', params)
   }
 }
 
 class SlackListsItems extends BaseAPI {
-  public create(params: Record<string, any> = {}) {
+  public create(params: SlackParams = {}) {
     return this._post('slackLists.items.create', params)
   }
 
-  public delete(params: Record<string, any> = {}) {
+  public delete(params: SlackParams = {}) {
     return this._post('slackLists.items.delete', params)
   }
 
   // 後方互換エイリアス
-  public delete_(params: Record<string, any> = {}) {
+  public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }
 
-  public deleteMultiple(params: Record<string, any> = {}) {
+  public deleteMultiple(params: SlackParams = {}) {
     return this._post('slackLists.items.deleteMultiple', params)
   }
 
-  public info(params: Record<string, any> = {}) {
+  public info(params: SlackParams = {}) {
     return this._get('slackLists.items.info', params)
   }
 
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('slackLists.items.list', params)
   }
 
-  public update(params: Record<string, any> = {}) {
+  public update(params: SlackParams = {}) {
     return this._post('slackLists.items.update', params)
   }
 }
@@ -67,11 +67,11 @@ export default class SlackLists extends BaseAPI {
     this.items = new SlackListsItems(token, retries_limit)
   }
 
-  public create(params: Record<string, any> = {}) {
+  public create(params: SlackParams = {}) {
     return this._post('slackLists.create', params)
   }
 
-  public update(params: Record<string, any> = {}) {
+  public update(params: SlackParams = {}) {
     return this._post('slackLists.update', params)
   }
 }

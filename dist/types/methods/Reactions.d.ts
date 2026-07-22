@@ -1,7 +1,7 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 export default class Reactions extends BaseAPI {
-    add(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    get(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    list(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
-    remove(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    add(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    get(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    list(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    remove(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

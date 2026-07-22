@@ -69,7 +69,8 @@ const newBlob = (content, contentType = 'text/plain', name = null) => ({
 
 globalThis.UrlFetchApp = { fetch: fetchImpl }
 globalThis.Utilities = {
-  sleep: (ms) => execFileSync('sleep', [String(ms / 1000)]),
+  // Atomics.wait による同期スリープ(外部コマンド不要で Windows でも動く)
+  sleep: (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms),
   newBlob,
 }
 

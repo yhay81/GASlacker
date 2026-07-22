@@ -1,17 +1,17 @@
-import BaseAPI, { SlackResponse } from './BaseAPI'
+import BaseAPI, { SlackParams, SlackResponse } from './BaseAPI'
 
 export default class API extends BaseAPI {
-  public get(api: string, params: Record<string, any> = {}): SlackResponse {
+  public get(api: string, params: SlackParams = {}): SlackResponse {
     return this._get(api, params)
   }
 
-  public post(api: string, params: Record<string, any> = {}): SlackResponse {
+  public post(api: string, params: SlackParams = {}): SlackResponse {
     return this._post(api, params)
   }
 
   public call(
     api: string,
-    params: Record<string, any> = {},
+    params: SlackParams = {},
     method: 'get' | 'post' | 'form' = 'post',
   ): SlackResponse {
     if (method === 'get') return this._get(api, params)
@@ -23,7 +23,7 @@ export default class API extends BaseAPI {
   // 呼び出し例: paginate('conversations.list', { limit: 200 }, 'get')
   public paginate(
     api: string,
-    params: Record<string, any> = {},
+    params: SlackParams = {},
     method: 'get' | 'post' = 'post',
     max_pages: number = 20,
   ): SlackResponse[] {
@@ -39,7 +39,7 @@ export default class API extends BaseAPI {
     return pages
   }
 
-  public test(params: Record<string, any> = {}): SlackResponse {
+  public test(params: SlackParams = {}): SlackResponse {
     return this._get('api.test', params)
   }
 }

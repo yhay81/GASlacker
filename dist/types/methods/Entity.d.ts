@@ -1,4 +1,4 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 export default class Entity extends BaseAPI {
-    presentDetails(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    presentDetails(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

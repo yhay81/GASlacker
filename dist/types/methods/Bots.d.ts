@@ -1,4 +1,4 @@
-import BaseAPI from './BaseAPI';
+import BaseAPI, { SlackParams } from './BaseAPI';
 export default class Bots extends BaseAPI {
-    info(params?: Record<string, any>): import("./BaseAPI").SlackResponse;
+    info(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

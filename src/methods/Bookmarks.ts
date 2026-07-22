@@ -1,19 +1,19 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 export default class Bookmarks extends BaseAPI {
-  public add(params: Record<string, any> = {}) {
+  public add(params: SlackParams = {}) {
     return this._post('bookmarks.add', params)
   }
 
-  public edit(params: Record<string, any> = {}) {
+  public edit(params: SlackParams = {}) {
     return this._post('bookmarks.edit', params)
   }
 
-  public list(params: Record<string, any> = {}) {
+  public list(params: SlackParams = {}) {
     return this._get('bookmarks.list', params)
   }
 
-  public remove(params: Record<string, any> = {}) {
+  public remove(params: SlackParams = {}) {
     return this._post('bookmarks.remove', params)
   }
 }

@@ -1,15 +1,15 @@
-import BaseAPI from './BaseAPI'
+import BaseAPI, { SlackParams } from './BaseAPI'
 
 class AssistantThreads extends BaseAPI {
-  public setStatus(params: Record<string, any> = {}) {
+  public setStatus(params: SlackParams = {}) {
     return this._post('assistant.threads.setStatus', params)
   }
 
-  public setSuggestedPrompts(params: Record<string, any> = {}) {
+  public setSuggestedPrompts(params: SlackParams = {}) {
     return this._post('assistant.threads.setSuggestedPrompts', params)
   }
 
-  public setTitle(params: Record<string, any> = {}) {
+  public setTitle(params: SlackParams = {}) {
     return this._post('assistant.threads.setTitle', params)
   }
 }

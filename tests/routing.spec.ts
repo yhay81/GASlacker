@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 
 type Call = { type: 'get' | 'post' | 'post_form' | 'post_file'; api: string }
 
-// Methods 配下の全 BaseAPI インスタンスを再帰的に探し、送信メソッドをスパイに置き換える
+// Recursively find every BaseAPI instance under Methods and replace its send methods with spies
 const spyAll = (root: any): Call[] => {
   const calls: Call[] = []
   const seen = new Set<any>()
@@ -34,10 +34,10 @@ const spyAll = (root: any): Call[] => {
   return calls
 }
 
-// 各メソッドが期待どおりのエンドポイント名と HTTP 種別で送信されることの網羅表。
-// エンドポイント名は 2026-07 時点で Slack API に実在することを確認済み
-// (存在しないメソッド名には unknown_method が返ることを利用して照合)。
-// [メソッドパス, 呼び出し, HTTP 種別, エンドポイント名(メソッドパスと同じ場合は省略)]
+// Exhaustive table asserting each method sends with the expected endpoint name and HTTP style.
+// Endpoint names were confirmed to exist on the live Slack API as of 2026-07
+// (checked by confirming that nonexistent method names answer unknown_method).
+// [method path, invocation, HTTP style, endpoint name (omitted when it equals the method path)]
 const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
   ['api.test', (m) => m.api.test(), 'get'],
   ['apps.uninstall', (m) => m.apps.uninstall(), 'post_form'],

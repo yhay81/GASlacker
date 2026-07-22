@@ -7,7 +7,7 @@ const normalizeFormValue = (value: unknown): string | null => {
   return String(value)
 }
 
-// 参考) https://github.com/python/cpython/blob/3.6/Lib/urllib/parse.py#L846
+// Reference: https://github.com/python/cpython/blob/3.6/Lib/urllib/parse.py#L846
 export const queryEncode = (params: Record<string, any> | null): string => {
   if (params == null) return ''
   const param_list: string[] = []

@@ -1,7 +1,7 @@
 import BaseAPI, { SlackParams } from './BaseAPI'
 
 class OpenIDConnect extends BaseAPI {
-  // OAuth 系エンドポイントのためフォーム送信(client_id / client_secret / code を使う)
+  // Form-encoded, like other OAuth endpoints (uses client_id / client_secret / code)
   public token(params: SlackParams = {}) {
     return this._post_form('openid.connect.token', params)
   }

@@ -1,9 +1,9 @@
 name: API parity
 
-# Slack 公式 SDK のメソッド一覧と週次で突き合わせ、新 API が出たら Issue を起票する
+# Diffs against the official Slack SDK method list weekly and files an issue when new APIs appear
 on:
   schedule:
-    - cron: '0 3 * * 1' # 毎週月曜 03:00 UTC
+    - cron: '0 3 * * 1' # every Monday 03:00 UTC
   workflow_dispatch:
 
 permissions:

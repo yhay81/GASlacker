@@ -1,18 +1,18 @@
-// Slack 公式 node-slack-sdk のメソッド一覧と dist/bundle.js を突き合わせ、
-// 未実装の新 API があれば一覧を出力して exit 1 する(週次 CI から実行)。
+// Diffs the official node-slack-sdk method list against dist/bundle.js, printing any
+// unimplemented new APIs and exiting 1 (run from the weekly CI job).
 import { readFileSync } from 'node:fs'
 
 const SDK_URL =
   'https://raw.githubusercontent.com/slackapi/node-slack-sdk/main/packages/web-api/src/methods.ts'
 
-// 意図的に対象外とするもの(README の Removed / not included と対応)
+// Intentionally out of scope (mirrors the Removed / not included section of the README)
 const EXCLUDED = [
-  /^admin\./, // Enterprise 管理系はスコープ外(slack.call() で呼べる)
-  /^files\.comments\./, // 2018 年廃止
+  /^admin\./, // Enterprise admin APIs are out of scope (reachable via slack.call())
+  /^files\.comments\./, // discontinued in 2018
   /^rtm\./, // legacy RTM
-  /^migration\./, // legacy トークン移行
+  /^migration\./, // legacy token migration
   /^oauth\.access$/, // OAuth v1
-  /^oauth\.v2\.exchange$/, // legacy トークン交換
+  /^oauth\.v2\.exchange$/, // legacy token exchange
 ]
 
 const extract = (source, quote) => {
@@ -30,7 +30,7 @@ const implMethods = extract(
 )
 
 if (sdkMethods.length < 100) {
-  console.error(`SDK 一覧の取得に失敗した可能性があります(抽出数: ${sdkMethods.length})`)
+  console.error(`Fetching the SDK method list may have failed (extracted ${sdkMethods.length})`)
   process.exit(2)
 }
 
@@ -39,13 +39,13 @@ const missing = sdkMethods.filter(
 )
 
 if (missing.length === 0) {
-  console.log(`パリティ OK: SDK ${sdkMethods.length} メソッド中、対象の全メソッドを実装済み`)
+  console.log(`Parity OK: all in-scope methods implemented (${sdkMethods.length} SDK methods)`)
   process.exit(0)
 }
 
-console.log('Slack SDK に存在し GASlacker に未実装のメソッド:')
+console.log('Methods present in the Slack SDK but not implemented in GASlacker:')
 for (const m of missing) console.log(`- ${m}`)
 console.log(
-  '\n追加手順は CONTRIBUTING.md を参照(実在確認 → クラスに 1 行 → routing.spec.ts に 1 行)',
+  '\nSee CONTRIBUTING.md for how to add them (verify liveness -> one line in the class -> one line in routing.spec.ts)',
 )
 process.exit(1)

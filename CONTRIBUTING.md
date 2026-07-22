@@ -18,7 +18,7 @@ Node.js 22.12+ and pnpm are required.
 - Method classes are thin one-line delegations; anything clever belongs in
   `BaseAPI` or `src/util.ts`.
 - Responses are returned as-is; callers check `ok` / `error`.
-- Comments in source code are written in Japanese (project convention).
+- Comments in source code are written in English.
 
 ## Adding a Slack API method
 
@@ -33,8 +33,7 @@ Node.js 22.12+ and pnpm are required.
    the existing ones.
 3. Register new top-level clients in `src/index.ts`.
 4. Add one row to the table in `tests/routing.spec.ts`.
-5. Update the API coverage table in `README.md` / `README.ja.md` if you added
-   a new family.
+5. Update the API coverage table in `README.md` if you added a new family.
 6. `pnpm run build` must pass (lint + typecheck + tests + bundle).
 
 ## Testing

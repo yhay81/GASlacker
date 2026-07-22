@@ -5,7 +5,7 @@ class SlackListsAccess extends BaseAPI {
     return this._post('slackLists.access.delete', params)
   }
 
-  // 後方互換エイリアス
+  // Backward-compatible alias
   public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }
@@ -34,7 +34,7 @@ class SlackListsItems extends BaseAPI {
     return this._post('slackLists.items.delete', params)
   }
 
-  // 後方互換エイリアス
+  // Backward-compatible alias
   public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }

@@ -84,14 +84,14 @@ describe('methods', () => {
   it('Chat.postMessage throws on non-object params', () => {
     const chat = new Chat('token')
     expect(() => chat.postMessage('C123' as unknown as Record<string, any>)).toThrow(
-      'params はオブジェクトで指定してください',
+      'params must be an object',
     )
   })
 
   it('Conversations.list throws on non-object params', () => {
     const conversations = new Conversations('token')
     expect(() => conversations.list('C123' as unknown as Record<string, any>)).toThrow(
-      'params はオブジェクトで指定してください',
+      'params must be an object',
     )
   })
 
@@ -250,7 +250,7 @@ describe('Files.uploadV2', () => {
 
     const [url1, params1] = fetch.mock.calls[0]
     expect(url1).toBe('https://slack.com/api/files.getUploadURLExternal')
-    // getUploadURLExternal は JSON 非対応のためフォーム送信(値は文字列化される)
+    // getUploadURLExternal is form-encoded because it rejects JSON (values become strings)
     expect(params1.contentType).toBe('application/x-www-form-urlencoded; charset=UTF-8')
     expect(params1.payload).toEqual({ filename: 'hello.txt', length: '3' })
 
@@ -324,22 +324,18 @@ describe('Files.uploadV2', () => {
 
   it('throws when neither file nor content is given', () => {
     const files = new Files('token', 1)
-    expect(() => files.uploadV2({ channel_id: 'C123' })).toThrow(
-      'file または content を指定してください',
-    )
+    expect(() => files.uploadV2({ channel_id: 'C123' })).toThrow('Specify either file or content')
   })
 
   it('throws when file is not a Blob', () => {
     const files = new Files('token', 1)
-    expect(() => files.uploadV2({ file: 'not a blob' })).toThrow(
-      'file には Blob を指定してください',
-    )
+    expect(() => files.uploadV2({ file: 'not a blob' })).toThrow('file must be a Blob')
   })
 
   it('throws on non-object params', () => {
     const files = new Files('token', 1)
     expect(() => files.uploadV2('C123' as unknown as Record<string, any>)).toThrow(
-      'params はオブジェクトで指定してください',
+      'params must be an object',
     )
   })
 })

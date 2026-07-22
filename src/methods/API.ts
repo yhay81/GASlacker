@@ -19,8 +19,8 @@ export default class API extends BaseAPI {
     return this._post(api, params)
   }
 
-  // カーソルページネーションを辿り、各ページのレスポンスを配列で返す。
-  // 呼び出し例: paginate('conversations.list', { limit: 200 }, 'get')
+  // Follows cursor pagination, returning one response per page.
+  // Example: paginate('conversations.list', { limit: 200 }, 'get')
   public paginate(
     api: string,
     params: SlackParams = {},

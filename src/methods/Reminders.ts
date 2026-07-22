@@ -13,7 +13,7 @@ export default class Reminders extends BaseAPI {
     return this._post('reminders.delete', params)
   }
 
-  // 後方互換エイリアス
+  // Backward-compatible alias
   public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }

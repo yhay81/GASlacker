@@ -1,72 +1,72 @@
-# 検証方針と手順
+# Verification Plan
 
-## 目的
+## Purpose
 
-GAS から Slack Web API を安定して呼び出せることを確認する。
+Confirm that GASlacker can reliably call the Slack Web API from Google Apps Script.
 
-## 検証範囲
+## Scope
 
-- ビルド成果物の生成と公開形態
-- GET/JSON POST/フォーム POST/ファイル POST の送信経路
-- 429 レート制限時の待機・再試行
-- レスポンス JSON の解釈とエラー表現
-- 引数オブジェクトの呼び出し
-- OAuth v2 / Socket Mode / モーダル / 大容量アップロード
-- ライブラリとしての利用性（`GASlacker.methods`）
+- Build output generation and how it is published
+- GET / JSON POST / form POST / file POST request paths
+- Waiting and retrying on HTTP 429 rate limits
+- Parsing the response JSON and error representation
+- Calling with argument objects
+- OAuth v2 / Socket Mode / modals / large file uploads
+- Usability as a library (`GASlacker.methods`)
 
-## 前提
+## Prerequisites
 
-- Node.js 22.12 以上
-- テスト用 Slack ワークスペースと Slack App
-- テスト用 Bot Token を Script Properties に保存済み
-- テスト用チャンネル（例: `#gaslacker-test`）
-- OAuth v2 用の Client ID / Client Secret / Redirect URI
-- Socket Mode 用の App-Level Token（`xapp-`）
-- モーダル検証用の `trigger_id`
-- 対象機能を検証できない場合は未実施理由を記録する
+- Node.js 22.12 or later
+- A test Slack workspace and Slack App
+- A test Bot Token already saved in Script Properties
+- A test channel (e.g. `#gaslacker-test`)
+- Client ID / Client Secret / Redirect URI for OAuth v2
+- An App-Level Token (`xapp-`) for Socket Mode
+- A `trigger_id` for modal verification
+- If a given feature cannot be verified, record why it was skipped
 
-## 最小検証セット（必須）
+## Minimal Verification Set (required)
 
-1. ビルドが通る
-2. GAS から `auth.test` が通る
-3. JSON POST で `chat.postMessage` が通る
-4. GET で `slack.call` が通る
-5. フォーム POST で `oauth.v2.access` が JSON を返す
-6. ファイル POST で `files.uploadV2` が通る
+1. The build succeeds
+2. `auth.test` succeeds from GAS
+3. `chat.postMessage` succeeds via JSON POST
+4. `slack.call` succeeds via GET
+5. `oauth.v2.access` returns JSON via form POST
+6. `files.uploadV2` succeeds via file POST
 
-## 詳細検証
+## Detailed Verification
 
-### 1. ビルド/配布検証
+### 1. Build / distribution check
 
-**目的**: ライブラリとして利用可能な bundle を生成できること  
-**手順**
+**Purpose**: confirm the library builds a usable bundle
+**Steps**
 
 ```sh
 pnpm run build
 ```
 
-**期待結果**
+**Expected result**
 
-- `dist/bundle.js` が生成される
-- `dist/bundle.js` 内に `global.methods` が存在する
+- `dist/bundle.js` is generated
+- `global.methods` exists inside `dist/bundle.js`
 
-### 2. ユーティリティ検証
+### 2. Utility check
 
-**目的**: パラメータ変換の基本動作が正しいこと  
-**手順**
+**Purpose**: confirm the basic parameter conversion behavior is correct
+**Steps**
 
 ```sh
 pnpm run test
 ```
 
-**期待結果**
+**Expected result**
 
-- `tests/util.spec.ts` がすべて成功する
+- All tests in `tests/util.spec.ts` pass
 
-### 3. GAS スモークテスト
+### 3. GAS smoke test
 
-**目的**: GAS から認証付きで Slack API を呼び出せること  
-**手順**
+**Purpose**: confirm GAS can call the Slack API with authorization
+**Steps**
 
 ```JavaScript
 var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
@@ -79,41 +79,41 @@ function smoke() {
 }
 ```
 
-**期待結果**
+**Expected result**
 
-- `auth.test` が `ok: true` を返す
-- `api.test` が `ok: true` を返す
-- `chat.postMessage` が `ok: true` を返し、チャンネルに投稿される
+- `auth.test` returns `ok: true`
+- `api.test` returns `ok: true`
+- `chat.postMessage` returns `ok: true` and posts to the channel
 
-### 4. GET/JSON POST の検証
+### 4. GET / JSON POST check
 
-**目的**: GET と JSON POST の送信経路が正しいこと  
-**手順**
+**Purpose**: confirm the GET and JSON POST request paths are correct
+**Steps**
 
-- GET: `auth.test` または `conversations.list`
+- GET: `auth.test` or `conversations.list`
 - JSON POST: `chat.postMessage` / `chat.update`
-- GET（任意メソッド）: `slack.call('conversations.list', { limit: 1 }, 'get')`
-  **期待結果**
-- `ok: true` を返す
-- GET ではクエリ文字列が正しく付与される
+- GET (arbitrary method): `slack.call('conversations.list', { limit: 1 }, 'get')`
+  **Expected result**
+- Returns `ok: true`
+- The GET query string is attached correctly
 
-### 5. フォーム POST の検証
+### 5. Form POST check
 
-**目的**: フォーム送信経路が正しいこと  
-**手順（例）**
+**Purpose**: confirm the form-encoded request path is correct
+**Steps (example)**
 
-- `oauth.v2.access` をテスト用 App で実行  
-  （失敗でも `ok: false` と `error` が返れば送信経路は確認できる）
-  **期待結果**
-- `ok: true` または `ok: false` と `error` が JSON で返る
+- Run `oauth.v2.access` against a test app
+  (even a failure confirms the request path, as long as `ok: false` with `error` comes back)
+  **Expected result**
+- Returns `ok: true`, or `ok: false` with `error`, as JSON
 
-### 6. ファイルアップロードの検証
+### 6. File upload check
 
-**目的**: `files.uploadV2`(3 ステップ合成)の経路が正しいこと  
-**補足**: `files.uploadV2` という HTTP エンドポイントは存在しないため、内部で
-`files.getUploadURLExternal` → アップロード URL への POST →
-`files.completeUploadExternal` を順に実行する実装になっている。  
-**手順（例）**
+**Purpose**: confirm the `files.uploadV2` request path (a 3-step composite) is correct
+**Note**: `files.uploadV2` is not itself an HTTP endpoint, so the implementation runs
+`files.getUploadURLExternal` → POST to the upload URL → `files.completeUploadExternal`
+internally, in that order.
+**Steps (example)**
 
 ```JavaScript
 function upload() {
@@ -124,15 +124,15 @@ function upload() {
 }
 ```
 
-**期待結果**
+**Expected result**
 
-- `ok: true` を返す
-- チャンネルにファイルが表示される
+- Returns `ok: true`
+- The file appears in the channel
 
-### 7. 個別ステップでのアップロード検証
+### 7. Individual upload steps check
 
-**目的**: `files.getUploadURLExternal` / `files.completeUploadExternal` の経路が正しいこと  
-**手順（例）**
+**Purpose**: confirm the `files.getUploadURLExternal` / `files.completeUploadExternal` request paths are correct
+**Steps (example)**
 
 ```JavaScript
 function uploadLarge() {
@@ -147,15 +147,15 @@ function uploadLarge() {
 }
 ```
 
-**期待結果**
+**Expected result**
 
-- `ok: true` を返す
-- チャンネルにファイルが表示される
+- Returns `ok: true`
+- The file appears in the channel
 
-### 8. Socket Mode の検証
+### 8. Socket Mode check
 
-**目的**: `apps.connections.open` が成功すること  
-**手順（例）**
+**Purpose**: confirm `apps.connections.open` succeeds
+**Steps (example)**
 
 ```JavaScript
 function socketMode() {
@@ -165,15 +165,15 @@ function socketMode() {
 }
 ```
 
-**期待結果**
+**Expected result**
 
-- `ok: true` を返す
-- `url` が `wss://` で始まる
+- Returns `ok: true`
+- `url` starts with `wss://`
 
-### 9. モーダルの検証
+### 9. Modal check
 
-**目的**: `views.open` が成功すること  
-**手順（例）**
+**Purpose**: confirm `views.open` succeeds
+**Steps (example)**
 
 ```JavaScript
 function openModal(triggerId) {
@@ -186,121 +186,129 @@ function openModal(triggerId) {
 }
 ```
 
-**期待結果**
+**Expected result**
 
-- `ok: true` を返す
+- Returns `ok: true`
 
-### 10. 失敗系の検証
+### 10. Failure-path check
 
-**目的**: エラー時に `ok: false` が返ること  
-**手順**
+**Purpose**: confirm `ok: false` comes back on errors
+**Steps**
 
-- 無効なトークンで `auth.test` を実行
-- 存在しない API 名で `call` を実行  
-  **期待結果**
-- `ok: false` と `error` が返る
+- Run `auth.test` with an invalid token
+- Run `call` with a nonexistent API name
+  **Expected result**
+- Returns `ok: false` with `error`
 
-### 11. レート制限の検証（任意）
+### 11. Rate-limit check (optional)
 
-**目的**: 429 の待機・再試行が動くこと  
-**手順**
+**Purpose**: confirm waiting and retrying on 429 works
+**Steps**
 
-- 高頻度呼び出しで 429 を発生させる
-  **期待結果**
-- `retry-after` の秒数だけ待機後に再試行される
+- Trigger a 429 with high-frequency calls
+  **Expected result**
+- Retries after waiting for the number of seconds in `retry-after`
 
-### 12. ライブラリ公開の検証
+### 12. Library publication check
 
-**目的**: ライブラリとして他スクリプトから利用できること  
-**手順**
+**Purpose**: confirm the library can be used from another script as a library
+**Steps**
 
-- `dist/bundle.js` を Apps Script に貼り付けてライブラリ公開
-- 別の Apps Script でライブラリとして追加し `GASlacker.methods` を呼ぶ
-  **期待結果**
-- `GASlacker.methods` が参照できる
-- `auth.test` が成功する
+- Paste `dist/bundle.js` into Apps Script and publish it as a library
+- Add it as a library from a separate Apps Script project and call `GASlacker.methods`
+  **Expected result**
+- `GASlacker.methods` is reachable
+- `auth.test` succeeds
 
-## 最小合否基準
+## Minimal Pass Criteria
 
-- 最小検証セットがすべて成功すること
-- GAS 上で `ok: true` が取得できること
-- README に記載した機能は対応する詳細検証が成功、または未実施理由が記録されていること
+- The minimal verification set passes in full
+- `ok: true` is obtained on GAS
+- Every feature documented in the README has a passing detailed check, or a recorded reason it was skipped
 
-## 記録の残し方
+## How to Keep Records
 
-- 実行日時、トークン種別（Bot/User）、チャンネル ID、`ok`/`error` をメモする
-- 失敗時は `error` 値と再現手順を残す
+- Note the run date/time, token type (Bot/User), channel ID, and `ok`/`error`
+- On failure, record the `error` value and the reproduction steps
 
-## 検証記録（トークン不要）
+## Verification Log (no token required)
 
-- 実行日時: 2026-01-01 01:00
-- 環境: Node.js v24.12.0
-- 実行コマンド: `pnpm run test` / `pnpm run build`
-- 結果: Lint/ユーティリティ/メソッド/エントリのテスト成功、`dist/bundle.js` 生成と `global.methods` の存在を確認
-- 補足: GET/JSON POST/フォーム POST/ファイル POST/429 待機・再試行に加え、Authorization ヘッダー無し、Users.setPhoto、ネストクライアントのルーティングをユニットテストで確認（実 API 呼び出しは未実施）
+- Run at: 2026-01-01 01:00
+- Environment: Node.js v24.12.0
+- Commands run: `pnpm run test` / `pnpm run build`
+- Result: Lint / utility / method / entry-point tests all passed; confirmed `dist/bundle.js` is generated and `global.methods` exists
+- Notes: In addition to GET/JSON POST/form POST/file POST and 429 wait-and-retry, unit tests confirmed no-Authorization-header behavior, `Users.setPhoto`, and nested-client routing (no real API calls were made)
 
-## 自動検証ハーネス
+## Automated Verification Harness
 
-`scripts/verify-live.mjs` が本ドキュメントの最小検証セットを実 Slack API に対して実行する。
-`dist/bundle.js`(配布物そのもの)を GAS グローバルのスタブ付きで評価するため、
-バンドルのスモークテストを兼ねる。
+`scripts/verify-live.mjs` runs this document's minimal verification set against the real Slack
+API. It evaluates `dist/bundle.js` itself (the actual distributable) with GAS global stubs, so it
+doubles as a bundle smoke test.
 
 ```sh
-pnpm run verify:live                     # トークンなし: 送信経路の生存確認
+pnpm run verify:live                     # no token: confirms request paths stay alive
 SLACK_ACCESS_TOKEN=xoxb-... \
 SLACK_TEST_CHANNEL=C0123456789 \
-pnpm run verify:live                     # トークンあり: 実投稿・実アップロード
+pnpm run verify:live                     # with token: real post + real upload
 ```
 
-## 検証記録（エンドポイント実在確認）
+## Verification Log (endpoint existence check)
 
-- 実行日時: 2026-07-22
-- 方法: トークンなしで `curl -X POST https://slack.com/api/<method>` を全メソッドに実行し、
-  実在(`not_authed`)/廃止(`unknown_method`)を判定
-- 結果: ライブラリが提供する全 116 エンドポイントの実在を確認。
-  廃止判定となった `files.uploadV2`(HTTP エンドポイントとしては不存在)、
-  `files.comments.add/edit/delete`、`apps.permissions.*` は削除または合成実装に置き換え。
-  新規追加した `canvases.*` / `conversations.canvases.create` / `assistant.threads.*` も実在を確認。
-- 補足: トークンを使う実 API 検証(最小検証セット)は未実施。リリース前に実施を推奨。
+- Run at: 2026-07-22
+- Method: ran `curl -X POST https://slack.com/api/<method>` without a token for every method,
+  judging existence (`not_authed`) versus discontinuation (`unknown_method`)
+- Result: confirmed all 116 endpoints the library provided at the time actually exist.
+  `files.uploadV2` (not an HTTP endpoint), `files.comments.add/edit/delete`, and
+  `apps.permissions.*` were judged discontinued and removed or replaced with a composite
+  implementation. The newly added `canvases.*` / `conversations.canvases.create` /
+  `assistant.threads.*` were also confirmed to exist.
+- Notes: token-based real-API verification (the minimal verification set) was not yet performed;
+  recommended before release.
 
-## 検証記録(送信経路の実測 — verify:live)
+## Verification Log (request-path smoke test — verify:live)
 
-- 実行日時: 2026-07-22
-- 方法: `pnpm run verify:live`(トークンなしモード)で dist/bundle.js を実 Slack API に対して実行
-- 結果: 6 項目すべて成功 — api.test は ok:true、認証付き GET / call GET / フォーム POST /
-  JSON POST / uploadV2 1 段目はいずれも正しいエラー(not_authed / invalid_code)で応答し、
-  送信経路とレスポンス解釈の生存を確認
-- 補足: 実投稿・実アップロード(トークンありモード)は未実施
+- Run at: 2026-07-22
+- Method: ran `pnpm run verify:live` (no-token mode) against the real Slack API
+- Result: all 6 checks passed — `api.test` returned `ok: true`; the authorized GET, GET via
+  `call`, form POST, JSON POST, and step 1 of `uploadV2` all answered with the correct error
+  (`not_authed` / `invalid_code`), confirming the request paths and response parsing stay alive
+- Notes: real posting and real upload (token mode) were not yet performed
 
-## 検証記録(ライブラリ公開)
+## Verification Log (library publication)
 
-- 実行日時: 2026-07-22
-- 方法: clasp push で v1.0.0 の bundle を反映し、`clasp create-version` でバージョン 3 を作成
-- 結果: スクリプト ID `101aZZYpRRnr5AGkVIo8t_yo4kHb7xryLfq3w-HVPpQ4fX0Tkxv3UJyzc` のバージョン 3 として公開
-- 補足: 第三者がライブラリ追加するにはスクリプトの共有設定(リンクを知っている全員: 閲覧者)が必要
+- Run at: 2026-07-22
+- Method: pushed the v1.0.0 bundle via `clasp push` and created version 3 with `clasp create-version`
+- Result: published as version 3 of script ID `101aZZYpRRnr5AGkVIo8t_yo4kHb7xryLfq3w-HVPpQ4fX0Tkxv3UJyzc`
+- Notes: for third parties to add it as a library, the script's sharing setting must be enabled (Anyone with the link: Viewer)
 
-## 検証記録(実トークンでの最小検証セット — 完遂)
+## Verification Log (minimal verification set with a real token — complete)
 
-- 実行日時: 2026-07-22
-- 方法: Bot トークン + `#testchannel`(C9SPERADS)で `pnpm run verify:live` を実行
-- 結果: 最小検証セット 6 項目すべて成功。auth.test / conversations.list / chat.postMessage(実投稿)/
-  oauth.v2.access(フォーム)/ files.uploadV2(実アップロード、3 ステップ)を実 API で確認
-- 発見と修正: `files.getUploadURLExternal` は JSON ボディを受け付けず `invalid_arguments` を返す
-  (公式ドキュメント上は JSON 可と読めるが実測で不可)。フォーム送信に修正して全項目成功(v1.0.1)
-- 使用トークンは検証完了後に auth.revoke で失効済み(account_inactive を確認)
+- Run at: 2026-07-22
+- Method: ran `pnpm run verify:live` with a Bot token and `#testchannel` (C9SPERADS)
+- Result: all 6 items in the minimal verification set passed. Confirmed `auth.test` /
+  `conversations.list` / `chat.postMessage` (real post) / `oauth.v2.access` (form) /
+  `files.uploadV2` (real upload, 3 steps) against the real API
+- Finding and fix: `files.getUploadURLExternal` rejects JSON bodies with `invalid_arguments`
+  (the official docs read as if JSON is accepted, but it is not in practice). Fixed to use form
+  encoding; all items then passed (v1.0.1)
+- The token used was revoked with `auth.revoke` after verification completed (confirmed
+  `account_inactive`)
 
-## 検証記録(API カバレッジ完全化 — v1.1.0)
+## Verification Log (full API coverage — v1.1.0)
 
-- 実行日時: 2026-07-22
-- 方法: Slack 公式 node-slack-sdk の全メソッド一覧(267 件)と実装を突き合わせ、非 admin の
-  欠落 52 件を全件実測(unknown_method 判定)して実在を確認のうえ実装
-- 結果: bundle 内 168 エンドポイントすべてが実在確認済み。読み取り系の GET 受け付けも実測で確認
-- 補足: `pnpm run verify:live`(トークンなし)の送信経路スモークも成功
+- Run at: 2026-07-22
+- Method: diffed the official node-slack-sdk method list (267 entries) against the
+  implementation, then verified all 52 missing non-admin methods live (via the `unknown_method`
+  check) before implementing them
+- Result: all 168 endpoints in the bundle are confirmed to exist. GET-acceptance for read
+  methods was also confirmed live.
+- Notes: the `pnpm run verify:live` (no-token) request-path smoke test also passed
 
-## 検証記録(ツールチェーン刷新 — v1.2.0)
+## Verification Log (toolchain refresh — v1.2.0)
 
-- 実行日時: 2026-07-22
-- 方法: TypeScript 7.0(Go ネイティブ)/ Vite 8(Rolldown)/ oxlint 1.75 / oxfmt 0.60 / pnpm 11 に更新後、
-  全テスト(210 件)・`pnpm run verify:live`(トークンなし経路スモーク)・bundle 構造(GAS スタブ・
-  global.methods・exports)を確認
-- 結果: すべて成功。ビルドは約 3 倍高速化、dist/types/ に型定義を同梱
+- Run at: 2026-07-22
+- Method: after upgrading to TypeScript 7.0 (native Go compiler) / Vite 8 (Rolldown) / oxlint
+  1.75 / oxfmt 0.60 / pnpm 11, confirmed all tests (210), `pnpm run verify:live` (no-token
+  request-path smoke test), and the bundle structure (GAS stub, `global.methods`, `exports`)
+- Result: everything passed. The build is roughly 3x faster, and `dist/types/` now ships type
+  definitions.

@@ -1,5 +1,5 @@
 name: Feature request
-description: A missing Slack API method or a usability idea (English or Japanese welcome / 日本語歓迎)
+description: A missing Slack API method or a usability idea (English or Japanese welcome)
 labels: [enhancement]
 body:
   - type: textarea

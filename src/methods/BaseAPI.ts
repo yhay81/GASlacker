@@ -2,10 +2,10 @@ import { queryEncode, createPayload, createFormPayload } from '../util'
 
 export const DEFAULT_RETRIES = 3
 
-// メソッドに渡す引数。内容は Slack 公式ドキュメント準拠の自由形式。
+// Arguments passed to a method. Shape follows whatever the Slack API docs specify.
 export type SlackParams = Record<string, any>
 
-// Slack Web API の共通レスポンス。ok / error 以外のフィールドはメソッドごとに異なる。
+// Common Slack Web API response shape. Fields other than ok/error vary per method.
 export interface SlackResponse {
   ok: boolean
   error?: string
@@ -81,7 +81,7 @@ export default class BaseAPI {
     let response: any = null
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       response = UrlFetchApp.fetch(url, requestParams)
-      // HTTP 429 はレート制限として待機して再試行する
+      // Treat HTTP 429 as a rate limit: wait, then retry
       if (response.getResponseCode() === 429) {
         const retryAfterHeader = this._getHeader(response.getHeaders(), 'retry-after')
         const retryAfter = parseInt(retryAfterHeader ?? '', 10)
@@ -109,7 +109,7 @@ export default class BaseAPI {
   protected _normalizeArgs(args: SlackParams, name: string): SlackParams {
     if (args == null) return {}
     if (typeof args !== 'object' || Array.isArray(args)) {
-      throw new Error(`${name} はオブジェクトで指定してください`)
+      throw new Error(`${name} must be an object`)
     }
     return args
   }

@@ -1,7 +1,7 @@
 import BaseAPI, { SlackParams } from './BaseAPI'
 
 class ToolingTokens extends BaseAPI {
-  // refresh_token を使うためフォーム送信
+  // Form-encoded, since it takes a refresh_token
   public rotate(params: SlackParams = {}) {
     return this._post_form('tooling.tokens.rotate', params)
   }

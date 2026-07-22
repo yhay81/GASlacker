@@ -82,7 +82,7 @@ export class Methods {
     this.entity = new Entity(token, retries_limit)
     this.files = new Files(token, retries_limit)
     this.functions = new Functions(token, retries_limit)
-    // oauth.v2.access はトークン不要(client_id / client_secret を使う)ため null を渡す
+    // oauth.v2.access needs no token (it uses client_id / client_secret), so pass null
     this.oauth = new OAuth(null, retries_limit)
     this.openid = new OpenID(null, retries_limit)
     this.pins = new Pins(token, retries_limit)
@@ -103,7 +103,7 @@ export class Methods {
     return this.api.call(api, params, method)
   }
 
-  // カーソルページネーションを辿り、各ページのレスポンスを配列で返す
+  // Follows cursor pagination, returning one response per page
   public paginate(
     api: string,
     params: SlackParams = {},
@@ -117,10 +117,10 @@ export class Methods {
 declare const global: any
 
 /**
- * Slack Web API クライアントを生成する。
- * @param {string|null} token Bot/User トークン(xoxb- / xoxp-)。トークン不要 API のみ使う場合は null 可
- * @param {number} [retries_limit] HTTP 429 時の追加リトライ回数(既定 3)
- * @return {Object} カテゴリ別クライアント(chat / conversations / files など)
+ * Creates a Slack Web API client.
+ * @param {string|null} token Bot/User token (xoxb- / xoxp-). May be null if you only call token-free APIs.
+ * @param {number} [retries_limit] Extra retry attempts on HTTP 429 (default 3)
+ * @return {Object} A client with one property per category (chat, conversations, files, etc.)
  */
 global.methods = (token: string | null, retries_limit: number = DEFAULT_RETRIES) =>
   new Methods(token, retries_limit)

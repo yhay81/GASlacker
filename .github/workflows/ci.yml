@@ -16,10 +16,10 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # lint / typecheck / test / vite build をまとめて実行する
+      # Runs lint / typecheck / test / vite build together
       - run: pnpm run build
-      # dist/ は配布物としてコミットするため、src/ と同期していることを保証する
-      # (git status で未コミットの変更・新規ファイルの両方を検出する)
+      # dist/ is committed as the distributable, so ensure it stays in sync with src/
+      # (git status catches both uncommitted changes and new files)
       - name: Check dist is in sync with src
         run: |
           if [ -n "$(git status --porcelain dist)" ]; then

@@ -1,7 +1,7 @@
 import BaseAPI, { SlackParams } from './BaseAPI'
 
 export default class Chat extends BaseAPI {
-  // AI アシスタント向けストリーミング投稿
+  // Streaming posts for AI assistant apps
   public appendStream(params: SlackParams = {}) {
     return this._post('chat.appendStream', params)
   }
@@ -18,7 +18,7 @@ export default class Chat extends BaseAPI {
     return this._post('chat.delete', params)
   }
 
-  // 後方互換エイリアス
+  // Backward-compatible alias
   public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }

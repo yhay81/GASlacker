@@ -9,7 +9,7 @@ class CanvasesAccess extends BaseAPI {
     return this._post('canvases.access.delete', params)
   }
 
-  // 後方互換エイリアス
+  // Backward-compatible alias
   public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }
@@ -42,7 +42,7 @@ export default class Canvases extends BaseAPI {
     return this._post('canvases.delete', params)
   }
 
-  // 後方互換エイリアス
+  // Backward-compatible alias
   public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }

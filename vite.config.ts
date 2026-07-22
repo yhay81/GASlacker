@@ -3,7 +3,7 @@ import { generate } from 'gas-entry-generator'
 
 const GLOBAL_HEADER = "var global = Function('return this')();\n"
 
-// GAS ライブラリとして公開するため、トップレベル関数のスタブを bundle 先頭に生成する
+// Generate top-level function stubs at the start of the bundle, for publishing as a GAS library
 const gasStubPlugin = (): Plugin => ({
   name: 'gas-stub',
   generateBundle(_options, bundle) {

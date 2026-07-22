@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.3.0 (2026-07-22)
+
+### Changed (breaking)
+
+- The three error messages `BaseAPI`/`Files.uploadV2` throw on invalid input are now in
+  English (`params must be an object`, `Specify either file or content`, `file must be a
+Blob`) instead of Japanese. Behavior and conditions are unchanged; only the message text
+  changed.
+
+### Changed
+
+- **Repository language unified to English.** All source comments, `AGENTS.md`,
+  `CONTRIBUTING.md`, `docs/verification.md`, dev scripts (`verify-live.mjs`,
+  `check-parity.mjs`), and CI workflow comments are now in English. `README.ja.md` is
+  removed; the landing page (`docs/index.html`) remains multilingual for end users, but its
+  literal page content is now English, with Japanese and four other languages served as
+  runtime-switchable dictionaries.
+- **Landing page language switcher reordered English-first**, then by relevance to this
+  project's audience: English, 日本語, 简体中文, Español, Português, 한국어. Browser-language
+  auto-detection and the `localStorage`-saved preference now default to English when nothing
+  matches.
+
 ## 1.2.1 (2026-07-22)
 
 ### Changed (internal refactoring)

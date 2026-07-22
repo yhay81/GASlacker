@@ -1,13 +1,13 @@
 import type { Methods } from './index'
 
-// Apps Script ライブラリとして利用するときのグローバル型。
-// dist/types/ に型定義として出力するためのファイルで、bundle には含まれない。
+// Global types for consuming GASlacker as an Apps Script library.
+// This file is only emitted into dist/types/ as a declaration; it ships in no bundle.
 declare global {
-  // ライブラリとして追加した場合(識別子 GASlacker)
+  // When added as a library (identifier GASlacker)
   const GASlacker: {
     methods(token: string | null, retries_limit?: number): Methods
   }
-  // bundle.js を直接貼り付けた場合
+  // When bundle.js is pasted directly into a project
   function methods(token: string | null, retries_limit?: number): Methods
 }
 

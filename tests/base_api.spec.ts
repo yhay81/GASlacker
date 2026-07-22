@@ -58,7 +58,7 @@ const createResponse = (
 })
 
 describe('BaseAPI', () => {
-  // GAS グローバルをモックで差し替えるため any 扱いにする
+  // Treated as any so the GAS globals can be swapped for mocks
   const globalAny = globalThis as Record<string, any>
   let originalUrlFetchApp: UrlFetchAppLike | undefined
   let originalUtilities: UtilitiesLike | undefined
@@ -185,13 +185,13 @@ describe('BaseAPI', () => {
     const api = new TestAPI('token')
     expect(() =>
       api.post('chat.postMessage', 'C123' as unknown as Record<string, unknown>),
-    ).toThrow('params はオブジェクトで指定してください')
+    ).toThrow('params must be an object')
   })
 
   it('throws when params is array', () => {
     const api = new TestAPI('token')
     expect(() => api.get('auth.test', ['a'] as unknown as Record<string, unknown>)).toThrow(
-      'params はオブジェクトで指定してください',
+      'params must be an object',
     )
   })
 

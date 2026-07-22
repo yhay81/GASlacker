@@ -1,13 +1,13 @@
-// docs/verification.md の最小検証セットを実 Slack API に対して実行するハーネス。
-// dist/bundle.js(配布物そのもの)を GAS グローバルのスタブ付きで実行する。
+// Harness that runs the minimal verification set from docs/verification.md against the real
+// Slack API.
 //
-// 使い方:
-//   node scripts/verify-live.mjs                     # トークンなし: 送信経路の生存確認
+// Usage:
+//   node scripts/verify-live.mjs                     # no token: confirms request paths stay alive
 //   SLACK_ACCESS_TOKEN=xoxb-... \
 //   SLACK_TEST_CHANNEL=C0123456789 \
-//   node scripts/verify-live.mjs                     # トークンあり: 実投稿・実アップロード
+//   node scripts/verify-live.mjs                     # with token: real post + real upload
 //
-// トークンの値は一切出力しない。
+// The token value is never printed.
 import { execFileSync } from 'node:child_process'
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -18,7 +18,7 @@ const bodyFile = join(workDir, 'body')
 const headerFile = join(workDir, 'headers')
 const blobFile = join(workDir, 'blob')
 
-// UrlFetchApp.fetch 互換の同期 HTTP(curl 利用、依存ゼロ)
+// Synchronous HTTP compatible with UrlFetchApp.fetch (uses curl, zero dependencies)
 const fetchImpl = (url, params = {}) => {
   const args = [
     '-s',
@@ -69,12 +69,12 @@ const newBlob = (content, contentType = 'text/plain', name = null) => ({
 
 globalThis.UrlFetchApp = { fetch: fetchImpl }
 globalThis.Utilities = {
-  // Atomics.wait による同期スリープ(外部コマンド不要で Windows でも動く)
+  // Synchronous sleep via Atomics.wait (no external command; works on Windows too)
   sleep: (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms),
   newBlob,
 }
 
-// 配布物そのものを評価して global.methods を得る
+// Evaluate the distributable itself to obtain global.methods
 ;(0, eval)(readFileSync(new URL('../dist/bundle.js', import.meta.url), 'utf8'))
 const methods = globalThis.methods
 
@@ -89,37 +89,39 @@ const check = (label, condition, detail) => {
   console.log(`[${mark}] ${label}${detail ? ` — ${detail}` : ''}`)
 }
 
-console.log(`モード: ${token ? 'トークンあり(実投稿)' : 'トークンなし(送信経路の生存確認)'}\n`)
+console.log(
+  `Mode: ${token ? 'token provided (real post)' : 'no token (request-path smoke test)'}\n`,
+)
 
-// 1. GET 経路(トークン不要)
+// 1. GET route (no token required)
 const apiTest = slack.api.test({ ping: 'pong' })
 check('api.test (GET)', apiTest.ok === true && apiTest.args?.ping === 'pong', `ok=${apiTest.ok}`)
 
-// 2. 認証付き GET 経路
+// 2. Authorized GET route
 const authTest = slack.auth.test()
 check(
   'auth.test (GET + Authorization)',
   token ? authTest.ok === true : authTest.error === 'not_authed',
-  token ? `ok=${authTest.ok}` : `error=${authTest.error}(経路生存)`,
+  token ? `ok=${authTest.ok}` : `error=${authTest.error} (route alive)`,
 )
 
-// 3. 任意メソッド GET(slack.call)
+// 3. Arbitrary method via GET (slack.call)
 const list = slack.call('conversations.list', { limit: 1 }, 'get')
 check(
   "call('conversations.list', 'get')",
   token ? list.ok === true : list.error === 'not_authed',
-  token ? `ok=${list.ok}` : `error=${list.error}(経路生存)`,
+  token ? `ok=${list.ok}` : `error=${list.error} (route alive)`,
 )
 
-// 4. フォーム POST 経路(oauth.v2.access はトークン不要で JSON エラーを返す)
+// 4. Form POST route (oauth.v2.access needs no token and answers a JSON error)
 const oauth = slack.oauth.access({ code: 'verification-dummy' })
 check(
   'oauth.access (form POST)',
   oauth.ok === false && typeof oauth.error === 'string' && oauth.error !== 'invalid_json',
-  `error=${oauth.error}(JSON で応答)`,
+  `error=${oauth.error} (answered as JSON)`,
 )
 
-// 5. JSON POST 経路
+// 5. JSON POST route
 if (token && channel) {
   const post = slack.chat.postMessage({ channel, text: 'GASlacker verify-live: chat.postMessage' })
   check(
@@ -132,11 +134,11 @@ if (token && channel) {
   check(
     'chat.postMessage (JSON POST)',
     token ? post.ok === false : post.error === 'not_authed',
-    `error=${post.error}(経路生存)`,
+    `error=${post.error} (route alive)`,
   )
 }
 
-// 6. ファイルアップロード(3 ステップ合成)
+// 6. File upload (3-step composite)
 const blob = newBlob('GASlacker verify-live upload\n', 'text/plain', 'gaslacker-verify.txt')
 if (token && channel) {
   const upload = slack.files.uploadV2({
@@ -154,13 +156,11 @@ if (token && channel) {
   check(
     'files.uploadV2 (step 1 route)',
     upload.error === 'not_authed',
-    `error=${upload.error}(getUploadURLExternal まで到達)`,
+    `error=${upload.error} (reached getUploadURLExternal)`,
   )
 }
 
-console.log(`\n${failed === 0 ? '最小検証セット: すべて成功' : `失敗: ${failed} 件`}`)
+console.log(`\n${failed === 0 ? 'Minimal verification set: all passed' : `Failed: ${failed}`}`)
 if (!token)
-  console.log(
-    '(実投稿まで検証するには SLACK_ACCESS_TOKEN と SLACK_TEST_CHANNEL を設定してください)',
-  )
+  console.log('(set SLACK_ACCESS_TOKEN and SLACK_TEST_CHANNEL to verify real posting too)')
 process.exit(failed === 0 ? 0 : 1)

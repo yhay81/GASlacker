@@ -12,7 +12,7 @@ class AppsEventAuthorizations extends BaseAPI {
   }
 }
 
-// App Configuration Token(xoxe-)で使うマニフェスト管理 API
+// Manifest management API, used with an App Configuration Token (xoxe-)
 class AppsManifest extends BaseAPI {
   public create(params: SlackParams = {}) {
     return this._post('apps.manifest.create', params)
@@ -22,7 +22,7 @@ class AppsManifest extends BaseAPI {
     return this._post('apps.manifest.delete', params)
   }
 
-  // 後方互換エイリアス
+  // Backward-compatible alias
   public delete_(params: SlackParams = {}) {
     return this.delete(params)
   }

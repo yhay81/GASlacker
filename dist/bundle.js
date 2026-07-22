@@ -1,9 +1,9 @@
 var global = Function('return this')();
 /**
-	* Slack Web API クライアントを生成する。
-	* @param {string|null} token Bot/User トークン(xoxb- / xoxp-)。トークン不要 API のみ使う場合は null 可
-	* @param {number} [retries_limit] HTTP 429 時の追加リトライ回数(既定 3)
-	* @return {Object} カテゴリ別クライアント(chat / conversations / files など)
+	* Creates a Slack Web API client.
+	* @param {string|null} token Bot/User token (xoxb- / xoxp-). May be null if you only call token-free APIs.
+	* @param {number} [retries_limit] Extra retry attempts on HTTP 429 (default 3)
+	* @return {Object} A client with one property per category (chat, conversations, files, etc.)
 	*/
 function methods(token, retries_limit = 3) {
 }var GASlacker = (function(exports) {
@@ -129,7 +129,7 @@ function methods(token, retries_limit = 3) {
 		}
 		_normalizeArgs(args, name) {
 			if (args == null) return {};
-			if (typeof args !== "object" || Array.isArray(args)) throw new Error(`${name} はオブジェクトで指定してください`);
+			if (typeof args !== "object" || Array.isArray(args)) throw new Error(`${name} must be an object`);
 			return args;
 		}
 		_parseResponse(response) {
@@ -600,9 +600,9 @@ function methods(token, retries_limit = 3) {
 		uploadV2(params = {}) {
 			var _ref;
 			const { file, content, filename, snippet_type, alt_txt, title, ...completeArgs } = this._normalizeArgs(params, "params");
-			if (file == null && content == null) throw new Error("file または content を指定してください");
+			if (file == null && content == null) throw new Error("Specify either file or content");
 			const blob = file != null ? file : Utilities.newBlob(String(content));
-			if (typeof blob.getBytes !== "function") throw new Error("file には Blob を指定してください");
+			if (typeof blob.getBytes !== "function") throw new Error("file must be a Blob");
 			const name = (_ref = filename !== null && filename !== void 0 ? filename : typeof blob.getName === "function" ? blob.getName() : null) !== null && _ref !== void 0 ? _ref : "file";
 			const urlRes = this._post_form("files.getUploadURLExternal", {
 				filename: name,
@@ -1028,10 +1028,10 @@ function methods(token, retries_limit = 3) {
 		}
 	};
 	/**
-	* Slack Web API クライアントを生成する。
-	* @param {string|null} token Bot/User トークン(xoxb- / xoxp-)。トークン不要 API のみ使う場合は null 可
-	* @param {number} [retries_limit] HTTP 429 時の追加リトライ回数(既定 3)
-	* @return {Object} カテゴリ別クライアント(chat / conversations / files など)
+	* Creates a Slack Web API client.
+	* @param {string|null} token Bot/User token (xoxb- / xoxp-). May be null if you only call token-free APIs.
+	* @param {number} [retries_limit] Extra retry attempts on HTTP 429 (default 3)
+	* @return {Object} A client with one property per category (chat, conversations, files, etc.)
 	*/
 	global.methods = (token, retries_limit = 3) => new Methods(token, retries_limit);
 	//#endregion

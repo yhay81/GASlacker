@@ -40,7 +40,7 @@ export default class Conversations extends BaseAPI {
     this.requestSharedInvite = new ConversationsRequestSharedInvite(token, retries_limit)
   }
 
-  // Slack Connect(外部共有チャンネル)関連
+  // Slack Connect (externally shared channels)
   public acceptSharedInvite(params: SlackParams = {}) {
     return this._post('conversations.acceptSharedInvite', params)
   }

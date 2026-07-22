@@ -1,5 +1,5 @@
 name: Bug report
-description: Something is broken (English or Japanese welcome / 日本語歓迎)
+description: Something is broken (English or Japanese welcome)
 labels: [bug]
 body:
   - type: textarea

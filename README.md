@@ -3,8 +3,8 @@
 [![CI](https://github.com/yhay81/GASlacker/actions/workflows/ci.yml/badge.svg)](https://github.com/yhay81/GASlacker/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
 
-日本語版は [README.ja.md](README.ja.md) を参照してください。
-**はじめての方へ: [5 分ではじめるガイド(日本語)](https://yhay81.github.io/GASlacker/)**
+**New here? Try the [5-minute quickstart guide](https://yhay81.github.io/GASlacker/)** — also
+available in 日本語, 简体中文, 한국어, Español, and Português via the language switcher.
 
 A lightweight Slack Web API client for Google Apps Script.
 

@@ -1,5 +1,1 @@
-blank_issues_enabled: true
-contact_links:
-  - name: Question / idea (Discussions)
-    url: https://github.com/yhay81/GASlacker/discussions
-    about: Ask questions or share ideas — English or Japanese welcome.
+blank_issues_enabled: false

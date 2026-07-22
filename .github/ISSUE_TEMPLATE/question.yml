@@ -1,0 +1,25 @@
+name: Question / help
+description: Ask how to use GASlacker or get help troubleshooting (English or Japanese welcome)
+labels: [question]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Describe what you want to do and where you are stuck. Never paste tokens.
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you tried
+      description: Include the method you called, relevant code, and the response (`ok` / `error`).
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: GASlacker version
+      placeholder: v1.2.1 / library version 7
+    validations:
+      required: false

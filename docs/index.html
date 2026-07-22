@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GASlacker — Google Apps Script から Slack を動かす、いちばん簡単な方法</title>
+<meta name="description" content="ビルド不要・ライブラリ ID を追加するだけ。スプレッドシートから Slack へ通知、ボット作成、ファイル投稿まで 5 分で。168 メソッド全部実在検証済み。">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1d21;
+    --muted: #5c6066;
+    --accent: #4a54c4;
+    --accent-fg: #ffffff;
+    --card: #f6f7f9;
+    --border: #e3e5e8;
+    --code-bg: #14171c;
+    --code-fg: #e8eaed;
+    --ok: #1a7f4b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171c;
+      --fg: #e8eaed;
+      --muted: #9aa0a6;
+      --accent: #8a93f8;
+      --accent-fg: #14171c;
+      --card: #1d2127;
+      --border: #2c313a;
+      --code-bg: #0c0e12;
+      --code-fg: #e8eaed;
+      --ok: #4cc38a;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: var(--bg); color: var(--fg);
+    line-height: 1.8;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+  header.site { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; }
+  .logo { font-weight: 800; font-size: 1.1rem; letter-spacing: .02em; }
+  .logo span { color: var(--accent); }
+  nav a { color: var(--muted); text-decoration: none; margin-left: 18px; font-size: .92rem; }
+  nav a:hover { color: var(--fg); }
+
+  .hero { padding: 56px 0 40px; text-align: center; }
+  .hero h1 { font-size: clamp(1.6rem, 4.5vw, 2.5rem); font-weight: 800; line-height: 1.4; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p.lead { margin: 18px auto 0; max-width: 640px; color: var(--muted); font-size: 1.05rem; }
+  .cta { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 12px 22px; border-radius: 10px; font-weight: 700;
+    text-decoration: none; font-size: .98rem; border: 1px solid var(--border);
+  }
+  .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  .btn.ghost { color: var(--fg); background: var(--card); }
+  .badges { margin-top: 22px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; font-size: .85rem; color: var(--muted); }
+  .badges span { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; }
+
+  section { padding: 44px 0; border-top: 1px solid var(--border); }
+  h2 { font-size: 1.45rem; font-weight: 800; margin-bottom: 8px; }
+  .sub { color: var(--muted); margin-bottom: 26px; }
+
+  .step { display: flex; gap: 16px; margin: 26px 0; }
+  .step .num {
+    flex: none; width: 34px; height: 34px; border-radius: 50%;
+    background: var(--accent); color: var(--accent-fg);
+    display: flex; align-items: center; justify-content: center; font-weight: 800;
+  }
+  .step h3 { font-size: 1.08rem; margin-bottom: 6px; }
+  .step p { color: var(--muted); font-size: .95rem; }
+  .step ol { margin: 8px 0 0 1.2em; color: var(--muted); font-size: .95rem; }
+  .step li { margin: 4px 0; }
+  .step code.inline, p code.inline, li code.inline {
+    background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 1px 6px; font-size: .88em;
+  }
+
+  .codebox { position: relative; margin-top: 12px; }
+  .codebox pre {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: 12px; padding: 18px 96px 18px 18px; overflow-x: auto;
+    font-size: .86rem; line-height: 1.7;
+    font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  .codebox .copy {
+    position: absolute; top: 10px; right: 10px;
+    background: rgba(255,255,255,.08); color: var(--code-fg);
+    border: 1px solid rgba(255,255,255,.2); border-radius: 8px;
+    padding: 4px 12px; font-size: .8rem; cursor: pointer;
+  }
+  .codebox .copy:hover { background: rgba(255,255,255,.16); }
+  .codebox .copy.done { color: #7ee2a8; border-color: #7ee2a8; }
+  pre .c { color: #8b949e; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 10px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px;
+  }
+  .card h3 { font-size: 1rem; margin-bottom: 6px; }
+  .card p { color: var(--muted); font-size: .9rem; }
+
+  details { margin: 10px 0; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; }
+  summary { cursor: pointer; font-weight: 700; }
+  details p, details ol { color: var(--muted); font-size: .95rem; margin-top: 8px; }
+  details ol { margin-left: 1.2em; }
+  details a, section a { color: var(--accent); }
+
+  footer { border-top: 1px solid var(--border); padding: 30px 0 50px; color: var(--muted); font-size: .9rem; }
+  footer a { color: var(--accent); text-decoration: none; margin-right: 16px; }
+  .note { font-size: .85rem; color: var(--muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <div class="logo">GAS<span>lacker</span></div>
+    <nav>
+      <a href="#start">5 分ではじめる</a>
+      <a href="#examples">できること</a>
+      <a href="https://github.com/yhay81/GASlacker">GitHub</a>
+      <a href="https://github.com/yhay81/GASlacker#readme">English</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1>Google Apps Script から Slack を動かす、<br><em>いちばん簡単な方法。</em></h1>
+    <p class="lead">
+      ビルド環境は不要。Apps Script にライブラリ ID をひとつ追加するだけで、
+      スプレッドシートからの通知も、ボットも、ファイル投稿も動きます。
+      プログラミングが本業でなくても大丈夫です。
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="#start">5 分ではじめる</a>
+      <a class="btn ghost" href="https://github.com/yhay81/GASlacker">GitHub で見る</a>
+    </div>
+    <div class="badges">
+      <span>✅ 168 メソッド全部実在検証済み</span>
+      <span>🔄 週次で Slack 公式 SDK と同期チェック</span>
+      <span>🆓 MIT ライセンス</span>
+    </div>
+  </div>
+
+  <section id="start">
+    <h2>5 分ではじめる</h2>
+    <p class="sub">スプレッドシートや GAS エディタが使えれば、ここから先は手順どおりで動きます。</p>
+
+    <div class="step">
+      <div class="num">1</div>
+      <div>
+        <h3>ライブラリを追加する</h3>
+        <p>Apps Script エディタの「ライブラリ」の <b>＋</b> を押して、この ID を貼り付けて「検索」→ 最新バージョンを選んで「追加」。</p>
+        <div class="codebox">
+          <pre id="script-id">101aZZYpRRnr5AGkVIo8t_yo4kHb7xryLfq3w-HVPpQ4fX0Tkxv3UJyzc</pre>
+          <button class="copy" data-target="script-id">コピー</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">2</div>
+      <div>
+        <h3>Slack のトークンを用意する</h3>
+        <p>Slack 側の準備はここが全部です(初回だけ・約 3 分):</p>
+        <ol>
+          <li><a href="https://api.slack.com/apps" target="_blank" rel="noopener">api.slack.com/apps</a> で <b>Create New App → From scratch</b>(名前は自由、ワークスペースを選択)</li>
+          <li>左メニュー <b>OAuth &amp; Permissions</b> → Bot Token Scopes に <code class="inline">chat:write</code> を追加(ファイルも送るなら <code class="inline">files:write</code> も)</li>
+          <li>同じページ上部の <b>Install to Workspace</b> → 許可</li>
+          <li>表示された <b>Bot User OAuth Token</b>(<code class="inline">xoxb-</code> で始まる)をコピー</li>
+          <li>Apps Script の <b>プロジェクトの設定 → スクリプト プロパティ</b> に、プロパティ名 <code class="inline">SLACK_ACCESS_TOKEN</code> として保存</li>
+          <li>投稿したいチャンネルで <code class="inline">/invite @アプリ名</code> して bot を招待(忘れると <code class="inline">not_in_channel</code> エラーになります)</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">3</div>
+      <div>
+        <h3>3 行で投稿する</h3>
+        <p>エディタに貼り付けて <code class="inline">hello</code> を実行。チャンネル ID はチャンネル名を右クリック →「チャンネル詳細を表示」の最下部にあります。</p>
+        <div class="codebox">
+          <pre id="code-hello">var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
+var slack = GASlacker.methods(token);
+
+function hello() {
+  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });
+  Logger.log(res.ok ? '投稿できました' : 'エラー: ' + res.error);
+}</pre>
+          <button class="copy" data-target="code-hello">コピー</button>
+        </div>
+        <p class="note">うまくいかないときはログの <code class="inline">res.error</code> を見てください。<code class="inline">not_in_channel</code> なら手順 2-6、<code class="inline">invalid_auth</code> ならトークンの保存名を確認します。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="examples">
+    <h2>できること</h2>
+    <p class="sub">Slack Web API の 168 メソッドをそのままの名前で呼べます。よく使う形は <a href="https://github.com/yhay81/GASlacker/tree/master/examples">examples/</a> にコピペ用スクリプトがあります。</p>
+
+    <div class="grid">
+      <div class="card"><h3>📊 シートから毎朝通知</h3><p>時間トリガー + <code class="inline">chat.postMessage</code>。Block Kit で見やすい整形も。</p></div>
+      <div class="card"><h3>🤖 返事をするボット</h3><p>Events API を <code class="inline">doPost</code> で受けてスレッドに返信。</p></div>
+      <div class="card"><h3>📎 ファイルを送る</h3><p>CSV やログを <code class="inline">files.uploadV2</code> で 1 メソッド投稿。</p></div>
+      <div class="card"><h3>🗂 全チャンネルを集計</h3><p><code class="inline">slack.paginate()</code> がページネーションを自動で辿ります。</p></div>
+      <div class="card"><h3>📝 Canvas・リスト操作</h3><p><code class="inline">canvases.*</code> / <code class="inline">slackLists.*</code> など新しい API にも対応。</p></div>
+      <div class="card"><h3>🧩 未対応でも呼べる</h3><p><code class="inline">slack.call('メソッド名', params)</code> でどの API でも。</p></div>
+    </div>
+
+    <div class="codebox" style="margin-top:22px">
+      <pre id="code-notify"><span class="c">// 例: シートの内容を毎朝 Slack へ(時間トリガーに設定)</span>
+function dailySummary() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');
+  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();
+  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });
+  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\n') });
+}</pre>
+      <button class="copy" data-target="code-notify">コピー</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>安心して使えます</h2>
+    <div class="grid">
+      <div class="card"><h3>✅ 全メソッド実在検証</h3><p>168 メソッド全部を実際の Slack API に照合済み。存在しない・廃止された API は入っていません。</p></div>
+      <div class="card"><h3>🔄 週次パリティ監視</h3><p>毎週 CI が Slack 公式 SDK と突き合わせ。Slack が新 API を出すと自動で Issue が立ちます。</p></div>
+      <div class="card"><h3>🔒 トークンは手元だけ</h3><p>通信先は Slack API のみ。トークンはあなたの Script プロパティにだけ保存されます。</p></div>
+      <div class="card"><h3>🛠 TypeScript 対応</h3><p>clasp + TypeScript の人には型定義を同梱。全メソッドが補完されます。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>よくある質問</h2>
+    <details>
+      <summary>無料ですか?</summary>
+      <p>はい。MIT ライセンスの OSS で、商用利用も自由です。Google Apps Script と Slack アプリも通常の用途では無料枠で動きます。</p>
+    </details>
+    <details>
+      <summary>Node.js やビルド環境は必要?</summary>
+      <p>不要です。ブラウザの Apps Script エディタだけで完結します(ライブラリ ID を追加するだけ)。</p>
+    </details>
+    <details>
+      <summary>Incoming Webhook と何が違う?</summary>
+      <p>Webhook は「決まったチャンネルへ投稿」しかできません。GASlacker はトークンで Web API を呼ぶので、返信・リアクション・ファイル・履歴取得・Canvas など Slack のほぼ全機能が使えます。</p>
+    </details>
+    <details>
+      <summary>エラーが出たら?</summary>
+      <p>すべてのメソッドは Slack のレスポンスをそのまま返します。<code class="inline">res.ok</code> が false のとき <code class="inline">res.error</code> に原因(例: <code class="inline">channel_not_found</code>)が入っています。解決しないときは <a href="https://github.com/yhay81/GASlacker/issues">Issues</a> か <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a> へどうぞ(日本語 OK)。</p>
+    </details>
+    <details>
+      <summary>Slack 公式のライブラリですか?</summary>
+      <p>いいえ、コミュニティによる非公式 OSS です。Slack は Slack Technologies, LLC の商標です。</p>
+    </details>
+  </section>
+
+  <footer>
+    <a href="https://github.com/yhay81/GASlacker">GitHub</a>
+    <a href="https://github.com/yhay81/GASlacker/blob/master/README.ja.md">ドキュメント(日本語)</a>
+    <a href="https://github.com/yhay81/GASlacker#readme">Docs (English)</a>
+    <a href="https://github.com/yhay81/GASlacker/discussions">Discussions</a>
+    <p style="margin-top:10px">MIT License © Yusuke Hayashi — Slack 非公式のコミュニティライブラリです。</p>
+  </footer>
+</div>
+
+<script>
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var el = document.getElementById(btn.dataset.target);
+      var reset = function () {
+        setTimeout(function () {
+          btn.textContent = 'コピー';
+          btn.classList.remove('done');
+        }, 1600);
+      };
+      navigator.clipboard.writeText(el.innerText).then(
+        function () {
+          btn.textContent = 'コピーしました';
+          btn.classList.add('done');
+          reset();
+        },
+        function () {
+          // クリップボードが使えない環境では選択だけして手動コピーを促す
+          var range = document.createRange();
+          range.selectNodeContents(el);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          btn.textContent = '⌘C / Ctrl+C でコピー';
+          reset();
+        },
+      );
+    });
+  });
+</script>
+</body>
+</html>

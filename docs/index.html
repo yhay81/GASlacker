@@ -587,6 +587,50 @@
         font-size: 0.9rem;
       }
 
+      .trust-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 14px;
+        margin-top: 10px;
+      }
+
+      .trust {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+      }
+
+      .trust-icon {
+        flex: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 13px;
+        background: rgba(40, 121, 118, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .trust-icon .icon {
+        width: 22px;
+        height: 22px;
+      }
+
+      .trust h3 {
+        margin: 2px 0 4px;
+        font-size: 1rem;
+      }
+
+      .trust p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
       details {
         margin: 10px 0;
         background: var(--surface);
@@ -750,10 +794,6 @@
         <g id="i-terminal">
           <rect x="3" y="4" width="18" height="16" rx="3" />
           <path d="m7 9 3 3-3 3M13 15h4" />
-        </g>
-        <g id="i-check">
-          <circle cx="12" cy="12" r="9" />
-          <path d="m8 12 3 3 5-6" />
         </g>
         <g id="i-lock">
           <rect x="5" y="11" width="14" height="9" rx="2.5" />
@@ -1010,34 +1050,28 @@ function dailySummary() {
       <section class="alt" aria-labelledby="safe-title">
         <div class="shell narrow">
           <h2 id="safe-title" data-i18n="safe.title">安心して使えます</h2>
-          <div class="grid">
-            <div class="card">
-              <h3>
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-check" /></svg>
-                <span data-i18n="safe1.t">全メソッド実在検証</span>
-              </h3>
-              <p data-i18n="safe1.p">
-                168 メソッド全部を実際の Slack API に照合済み。存在しない・廃止された API
-                は入っていません。
-              </p>
+          <div class="trust-grid">
+            <div class="trust">
+              <span class="trust-icon" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-lock" /></svg>
+              </span>
+              <div>
+                <h3 data-i18n="safe3.t">トークンは手元だけ</h3>
+                <p data-i18n="safe3.p">
+                  通信先は Slack API のみ。トークンはあなたの Script プロパティにだけ保存されます。
+                </p>
+              </div>
             </div>
-            <div class="card">
-              <h3>
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-lock" /></svg>
-                <span data-i18n="safe3.t">トークンは手元だけ</span>
-              </h3>
-              <p data-i18n="safe3.p">
-                通信先は Slack API のみ。トークンはあなたの Script プロパティにだけ保存されます。
-              </p>
-            </div>
-            <div class="card">
-              <h3>
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-braces" /></svg>
-                <span data-i18n="safe4.t">TypeScript 対応</span>
-              </h3>
-              <p data-i18n="safe4.p">
-                clasp + TypeScript の人には型定義を同梱。全メソッドが補完されます。
-              </p>
+            <div class="trust">
+              <span class="trust-icon" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-braces" /></svg>
+              </span>
+              <div>
+                <h3 data-i18n="safe4.t">TypeScript 対応</h3>
+                <p data-i18n="safe4.p">
+                  clasp + TypeScript の人には型定義を同梱。全メソッドが補完されます。
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -1168,9 +1202,6 @@ function dailySummary() {
           'code.example':
             '<span class="comment">// Example: post sheet contents every morning (set a time trigger)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(\'KPI\');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return \'• \' + r[0] + \': *\' + r[1] + \'*\'; });\n  slack.chat.postMessage({ channel: \'C0123456789\', text: lines.join(\'\\n\') });\n}',
           'safe.title': 'Built to be trusted',
-          'safe1.t': 'Every method verified',
-          'safe1.p':
-            'All 168 methods are checked against the live Slack API — no dead or discontinued endpoints.',
           'safe3.t': 'Your token stays yours',
           'safe3.p':
             'Requests go only to the Slack API. The token lives in your Script properties.',
@@ -1254,8 +1285,6 @@ function dailySummary() {
           'code.example':
             '<span class="comment">// 示例: 每天早晨把表格内容发到 Slack(设置时间触发器)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(\'KPI\');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return \'• \' + r[0] + \': *\' + r[1] + \'*\'; });\n  slack.chat.postMessage({ channel: \'C0123456789\', text: lines.join(\'\\n\') });\n}',
           'safe.title': '可以放心使用',
-          'safe1.t': '全方法实测验证',
-          'safe1.p': '168 个方法全部对照真实 Slack API 验证,不含已废弃或不存在的端点。',
           'safe3.t': '令牌只在你手里',
           'safe3.p': '只与 Slack API 通信。令牌仅保存在你的脚本属性中。',
           'safe4.t': '支持 TypeScript',
@@ -1337,8 +1366,6 @@ function dailySummary() {
           'code.example':
             '<span class="comment">// 예: 시트 내용을 매일 아침 Slack으로(시간 트리거 설정)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(\'KPI\');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return \'• \' + r[0] + \': *\' + r[1] + \'*\'; });\n  slack.chat.postMessage({ channel: \'C0123456789\', text: lines.join(\'\\n\') });\n}',
           'safe.title': '안심하고 쓸 수 있어요',
-          'safe1.t': '전 메서드 실측 검증',
-          'safe1.p': '168개 메서드 전부를 실제 Slack API에 대조 완료. 없는·폐지된 API는 없습니다.',
           'safe3.t': '토큰은 내 손안에만',
           'safe3.p': '통신 대상은 Slack API뿐. 토큰은 내 스크립트 속성에만 저장됩니다.',
           'safe4.t': 'TypeScript 지원',
@@ -1426,9 +1453,6 @@ function dailySummary() {
           'code.example':
             '<span class="comment">// Ejemplo: publica la hoja cada mañana (con activador de tiempo)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(\'KPI\');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return \'• \' + r[0] + \': *\' + r[1] + \'*\'; });\n  slack.chat.postMessage({ channel: \'C0123456789\', text: lines.join(\'\\n\') });\n}',
           'safe.title': 'Hecho para confiar',
-          'safe1.t': 'Cada método verificado',
-          'safe1.p':
-            'Los 168 métodos se contrastan con la Slack API real: sin endpoints muertos ni retirados.',
           'safe3.t': 'Tu token es tuyo',
           'safe3.p':
             'Solo se habla con la Slack API. El token vive en tus propiedades del script.',
@@ -1519,9 +1543,6 @@ function dailySummary() {
           'code.example':
             '<span class="comment">// Exemplo: publique a planilha toda manhã (com acionador de tempo)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(\'KPI\');\n  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();\n  var lines = rows.map(function (r) { return \'• \' + r[0] + \': *\' + r[1] + \'*\'; });\n  slack.chat.postMessage({ channel: \'C0123456789\', text: lines.join(\'\\n\') });\n}',
           'safe.title': 'Feito para confiar',
-          'safe1.t': 'Cada método verificado',
-          'safe1.p':
-            'Os 168 métodos são checados contra a Slack API real — nada de endpoints mortos ou aposentados.',
           'safe3.t': 'Seu token fica com você',
           'safe3.p':
             'A comunicação é só com a Slack API. O token mora nas suas propriedades do script.',

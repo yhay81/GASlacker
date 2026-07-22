@@ -152,7 +152,7 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string]> = [
   [
     'files.getUploadURLExternal',
     (m) => m.files.getUploadURLExternal(),
-    'post',
+    'post_form',
     'files.getUploadURLExternal',
   ],
   [

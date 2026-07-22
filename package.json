@@ -1,6 +1,6 @@
 {
   "name": "gaslacker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Slack Web API client library for Google Apps Script.",
   "keywords": [

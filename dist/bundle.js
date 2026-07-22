@@ -429,7 +429,7 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
         throw new Error("file には Blob を指定してください");
       }
       const name = (_a = filename != null ? filename : typeof blob.getName === "function" ? blob.getName() : null) != null ? _a : "file";
-      const urlRes = this._post("files.getUploadURLExternal", {
+      const urlRes = this._post_form("files.getUploadURLExternal", {
         filename: name,
         length: blob.getBytes().length,
         snippet_type,
@@ -449,8 +449,9 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
         ...completeArgs
       });
     }
+    // JSON ボディ非対応のためフォーム送信(実測で確認)
     getUploadURLExternal(params = {}) {
-      return this._post("files.getUploadURLExternal", params);
+      return this._post_form("files.getUploadURLExternal", params);
     }
     completeUploadExternal(params = {}) {
       return this._post("files.completeUploadExternal", params);

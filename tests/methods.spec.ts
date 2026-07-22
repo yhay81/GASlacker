@@ -161,7 +161,9 @@ describe('Files.uploadV2', () => {
 
     const [url1, params1] = fetch.mock.calls[0]
     expect(url1).toBe('https://slack.com/api/files.getUploadURLExternal')
-    expect(JSON.parse(params1.payload)).toEqual({ filename: 'hello.txt', length: 3 })
+    // getUploadURLExternal は JSON 非対応のためフォーム送信(値は文字列化される)
+    expect(params1.contentType).toBe('application/x-www-form-urlencoded; charset=UTF-8')
+    expect(params1.payload).toEqual({ filename: 'hello.txt', length: '3' })
 
     const [url2, params2] = fetch.mock.calls[1]
     expect(url2).toBe('https://upload.example/abc')
@@ -195,7 +197,7 @@ describe('Files.uploadV2', () => {
     expect(res).toEqual({ ok: true })
     expect(globalAny.Utilities.newBlob).toHaveBeenCalledWith('hello')
     const [, params1] = fetch.mock.calls[0]
-    expect(JSON.parse(params1.payload)).toEqual({ filename: 'hello.txt', length: 5 })
+    expect(params1.payload).toEqual({ filename: 'hello.txt', length: '5' })
     const [, params3] = fetch.mock.calls[2]
     expect(JSON.parse(params3.payload)).toEqual({
       files: [{ id: 'F999', title: 'greeting' }],

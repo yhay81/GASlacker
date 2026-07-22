@@ -67,7 +67,8 @@ export default class Files extends BaseAPI {
       throw new Error('file には Blob を指定してください')
     }
     const name = filename ?? (typeof blob.getName === 'function' ? blob.getName() : null) ?? 'file'
-    const urlRes = this._post('files.getUploadURLExternal', {
+    // files.getUploadURLExternal は JSON ボディを受け付けない(フォーム送信のみ。実測で確認)
+    const urlRes = this._post_form('files.getUploadURLExternal', {
       filename: name,
       length: blob.getBytes().length,
       snippet_type,
@@ -88,8 +89,9 @@ export default class Files extends BaseAPI {
     })
   }
 
+  // JSON ボディ非対応のためフォーム送信(実測で確認)
   public getUploadURLExternal(params: Record<string, any> = {}) {
-    return this._post('files.getUploadURLExternal', params)
+    return this._post_form('files.getUploadURLExternal', params)
   }
 
   public completeUploadExternal(params: Record<string, any> = {}) {

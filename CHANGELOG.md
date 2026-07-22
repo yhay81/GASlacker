@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.1 (2026-07-22)
+
+### Fixed
+
+- `files.getUploadURLExternal` (and step 1 of `files.uploadV2`) now sends
+  form-encoded requests. The endpoint rejects JSON bodies with
+  `invalid_arguments` — found by running the minimal verification set against
+  the real Slack API with a live token (`pnpm run verify:live`), which now
+  passes end to end including a real upload.
+
 ## 1.0.0 (2026-07-22)
 
 ### Fixed

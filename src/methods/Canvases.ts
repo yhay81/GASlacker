@@ -24,7 +24,7 @@ class CanvasesSections extends BaseAPI {
 export default class Canvases extends BaseAPI {
   public access
   public sections
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.access = new CanvasesAccess(token, retries_limit)
     this.sections = new CanvasesSections(token, retries_limit)

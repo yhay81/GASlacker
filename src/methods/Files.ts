@@ -28,7 +28,7 @@ class FilesRemote extends BaseAPI {
 
 export default class Files extends BaseAPI {
   public remote
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.remote = new FilesRemote(token, retries_limit)
   }

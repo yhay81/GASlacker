@@ -13,7 +13,7 @@ class OpenIDConnect extends BaseAPI {
 
 export default class OpenID extends BaseAPI {
   public connect
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.connect = new OpenIDConnect(token, retries_limit)
   }

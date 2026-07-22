@@ -20,7 +20,7 @@ class WorkflowsFeatured extends BaseAPI {
 
 export default class Workflows extends BaseAPI {
   public featured
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.featured = new WorkflowsFeatured(token, retries_limit)
   }

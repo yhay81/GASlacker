@@ -8,7 +8,7 @@ class AuthTeams extends BaseAPI {
 
 export default class Auth extends BaseAPI {
   public teams
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.teams = new AuthTeams(token, retries_limit)
   }

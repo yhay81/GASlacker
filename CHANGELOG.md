@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.2.0 (2026-07-22)
+
+### Added
+
+- TypeScript type definitions shipped in `dist/types/` —
+  `gas-global.d.ts` declares the `GASlacker` / `methods` globals so all 168
+  methods autocomplete in clasp + TypeScript projects.
+- JSDoc on the `methods()` stub in `bundle.js`, so the Apps Script editor
+  shows parameter help.
+
+### Changed
+
+- Toolchain refreshed to the current generation: TypeScript 7.0 (native Go
+  compiler; codebase now passes its stricter defaults with explicit
+  `string | null` tokens), Vite 8 (Rolldown bundler — builds ~3x faster,
+  slightly smaller bundle), oxlint 1.75 / oxfmt 0.60, pnpm 11, clasp 3.3.
+- Dropped `cpx`, `rimraf`, and the vestigial `braces` pin from
+  devDependencies (replaced by Node built-ins).
+
 ## 1.1.0 (2026-07-22)
 
 ### Added

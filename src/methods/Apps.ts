@@ -48,7 +48,7 @@ class AppsUserConnection extends BaseAPI {
 
 class AppsUser extends BaseAPI {
   public connection
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.connection = new AppsUserConnection(token, retries_limit)
   }
@@ -59,7 +59,7 @@ export default class Apps extends BaseAPI {
   public eventAuthorizations: AppsEventAuthorizations
   public manifest: AppsManifest
   public user: AppsUser
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.connections = new AppsConnections(token, retries_limit)
     this.eventAuthorizations = new AppsEventAuthorizations(token, retries_limit)

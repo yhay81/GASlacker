@@ -11,7 +11,7 @@ export interface SlackResponse {
 export default class BaseAPI {
   static API_ENDPOINT = 'https://slack.com/api/'
   constructor(
-    protected _token: string = null,
+    protected _token: string | null = null,
     private _retries_limit: number = DEFAULT_RETRIES,
   ) {}
 
@@ -72,7 +72,7 @@ export default class BaseAPI {
     return this._fetch(url, params)
   }
 
-  protected _fetch(url: string, params: Record<string, any> = null): SlackResponse {
+  protected _fetch(url: string, params: Record<string, any> = {}): SlackResponse {
     const requestParams: Record<string, any> = Object.assign({}, params || {})
     if (requestParams.muteHttpExceptions == null) {
       requestParams.muteHttpExceptions = true

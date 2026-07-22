@@ -60,7 +60,7 @@ export default class SlackLists extends BaseAPI {
   public access
   public download
   public items
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.access = new SlackListsAccess(token, retries_limit)
     this.download = new SlackListsDownload(token, retries_limit)

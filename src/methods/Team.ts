@@ -33,7 +33,7 @@ export default class Team extends BaseAPI {
   public billing
   public preferences
   public externalTeams
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.profile = new TeamProfile(token, retries_limit)
     this.billing = new TeamBilling(token, retries_limit)

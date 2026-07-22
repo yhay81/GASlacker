@@ -16,7 +16,7 @@ class AssistantThreads extends BaseAPI {
 
 export default class Assistant extends BaseAPI {
   public threads
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.threads = new AssistantThreads(token, retries_limit)
   }

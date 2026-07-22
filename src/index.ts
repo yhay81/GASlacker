@@ -63,7 +63,7 @@ export class Methods {
   public views
   public workflows
 
-  constructor(token: string, retries_limit: number = DEFAULT_RETRIES) {
+  constructor(token: string | null, retries_limit: number = DEFAULT_RETRIES) {
     this.api = new API(token, retries_limit)
     this.apps = new Apps(token, retries_limit)
     this.assistant = new Assistant(token, retries_limit)
@@ -118,5 +118,11 @@ export class Methods {
 
 declare const global: any
 
-global.methods = (token: string, retries_limit: number = DEFAULT_RETRIES) =>
+/**
+ * Slack Web API クライアントを生成する。
+ * @param {string|null} token Bot/User トークン(xoxb- / xoxp-)。トークン不要 API のみ使う場合は null 可
+ * @param {number} [retries_limit] HTTP 429 時の追加リトライ回数(既定 3)
+ * @return {Object} カテゴリ別クライアント(chat / conversations / files など)
+ */
+global.methods = (token: string | null, retries_limit: number = DEFAULT_RETRIES) =>
   new Methods(token, retries_limit)

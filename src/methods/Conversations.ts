@@ -30,7 +30,7 @@ export default class Conversations extends BaseAPI {
   public canvases
   public externalInvitePermissions
   public requestSharedInvite
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.canvases = new ConversationsCanvases(token, retries_limit)
     this.externalInvitePermissions = new ConversationsExternalInvitePermissions(

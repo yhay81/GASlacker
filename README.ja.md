@@ -60,13 +60,13 @@ pnpm run deploy   # build + clasp push
 スクリプト プロパティに `SLACK_ACCESS_TOKEN` を保存して:
 
 ```javascript
-var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
-var slack = GASlacker.methods(token);
+var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN')
+var slack = GASlacker.methods(token)
 
 function hello() {
-  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello World' });
+  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello World' })
   if (!res.ok) {
-    Logger.log(res.error);
+    Logger.log(res.error)
   }
 }
 ```
@@ -77,26 +77,26 @@ function hello() {
 
 ```javascript
 function doPost(e) {
-  var body = JSON.parse(e.postData.contents);
+  var body = JSON.parse(e.postData.contents)
   // Events API 設定時のエンドポイント URL 検証
   if (body.type === 'url_verification') {
-    return ContentService.createTextOutput(body.challenge);
+    return ContentService.createTextOutput(body.challenge)
   }
   // 本番では署名検証を別途実装してください。
-  var event = body.event;
+  var event = body.event
   if (event && event.type === 'message' && event.text && /hello/.test(event.text)) {
-    slack.chat.postMessage({ channel: event.channel, text: 'Hello World' });
+    slack.chat.postMessage({ channel: event.channel, text: 'Hello World' })
   }
-  return ContentService.createTextOutput('');
+  return ContentService.createTextOutput('')
 }
 ```
 
 ### 任意のメソッド呼び出し
 
 ```javascript
-slack.call('chat.postMessage', { channel: 'C0123456789', text: 'Hi' });
-slack.call('conversations.list', { limit: 20 }, 'get');
-slack.call('tooling.tokens.rotate', { refresh_token: token }, 'form'); // フォーム送信のメソッド
+slack.call('chat.postMessage', { channel: 'C0123456789', text: 'Hi' })
+slack.call('conversations.list', { limit: 20 }, 'get')
+slack.call('tooling.tokens.rotate', { refresh_token: token }, 'form') // フォーム送信のメソッド
 ```
 
 ### ページネーション
@@ -105,10 +105,10 @@ slack.call('tooling.tokens.rotate', { refresh_token: token }, 'form'); // フォ
 配列で返します(他の呼び出しと同じレート制限リトライ付き):
 
 ```javascript
-var pages = slack.paginate('conversations.list', { limit: 200 }, 'get');
+var pages = slack.paginate('conversations.list', { limit: 200 }, 'get')
 var channels = pages.flatMap(function (p) {
-  return p.channels || [];
-});
+  return p.channels || []
+})
 ```
 
 ### ファイルアップロード
@@ -118,11 +118,11 @@ var channels = pages.flatMap(function (p) {
 1 回の呼び出しにまとめたものです:
 
 ```javascript
-var blob = Utilities.newBlob('hello', 'text/plain', 'hello.txt');
-slack.files.uploadV2({ channel_id: 'C0123456789', file: blob, initial_comment: 'A file!' });
+var blob = Utilities.newBlob('hello', 'text/plain', 'hello.txt')
+slack.files.uploadV2({ channel_id: 'C0123456789', file: blob, initial_comment: 'A file!' })
 
 // 文字列をファイルとしてアップロードする場合
-slack.files.uploadV2({ channel_id: 'C0123456789', content: 'hello', filename: 'hello.txt' });
+slack.files.uploadV2({ channel_id: 'C0123456789', content: 'hello', filename: 'hello.txt' })
 ```
 
 `file` には GAS の `Blob`、`content` には文字列(+`filename`)を指定します。
@@ -136,9 +136,17 @@ slack.oauth.access({
   client_id: clientId,
   client_secret: clientSecret,
   code: code,
-  redirect_uri: redirectUri
-});
+  redirect_uri: redirectUri,
+})
 ```
+
+### TypeScript
+
+型定義を [`dist/types/`](dist/types/) に生成しています。clasp + TypeScript の
+プロジェクトではこのフォルダをコピーして `tsconfig.json` の対象に含めてください。
+[`gas-global.d.ts`](dist/types/gas-global.d.ts) が `GASlacker` グローバル
+(ライブラリ利用)と `methods` グローバル(直接貼り付け)を宣言するので、
+全 168 メソッドが補完されます。
 
 ### リトライ回数
 
@@ -147,38 +155,38 @@ slack.oauth.access({
 
 ## API カバレッジ
 
-| プロパティ            | Slack API ファミリー                                                          |
-| --------------------- | ----------------------------------------------------------------------------- |
-| `slack.api`           | `api.test` と任意メソッド用の `call()` / `paginate()`                         |
-| `slack.apps`          | `apps.*`(`connections` / `event.authorizations` / `manifest` / `user` 含む)  |
-| `slack.assistant`     | `assistant.threads.*`                                                         |
-| `slack.auth`          | `auth.*`(`teams.list` 含む)                                                  |
-| `slack.bookmarks`     | `bookmarks.*`                                                                 |
-| `slack.bots`          | `bots.*`                                                                      |
-| `slack.calls`         | `calls.*`(`participants` 含む)                                                |
-| `slack.canvases`      | `canvases.*`(`access` / `sections` 含む)                                      |
-| `slack.chat`          | `chat.*`(`startStream` / `appendStream` / `stopStream` 含む)                  |
-| `slack.conversations` | `conversations.*`(`canvases`・Slack Connect 招待 含む)                        |
-| `slack.dialog`        | `dialog.*`(レガシー)                                                          |
-| `slack.dnd`           | `dnd.*`                                                                       |
-| `slack.emoji`         | `emoji.*`                                                                     |
-| `slack.entity`        | `entity.presentDetails`                                                       |
-| `slack.files`         | `files.*`(`remote`・3 ステップアップロード含む)                               |
-| `slack.functions`     | `functions.*`                                                                 |
-| `slack.oauth`         | `oauth.v2.access`                                                             |
-| `slack.openid`        | `openid.connect.*`(Sign in with Slack)                                        |
-| `slack.pins`          | `pins.*`                                                                      |
-| `slack.reactions`     | `reactions.*`                                                                 |
-| `slack.reminders`     | `reminders.*`                                                                 |
-| `slack.search`        | `search.*`                                                                    |
-| `slack.slackLists`    | `slackLists.*`(Lists API)                                                     |
-| `slack.stars`         | `stars.*`(「後で」機能に移行済みだが現在も応答あり)                           |
-| `slack.team`          | `team.*`(`profile` / `billing` / `preferences` / `externalTeams` 含む)        |
-| `slack.tooling`       | `tooling.tokens.rotate`                                                       |
-| `slack.usergroups`    | `usergroups.*`(`users` 含む)                                                  |
-| `slack.users`         | `users.*`(`profile` / `setPhoto` / `discoverableContacts` 含む)               |
-| `slack.views`         | `views.*`                                                                     |
-| `slack.workflows`     | `workflows.featured.*`                                                        |
+| プロパティ            | Slack API ファミリー                                                        |
+| --------------------- | --------------------------------------------------------------------------- |
+| `slack.api`           | `api.test` と任意メソッド用の `call()` / `paginate()`                       |
+| `slack.apps`          | `apps.*`(`connections` / `event.authorizations` / `manifest` / `user` 含む) |
+| `slack.assistant`     | `assistant.threads.*`                                                       |
+| `slack.auth`          | `auth.*`(`teams.list` 含む)                                                 |
+| `slack.bookmarks`     | `bookmarks.*`                                                               |
+| `slack.bots`          | `bots.*`                                                                    |
+| `slack.calls`         | `calls.*`(`participants` 含む)                                              |
+| `slack.canvases`      | `canvases.*`(`access` / `sections` 含む)                                    |
+| `slack.chat`          | `chat.*`(`startStream` / `appendStream` / `stopStream` 含む)                |
+| `slack.conversations` | `conversations.*`(`canvases`・Slack Connect 招待 含む)                      |
+| `slack.dialog`        | `dialog.*`(レガシー)                                                        |
+| `slack.dnd`           | `dnd.*`                                                                     |
+| `slack.emoji`         | `emoji.*`                                                                   |
+| `slack.entity`        | `entity.presentDetails`                                                     |
+| `slack.files`         | `files.*`(`remote`・3 ステップアップロード含む)                             |
+| `slack.functions`     | `functions.*`                                                               |
+| `slack.oauth`         | `oauth.v2.access`                                                           |
+| `slack.openid`        | `openid.connect.*`(Sign in with Slack)                                      |
+| `slack.pins`          | `pins.*`                                                                    |
+| `slack.reactions`     | `reactions.*`                                                               |
+| `slack.reminders`     | `reminders.*`                                                               |
+| `slack.search`        | `search.*`                                                                  |
+| `slack.slackLists`    | `slackLists.*`(Lists API)                                                   |
+| `slack.stars`         | `stars.*`(「後で」機能に移行済みだが現在も応答あり)                         |
+| `slack.team`          | `team.*`(`profile` / `billing` / `preferences` / `externalTeams` 含む)      |
+| `slack.tooling`       | `tooling.tokens.rotate`                                                     |
+| `slack.usergroups`    | `usergroups.*`(`users` 含む)                                                |
+| `slack.users`         | `users.*`(`profile` / `setPhoto` / `discoverableContacts` 含む)             |
+| `slack.views`         | `views.*`                                                                   |
+| `slack.workflows`     | `workflows.featured.*`                                                      |
 
 メソッド名は Slack のものと完全に同じです。`delete` もそのまま使えます:
 `chat.delete()`, `files.delete()`, `canvases.delete()`(従来の `delete_` エイリアスも残っています)。

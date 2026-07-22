@@ -12,7 +12,7 @@ class CallsParticipants extends BaseAPI {
 
 export default class Calls extends BaseAPI {
   public participants
-  constructor(token: string, retries_limit?: number) {
+  constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
     this.participants = new CallsParticipants(token, retries_limit)
   }

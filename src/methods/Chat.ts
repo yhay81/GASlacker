@@ -1,8 +1,26 @@
 import BaseAPI from './BaseAPI'
 
 export default class Chat extends BaseAPI {
-  public delete_(params: Record<string, any> = {}) {
+  // AI アシスタント向けストリーミング投稿
+  public appendStream(params: Record<string, any> = {}) {
+    return this._post('chat.appendStream', params)
+  }
+
+  public startStream(params: Record<string, any> = {}) {
+    return this._post('chat.startStream', params)
+  }
+
+  public stopStream(params: Record<string, any> = {}) {
+    return this._post('chat.stopStream', params)
+  }
+
+  public delete(params: Record<string, any> = {}) {
     return this._post('chat.delete', params)
+  }
+
+  // 後方互換エイリアス
+  public delete_(params: Record<string, any> = {}) {
+    return this.delete(params)
   }
 
   public deleteScheduledMessage(params: Record<string, any> = {}) {

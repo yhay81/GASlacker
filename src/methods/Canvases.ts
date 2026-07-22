@@ -5,8 +5,13 @@ class CanvasesAccess extends BaseAPI {
     return this._post('canvases.access.set', params)
   }
 
-  public delete_(params: Record<string, any> = {}) {
+  public delete(params: Record<string, any> = {}) {
     return this._post('canvases.access.delete', params)
+  }
+
+  // 後方互換エイリアス
+  public delete_(params: Record<string, any> = {}) {
+    return this.delete(params)
   }
 }
 
@@ -33,7 +38,12 @@ export default class Canvases extends BaseAPI {
     return this._post('canvases.edit', params)
   }
 
-  public delete_(params: Record<string, any> = {}) {
+  public delete(params: Record<string, any> = {}) {
     return this._post('canvases.delete', params)
+  }
+
+  // 後方互換エイリアス
+  public delete_(params: Record<string, any> = {}) {
+    return this.delete(params)
   }
 }

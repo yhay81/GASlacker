@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.1.0 (2026-07-22)
+
+### Added
+
+- **Full parity with Slack's official SDK method list** (minus `admin.*` and
+  discontinued APIs) — 52 new methods, every one verified to exist on the live
+  API: `calls.*`, `slackLists.*` (Lists API), `openid.connect.*` (Sign in with
+  Slack), `functions.*`, `tooling.tokens.rotate`, `workflows.featured.*`,
+  `entity.presentDetails`, `apps.manifest.*`, `apps.user.connection.update`,
+  `auth.teams.list`, `chat.startStream` / `appendStream` / `stopStream`,
+  Slack Connect conversation methods, `team.billing` / `preferences` /
+  `externalTeams`, and `users.discoverableContacts.lookup`. 168 methods total.
+- `slack.paginate(api, params, method, max_pages)` — cursor pagination helper
+  that follows `response_metadata.next_cursor`.
+- `slack.call(api, params, 'form')` — form-encoded escape hatch.
+- `delete` is now a first-class method name (`chat.delete()`, `files.delete()`,
+  `canvases.delete()`, …). The `delete_` aliases remain for backwards
+  compatibility.
+
+### Fixed
+
+- oxlint / oxfmt no longer process `dist/` (reformatting the bundle would have
+  broken the CI dist-sync check).
+
 ## 1.0.1 (2026-07-22)
 
 ### Fixed

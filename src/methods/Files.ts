@@ -33,8 +33,13 @@ export default class Files extends BaseAPI {
     this.remote = new FilesRemote(token, retries_limit)
   }
 
-  public delete_(params: Record<string, any> = {}) {
+  public delete(params: Record<string, any> = {}) {
     return this._post('files.delete', params)
+  }
+
+  // 後方互換エイリアス
+  public delete_(params: Record<string, any> = {}) {
+    return this.delete(params)
   }
 
   public info(params: Record<string, any> = {}) {

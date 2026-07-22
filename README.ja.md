@@ -7,11 +7,13 @@ English version: [README.md](README.md)
 
 Google Apps Script から Slack Web API を呼び出すための軽量クライアントライブラリです。
 
-- 公式 SDK と同じ構成の 110+ メソッド: `slack.chat.postMessage({...})`
+- 公式 SDK と同じ構成の 168 メソッド: `slack.chat.postMessage({...})` —
+  Slack 公式 SDK のメソッド一覧と完全パリティ(`admin.*` と廃止 API を除く)
 - Bearer 認証 + JSON 送信、レート制限(HTTP 429)時は `Retry-After` を尊重して自動リトライ
 - ファイルアップロードは現行の 3 ステップ外部アップロード方式で実装(`files.uploadV2`)
 - OAuth v2(`oauth.v2.access`)や `canvases.*` / `assistant.threads.*` などの新しい API に対応
 - ランタイム依存ゼロ — GAS V8 ランタイム向けの単一 `bundle.js`
+- カーソルページネーションヘルパー: `slack.paginate('conversations.list', { limit: 200 }, 'get')`
 - 未対応メソッドも呼べる: `slack.call('some.method', params)`
 
 本ライブラリの全エンドポイント名は、実際の Slack API に存在することを検証済みです
@@ -94,6 +96,19 @@ function doPost(e) {
 ```javascript
 slack.call('chat.postMessage', { channel: 'C0123456789', text: 'Hi' });
 slack.call('conversations.list', { limit: 20 }, 'get');
+slack.call('tooling.tokens.rotate', { refresh_token: token }, 'form'); // フォーム送信のメソッド
+```
+
+### ページネーション
+
+`paginate` は `response_metadata.next_cursor` を辿り、ページごとのレスポンスを
+配列で返します(他の呼び出しと同じレート制限リトライ付き):
+
+```javascript
+var pages = slack.paginate('conversations.list', { limit: 200 }, 'get');
+var channels = pages.flatMap(function (p) {
+  return p.channels || [];
+});
 ```
 
 ### ファイルアップロード
@@ -132,34 +147,41 @@ slack.oauth.access({
 
 ## API カバレッジ
 
-| プロパティ            | Slack API ファミリー                                                  |
-| --------------------- | --------------------------------------------------------------------- |
-| `slack.api`           | `api.test` と任意メソッド用の `call()`                                |
-| `slack.apps`          | `apps.uninstall`, `apps.connections.*`, `apps.event.authorizations.*` |
-| `slack.assistant`     | `assistant.threads.*`                                                 |
-| `slack.auth`          | `auth.*`                                                              |
-| `slack.bookmarks`     | `bookmarks.*`                                                         |
-| `slack.bots`          | `bots.*`                                                              |
-| `slack.canvases`      | `canvases.*`(`access` / `sections` 含む)                              |
-| `slack.chat`          | `chat.*`                                                              |
-| `slack.conversations` | `conversations.*`(`canvases.create` 含む)                             |
-| `slack.dialog`        | `dialog.*`(レガシー)                                                  |
-| `slack.dnd`           | `dnd.*`                                                               |
-| `slack.emoji`         | `emoji.*`                                                             |
-| `slack.files`         | `files.*`(`remote`・3 ステップアップロード含む)                       |
-| `slack.oauth`         | `oauth.v2.access`                                                     |
-| `slack.pins`          | `pins.*`                                                              |
-| `slack.reactions`     | `reactions.*`                                                         |
-| `slack.reminders`     | `reminders.*`                                                         |
-| `slack.search`        | `search.*`                                                            |
-| `slack.stars`         | `stars.*`(「後で」機能に移行済みだが現在も応答あり)                   |
-| `slack.team`          | `team.*`(`profile` 含む)                                              |
-| `slack.usergroups`    | `usergroups.*`(`users` 含む)                                          |
-| `slack.users`         | `users.*`(`profile`・`setPhoto` 含む)                                 |
-| `slack.views`         | `views.*`                                                             |
+| プロパティ            | Slack API ファミリー                                                          |
+| --------------------- | ----------------------------------------------------------------------------- |
+| `slack.api`           | `api.test` と任意メソッド用の `call()` / `paginate()`                         |
+| `slack.apps`          | `apps.*`(`connections` / `event.authorizations` / `manifest` / `user` 含む)  |
+| `slack.assistant`     | `assistant.threads.*`                                                         |
+| `slack.auth`          | `auth.*`(`teams.list` 含む)                                                  |
+| `slack.bookmarks`     | `bookmarks.*`                                                                 |
+| `slack.bots`          | `bots.*`                                                                      |
+| `slack.calls`         | `calls.*`(`participants` 含む)                                                |
+| `slack.canvases`      | `canvases.*`(`access` / `sections` 含む)                                      |
+| `slack.chat`          | `chat.*`(`startStream` / `appendStream` / `stopStream` 含む)                  |
+| `slack.conversations` | `conversations.*`(`canvases`・Slack Connect 招待 含む)                        |
+| `slack.dialog`        | `dialog.*`(レガシー)                                                          |
+| `slack.dnd`           | `dnd.*`                                                                       |
+| `slack.emoji`         | `emoji.*`                                                                     |
+| `slack.entity`        | `entity.presentDetails`                                                       |
+| `slack.files`         | `files.*`(`remote`・3 ステップアップロード含む)                               |
+| `slack.functions`     | `functions.*`                                                                 |
+| `slack.oauth`         | `oauth.v2.access`                                                             |
+| `slack.openid`        | `openid.connect.*`(Sign in with Slack)                                        |
+| `slack.pins`          | `pins.*`                                                                      |
+| `slack.reactions`     | `reactions.*`                                                                 |
+| `slack.reminders`     | `reminders.*`                                                                 |
+| `slack.search`        | `search.*`                                                                    |
+| `slack.slackLists`    | `slackLists.*`(Lists API)                                                     |
+| `slack.stars`         | `stars.*`(「後で」機能に移行済みだが現在も応答あり)                           |
+| `slack.team`          | `team.*`(`profile` / `billing` / `preferences` / `externalTeams` 含む)        |
+| `slack.tooling`       | `tooling.tokens.rotate`                                                       |
+| `slack.usergroups`    | `usergroups.*`(`users` 含む)                                                  |
+| `slack.users`         | `users.*`(`profile` / `setPhoto` / `discoverableContacts` 含む)               |
+| `slack.views`         | `views.*`                                                                     |
+| `slack.workflows`     | `workflows.featured.*`                                                        |
 
-メソッド名は Slack のものと同じです。JavaScript の予約語と重なる場合のみ末尾に
-アンダースコアを付けます: `chat.delete_()`, `files.delete_()`, `canvases.delete_()`。
+メソッド名は Slack のものと完全に同じです。`delete` もそのまま使えます:
+`chat.delete()`, `files.delete()`, `canvases.delete()`(従来の `delete_` エイリアスも残っています)。
 
 ## 削除済み・非対応
 

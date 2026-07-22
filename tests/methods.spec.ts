@@ -4,6 +4,7 @@ import Conversations from '../src/methods/Conversations'
 import Files from '../src/methods/Files'
 import OAuth from '../src/methods/OAuth'
 import Users from '../src/methods/Users'
+import { Methods } from '../src/index'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 type Call = {
@@ -115,6 +116,94 @@ describe('methods', () => {
       fileArgs: { image: 'blob' },
       params: { crop_w: 100, user: 'U123' },
     })
+  })
+
+  it("call routes 'form' to _post_form", () => {
+    const api = new API('token') as any
+    const calls: Call[] = []
+    api._post_form = (endpoint: string, params: Record<string, any> = {}) => {
+      calls.push({ type: 'post_form', api: endpoint, params })
+      return { ok: true }
+    }
+    api.call('some.method', { key: 'value' }, 'form')
+
+    expect(calls).toEqual([{ type: 'post_form', api: 'some.method', params: { key: 'value' } }])
+  })
+
+  it('delete_ aliases call the same endpoint as delete', () => {
+    const methods = new Methods('token')
+    const targets: Array<{ holder: any; api: string }> = [
+      { holder: methods.chat, api: 'chat.delete' },
+      { holder: methods.files, api: 'files.delete' },
+      { holder: methods.canvases, api: 'canvases.delete' },
+      { holder: methods.canvases.access, api: 'canvases.access.delete' },
+      { holder: methods.reminders, api: 'reminders.delete' },
+      { holder: methods.slackLists.access, api: 'slackLists.access.delete' },
+      { holder: methods.slackLists.items, api: 'slackLists.items.delete' },
+      { holder: methods.apps.manifest, api: 'apps.manifest.delete' },
+    ]
+    for (const { holder, api } of targets) {
+      const calls: string[] = []
+      holder._post = (endpoint: string) => {
+        calls.push(endpoint)
+        return { ok: true }
+      }
+      holder.delete()
+      holder.delete_()
+      expect(calls).toEqual([api, api])
+    }
+  })
+})
+
+describe('paginate', () => {
+  const pageSpy = (responses: Record<string, any>[]) => {
+    const api = new API('token') as any
+    const seen: Record<string, any>[] = []
+    let index = 0
+    api._post = (_endpoint: string, params: Record<string, any> = {}) => {
+      seen.push(params)
+      return responses[Math.min(index++, responses.length - 1)]
+    }
+    return { api, seen }
+  }
+
+  it('follows next_cursor across pages', () => {
+    const { api, seen } = pageSpy([
+      { ok: true, channels: ['a'], response_metadata: { next_cursor: 'c1' } },
+      { ok: true, channels: ['b'], response_metadata: { next_cursor: 'c2' } },
+      { ok: true, channels: ['c'], response_metadata: { next_cursor: '' } },
+    ])
+    const pages = api.paginate('conversations.list', { limit: 2 })
+
+    expect(pages).toHaveLength(3)
+    expect(seen).toEqual([{ limit: 2 }, { limit: 2, cursor: 'c1' }, { limit: 2, cursor: 'c2' }])
+    expect(pages.flatMap((p: any) => p.channels)).toEqual(['a', 'b', 'c'])
+  })
+
+  it('stops on error response', () => {
+    const { api } = pageSpy([
+      { ok: true, response_metadata: { next_cursor: 'c1' } },
+      { ok: false, error: 'ratelimited' },
+    ])
+    const pages = api.paginate('conversations.list')
+
+    expect(pages).toHaveLength(2)
+    expect(pages[1]).toEqual({ ok: false, error: 'ratelimited' })
+  })
+
+  it('respects max_pages', () => {
+    const { api } = pageSpy([{ ok: true, response_metadata: { next_cursor: 'again' } }])
+    const pages = api.paginate('conversations.list', {}, 'post', 3)
+
+    expect(pages).toHaveLength(3)
+  })
+
+  it('is exposed on Methods', () => {
+    const methods = new Methods('token') as any
+    methods.api._get = () => ({ ok: true })
+    const pages = methods.paginate('conversations.list', { limit: 1 }, 'get')
+
+    expect(pages).toEqual([{ ok: true }])
   })
 })
 

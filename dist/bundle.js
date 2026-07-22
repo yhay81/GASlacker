@@ -151,7 +151,23 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
     }
     call(api, params = {}, method = "post") {
       if (method === "get") return this._get(api, params);
+      if (method === "form") return this._post_form(api, params);
       return this._post(api, params);
+    }
+    // カーソルページネーションを辿り、各ページのレスポンスを配列で返す。
+    // 呼び出し例: paginate('conversations.list', { limit: 200 }, 'get')
+    paginate(api, params = {}, method = "post", max_pages = 20) {
+      var _a;
+      const pages = [];
+      let cursor = null;
+      while (pages.length < max_pages) {
+        const res = this.call(api, cursor ? { ...params, cursor } : params, method);
+        pages.push(res);
+        if (!res.ok) break;
+        cursor = ((_a = res.response_metadata) == null ? void 0 : _a.next_cursor) || null;
+        if (!cursor) break;
+      }
+      return pages;
     }
     test(params = {}) {
       return this._get("api.test", params);
@@ -167,11 +183,45 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       return this._get("apps.event.authorizations.list", params);
     }
   }
+  class AppsManifest extends BaseAPI {
+    create(params = {}) {
+      return this._post("apps.manifest.create", params);
+    }
+    delete(params = {}) {
+      return this._post("apps.manifest.delete", params);
+    }
+    // 後方互換エイリアス
+    delete_(params = {}) {
+      return this.delete(params);
+    }
+    export(params = {}) {
+      return this._get("apps.manifest.export", params);
+    }
+    update(params = {}) {
+      return this._post("apps.manifest.update", params);
+    }
+    validate(params = {}) {
+      return this._post("apps.manifest.validate", params);
+    }
+  }
+  class AppsUserConnection extends BaseAPI {
+    update(params = {}) {
+      return this._post("apps.user.connection.update", params);
+    }
+  }
+  class AppsUser extends BaseAPI {
+    constructor(token, retries_limit) {
+      super(token, retries_limit);
+      this.connection = new AppsUserConnection(token, retries_limit);
+    }
+  }
   class Apps extends BaseAPI {
     constructor(token, retries_limit) {
       super(token, retries_limit);
       this.connections = new AppsConnections(token, retries_limit);
       this.eventAuthorizations = new AppsEventAuthorizations(token, retries_limit);
+      this.manifest = new AppsManifest(token, retries_limit);
+      this.user = new AppsUser(token, retries_limit);
     }
     uninstall(params = {}) {
       return this._post_form("apps.uninstall", params);
@@ -194,7 +244,16 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       this.threads = new AssistantThreads(token, retries_limit);
     }
   }
+  class AuthTeams extends BaseAPI {
+    list(params = {}) {
+      return this._get("auth.teams.list", params);
+    }
+  }
   class Auth extends BaseAPI {
+    constructor(token, retries_limit) {
+      super(token, retries_limit);
+      this.teams = new AuthTeams(token, retries_limit);
+    }
     revoke(params = {}) {
       return this._post("auth.revoke", params);
     }
@@ -221,12 +280,42 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       return this._get("bots.info", params);
     }
   }
+  class CallsParticipants extends BaseAPI {
+    add(params = {}) {
+      return this._post("calls.participants.add", params);
+    }
+    remove(params = {}) {
+      return this._post("calls.participants.remove", params);
+    }
+  }
+  class Calls extends BaseAPI {
+    constructor(token, retries_limit) {
+      super(token, retries_limit);
+      this.participants = new CallsParticipants(token, retries_limit);
+    }
+    add(params = {}) {
+      return this._post("calls.add", params);
+    }
+    end(params = {}) {
+      return this._post("calls.end", params);
+    }
+    info(params = {}) {
+      return this._get("calls.info", params);
+    }
+    update(params = {}) {
+      return this._post("calls.update", params);
+    }
+  }
   class CanvasesAccess extends BaseAPI {
     set(params = {}) {
       return this._post("canvases.access.set", params);
     }
-    delete_(params = {}) {
+    delete(params = {}) {
       return this._post("canvases.access.delete", params);
+    }
+    // 後方互換エイリアス
+    delete_(params = {}) {
+      return this.delete(params);
     }
   }
   class CanvasesSections extends BaseAPI {
@@ -246,13 +335,31 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
     edit(params = {}) {
       return this._post("canvases.edit", params);
     }
-    delete_(params = {}) {
+    delete(params = {}) {
       return this._post("canvases.delete", params);
+    }
+    // 後方互換エイリアス
+    delete_(params = {}) {
+      return this.delete(params);
     }
   }
   class Chat extends BaseAPI {
-    delete_(params = {}) {
+    // AI アシスタント向けストリーミング投稿
+    appendStream(params = {}) {
+      return this._post("chat.appendStream", params);
+    }
+    startStream(params = {}) {
+      return this._post("chat.startStream", params);
+    }
+    stopStream(params = {}) {
+      return this._post("chat.stopStream", params);
+    }
+    delete(params = {}) {
       return this._post("chat.delete", params);
+    }
+    // 後方互換エイリアス
+    delete_(params = {}) {
+      return this.delete(params);
     }
     deleteScheduledMessage(params = {}) {
       return this._post("chat.deleteScheduledMessage", params);
@@ -287,10 +394,47 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       return this._post("conversations.canvases.create", params);
     }
   }
+  class ConversationsExternalInvitePermissions extends BaseAPI {
+    set(params = {}) {
+      return this._post("conversations.externalInvitePermissions.set", params);
+    }
+  }
+  class ConversationsRequestSharedInvite extends BaseAPI {
+    approve(params = {}) {
+      return this._post("conversations.requestSharedInvite.approve", params);
+    }
+    deny(params = {}) {
+      return this._post("conversations.requestSharedInvite.deny", params);
+    }
+    list(params = {}) {
+      return this._get("conversations.requestSharedInvite.list", params);
+    }
+  }
   class Conversations extends BaseAPI {
     constructor(token, retries_limit) {
       super(token, retries_limit);
       this.canvases = new ConversationsCanvases(token, retries_limit);
+      this.externalInvitePermissions = new ConversationsExternalInvitePermissions(
+        token,
+        retries_limit
+      );
+      this.requestSharedInvite = new ConversationsRequestSharedInvite(token, retries_limit);
+    }
+    // Slack Connect(外部共有チャンネル)関連
+    acceptSharedInvite(params = {}) {
+      return this._post("conversations.acceptSharedInvite", params);
+    }
+    approveSharedInvite(params = {}) {
+      return this._post("conversations.approveSharedInvite", params);
+    }
+    declineSharedInvite(params = {}) {
+      return this._post("conversations.declineSharedInvite", params);
+    }
+    inviteShared(params = {}) {
+      return this._post("conversations.inviteShared", params);
+    }
+    listConnectInvites(params = {}) {
+      return this._get("conversations.listConnectInvites", params);
     }
     archive(params = {}) {
       return this._post("conversations.archive", params);
@@ -374,6 +518,11 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       return this._get("emoji.list", params);
     }
   }
+  class Entity extends BaseAPI {
+    presentDetails(params = {}) {
+      return this._post("entity.presentDetails", params);
+    }
+  }
   class FilesRemote extends BaseAPI {
     add(params = {}) {
       return this._post("files.remote.add", params);
@@ -399,8 +548,12 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       super(token, retries_limit);
       this.remote = new FilesRemote(token, retries_limit);
     }
-    delete_(params = {}) {
+    delete(params = {}) {
       return this._post("files.delete", params);
+    }
+    // 後方互換エイリアス
+    delete_(params = {}) {
+      return this.delete(params);
     }
     info(params = {}) {
       return this._get("files.info", params);
@@ -457,9 +610,32 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       return this._post("files.completeUploadExternal", params);
     }
   }
+  class Functions extends BaseAPI {
+    completeError(params = {}) {
+      return this._post("functions.completeError", params);
+    }
+    completeSuccess(params = {}) {
+      return this._post("functions.completeSuccess", params);
+    }
+  }
   class OAuth extends BaseAPI {
     access(params = {}) {
       return this._post_form("oauth.v2.access", params);
+    }
+  }
+  class OpenIDConnect extends BaseAPI {
+    // OAuth 系エンドポイントのためフォーム送信(client_id / client_secret / code を使う)
+    token(params = {}) {
+      return this._post_form("openid.connect.token", params);
+    }
+    userInfo(params = {}) {
+      return this._post("openid.connect.userInfo", params);
+    }
+  }
+  class OpenID extends BaseAPI {
+    constructor(token, retries_limit) {
+      super(token, retries_limit);
+      this.connect = new OpenIDConnect(token, retries_limit);
     }
   }
   class Pins extends BaseAPI {
@@ -494,8 +670,12 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
     complete(params = {}) {
       return this._post("reminders.complete", params);
     }
-    delete_(params = {}) {
+    delete(params = {}) {
       return this._post("reminders.delete", params);
+    }
+    // 後方互換エイリアス
+    delete_(params = {}) {
+      return this.delete(params);
     }
     info(params = {}) {
       return this._get("reminders.info", params);
@@ -515,6 +695,64 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       return this._get("search.messages", params);
     }
   }
+  class SlackListsAccess extends BaseAPI {
+    delete(params = {}) {
+      return this._post("slackLists.access.delete", params);
+    }
+    // 後方互換エイリアス
+    delete_(params = {}) {
+      return this.delete(params);
+    }
+    set(params = {}) {
+      return this._post("slackLists.access.set", params);
+    }
+  }
+  class SlackListsDownload extends BaseAPI {
+    get(params = {}) {
+      return this._get("slackLists.download.get", params);
+    }
+    start(params = {}) {
+      return this._post("slackLists.download.start", params);
+    }
+  }
+  class SlackListsItems extends BaseAPI {
+    create(params = {}) {
+      return this._post("slackLists.items.create", params);
+    }
+    delete(params = {}) {
+      return this._post("slackLists.items.delete", params);
+    }
+    // 後方互換エイリアス
+    delete_(params = {}) {
+      return this.delete(params);
+    }
+    deleteMultiple(params = {}) {
+      return this._post("slackLists.items.deleteMultiple", params);
+    }
+    info(params = {}) {
+      return this._get("slackLists.items.info", params);
+    }
+    list(params = {}) {
+      return this._get("slackLists.items.list", params);
+    }
+    update(params = {}) {
+      return this._post("slackLists.items.update", params);
+    }
+  }
+  class SlackLists extends BaseAPI {
+    constructor(token, retries_limit) {
+      super(token, retries_limit);
+      this.access = new SlackListsAccess(token, retries_limit);
+      this.download = new SlackListsDownload(token, retries_limit);
+      this.items = new SlackListsItems(token, retries_limit);
+    }
+    create(params = {}) {
+      return this._post("slackLists.create", params);
+    }
+    update(params = {}) {
+      return this._post("slackLists.update", params);
+    }
+  }
   class Stars extends BaseAPI {
     add(params = {}) {
       return this._post("stars.add", params);
@@ -531,10 +769,31 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       return this._get("team.profile.get", params);
     }
   }
+  class TeamBilling extends BaseAPI {
+    info(params = {}) {
+      return this._get("team.billing.info", params);
+    }
+  }
+  class TeamPreferences extends BaseAPI {
+    list(params = {}) {
+      return this._get("team.preferences.list", params);
+    }
+  }
+  class TeamExternalTeams extends BaseAPI {
+    disconnect(params = {}) {
+      return this._post("team.externalTeams.disconnect", params);
+    }
+    list(params = {}) {
+      return this._get("team.externalTeams.list", params);
+    }
+  }
   class Team extends BaseAPI {
     constructor(token, retries_limit) {
       super(token, retries_limit);
       this.profile = new TeamProfile(token, retries_limit);
+      this.billing = new TeamBilling(token, retries_limit);
+      this.preferences = new TeamPreferences(token, retries_limit);
+      this.externalTeams = new TeamExternalTeams(token, retries_limit);
     }
     accessLogs(params = {}) {
       return this._get("team.accessLogs", params);
@@ -547,6 +806,18 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
     }
     integrationLogs(params = {}) {
       return this._get("team.integrationLogs", params);
+    }
+  }
+  class ToolingTokens extends BaseAPI {
+    // refresh_token を使うためフォーム送信
+    rotate(params = {}) {
+      return this._post_form("tooling.tokens.rotate", params);
+    }
+  }
+  class Tooling extends BaseAPI {
+    constructor(token, retries_limit) {
+      super(token, retries_limit);
+      this.tokens = new ToolingTokens(token, retries_limit);
     }
   }
   class UsergroupsUsers extends BaseAPI {
@@ -578,10 +849,16 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       return this._post("usergroups.update", params);
     }
   }
+  class UsersDiscoverableContacts extends BaseAPI {
+    lookup(params = {}) {
+      return this._post("users.discoverableContacts.lookup", params);
+    }
+  }
   class Users extends BaseAPI {
     constructor(token, retries_limit) {
       super(token, retries_limit);
       this.profile = new UsersProfile(token, retries_limit);
+      this.discoverableContacts = new UsersDiscoverableContacts(token, retries_limit);
     }
     conversations(params = {}) {
       return this._get("users.conversations", params);
@@ -639,6 +916,26 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       return this._post("views.update", params);
     }
   }
+  class WorkflowsFeatured extends BaseAPI {
+    add(params = {}) {
+      return this._post("workflows.featured.add", params);
+    }
+    list(params = {}) {
+      return this._get("workflows.featured.list", params);
+    }
+    remove(params = {}) {
+      return this._post("workflows.featured.remove", params);
+    }
+    set(params = {}) {
+      return this._post("workflows.featured.set", params);
+    }
+  }
+  class Workflows extends BaseAPI {
+    constructor(token, retries_limit) {
+      super(token, retries_limit);
+      this.featured = new WorkflowsFeatured(token, retries_limit);
+    }
+  }
   class Methods {
     constructor(token, retries_limit = DEFAULT_RETRIES) {
       this.api = new API(token, retries_limit);
@@ -647,26 +944,37 @@ function methods(token, retries_limit = DEFAULT_RETRIES) {
       this.auth = new Auth(token, retries_limit);
       this.bookmarks = new Bookmarks(token, retries_limit);
       this.bots = new Bots(token, retries_limit);
+      this.calls = new Calls(token, retries_limit);
       this.canvases = new Canvases(token, retries_limit);
       this.chat = new Chat(token, retries_limit);
       this.conversations = new Conversations(token, retries_limit);
       this.dialog = new Dialog(token, retries_limit);
       this.dnd = new DND(token, retries_limit);
       this.emoji = new Emoji(token, retries_limit);
+      this.entity = new Entity(token, retries_limit);
       this.files = new Files(token, retries_limit);
+      this.functions = new Functions(token, retries_limit);
       this.oauth = new OAuth(null, retries_limit);
+      this.openid = new OpenID(null, retries_limit);
       this.pins = new Pins(token, retries_limit);
       this.reactions = new Reactions(token, retries_limit);
       this.reminders = new Reminders(token, retries_limit);
       this.search = new Search(token, retries_limit);
+      this.slackLists = new SlackLists(token, retries_limit);
       this.stars = new Stars(token, retries_limit);
       this.team = new Team(token, retries_limit);
+      this.tooling = new Tooling(token, retries_limit);
       this.usergroups = new UserGroups(token, retries_limit);
       this.users = new Users(token, retries_limit);
       this.views = new Views(token, retries_limit);
+      this.workflows = new Workflows(token, retries_limit);
     }
     call(api, params = {}, method = "post") {
       return this.api.call(api, params, method);
+    }
+    // カーソルページネーションを辿り、各ページのレスポンスを配列で返す
+    paginate(api, params = {}, method = "post", max_pages = 20) {
+      return this.api.paginate(api, params, method, max_pages);
     }
   }
   global.methods = (token, retries_limit = DEFAULT_RETRIES) => new Methods(token, retries_limit);

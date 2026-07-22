@@ -9,8 +9,13 @@ export default class Reminders extends BaseAPI {
     return this._post('reminders.complete', params)
   }
 
-  public delete_(params: Record<string, any> = {}) {
+  public delete(params: Record<string, any> = {}) {
     return this._post('reminders.delete', params)
+  }
+
+  // 後方互換エイリアス
+  public delete_(params: Record<string, any> = {}) {
+    return this.delete(params)
   }
 
   public info(params: Record<string, any> = {}) {

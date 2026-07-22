@@ -28,8 +28,9 @@ Node.js 22.12+ and pnpm are required.
    for dead ones. Do not add methods that answer `unknown_method`.
 2. Add a one-line method to the matching class in `src/methods/`
    (`PascalCase` class, `camelCase` method, `_get` for GET-style reads,
-   `_post` for JSON writes). Append a trailing underscore only for JavaScript
-   reserved words (`delete_`).
+   `_post` for JSON writes). Name methods exactly after Slack's — `delete` is
+   a valid method name; add a `delete_` alias next to it for consistency with
+   the existing ones.
 3. Register new top-level clients in `src/index.ts`.
 4. Add one row to the table in `tests/routing.spec.ts`.
 5. Update the API coverage table in `README.md` / `README.ja.md` if you added

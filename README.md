@@ -7,11 +7,13 @@
 
 A lightweight Slack Web API client for Google Apps Script.
 
-- 110+ Slack Web API methods organized like the official SDKs: `slack.chat.postMessage({...})`
+- 168 Slack Web API methods organized like the official SDKs: `slack.chat.postMessage({...})` —
+  full parity with Slack's official SDK method list (minus `admin.*` and discontinued APIs)
 - Bearer authorization + JSON requests, with automatic retry on rate limits (HTTP 429, honoring `Retry-After`)
 - File uploads implemented with the current 3-step external upload flow (`files.uploadV2`)
 - OAuth v2 (`oauth.v2.access`) and modern APIs such as `canvases.*` / `assistant.threads.*`
 - Zero runtime dependencies — a single `bundle.js` for the GAS V8 runtime
+- Cursor pagination helper: `slack.paginate('conversations.list', { limit: 200 }, 'get')`
 - Escape hatch for any method: `slack.call('some.method', params)`
 
 Every endpoint name in this library is verified to exist on the live Slack API
@@ -94,6 +96,19 @@ function doPost(e) {
 ```javascript
 slack.call('chat.postMessage', { channel: 'C0123456789', text: 'Hi' });
 slack.call('conversations.list', { limit: 20 }, 'get');
+slack.call('tooling.tokens.rotate', { refresh_token: token }, 'form'); // form-encoded methods
+```
+
+### Pagination
+
+`paginate` follows `response_metadata.next_cursor` and returns one response per
+page (with the same rate-limit retries as every other call):
+
+```javascript
+var pages = slack.paginate('conversations.list', { limit: 200 }, 'get');
+var channels = pages.flatMap(function (p) {
+  return p.channels || [];
+});
 ```
 
 ### Uploading files
@@ -132,34 +147,41 @@ attempts on HTTP 429 (default 3; `0` sends exactly one request). Waits for the
 
 ## API coverage
 
-| Property              | Slack API family                                                      |
-| --------------------- | --------------------------------------------------------------------- |
-| `slack.api`           | `api.test`, plus `call()` for arbitrary methods                       |
-| `slack.apps`          | `apps.uninstall`, `apps.connections.*`, `apps.event.authorizations.*` |
-| `slack.assistant`     | `assistant.threads.*`                                                 |
-| `slack.auth`          | `auth.*`                                                              |
-| `slack.bookmarks`     | `bookmarks.*`                                                         |
-| `slack.bots`          | `bots.*`                                                              |
-| `slack.canvases`      | `canvases.*` (incl. `access` / `sections`)                            |
-| `slack.chat`          | `chat.*`                                                              |
-| `slack.conversations` | `conversations.*` (incl. `canvases.create`)                           |
-| `slack.dialog`        | `dialog.*` (legacy)                                                   |
-| `slack.dnd`           | `dnd.*`                                                               |
-| `slack.emoji`         | `emoji.*`                                                             |
-| `slack.files`         | `files.*` (incl. `remote`, 3-step upload)                             |
-| `slack.oauth`         | `oauth.v2.access`                                                     |
-| `slack.pins`          | `pins.*`                                                              |
-| `slack.reactions`     | `reactions.*`                                                         |
-| `slack.reminders`     | `reminders.*`                                                         |
-| `slack.search`        | `search.*`                                                            |
-| `slack.stars`         | `stars.*` (superseded by "Later" but still served)                    |
-| `slack.team`          | `team.*` (incl. `profile`)                                            |
-| `slack.usergroups`    | `usergroups.*` (incl. `users`)                                        |
-| `slack.users`         | `users.*` (incl. `profile`, `setPhoto`)                               |
-| `slack.views`         | `views.*`                                                             |
+| Property              | Slack API family                                                              |
+| --------------------- | ----------------------------------------------------------------------------- |
+| `slack.api`           | `api.test`, plus `call()` / `paginate()` for arbitrary methods                |
+| `slack.apps`          | `apps.*` (incl. `connections`, `event.authorizations`, `manifest`, `user`)    |
+| `slack.assistant`     | `assistant.threads.*`                                                         |
+| `slack.auth`          | `auth.*` (incl. `teams.list`)                                                 |
+| `slack.bookmarks`     | `bookmarks.*`                                                                 |
+| `slack.bots`          | `bots.*`                                                                      |
+| `slack.calls`         | `calls.*` (incl. `participants`)                                              |
+| `slack.canvases`      | `canvases.*` (incl. `access` / `sections`)                                    |
+| `slack.chat`          | `chat.*` (incl. `startStream` / `appendStream` / `stopStream`)                |
+| `slack.conversations` | `conversations.*` (incl. `canvases`, Slack Connect invites)                   |
+| `slack.dialog`        | `dialog.*` (legacy)                                                           |
+| `slack.dnd`           | `dnd.*`                                                                       |
+| `slack.emoji`         | `emoji.*`                                                                     |
+| `slack.entity`        | `entity.presentDetails`                                                       |
+| `slack.files`         | `files.*` (incl. `remote`, 3-step upload)                                     |
+| `slack.functions`     | `functions.*`                                                                 |
+| `slack.oauth`         | `oauth.v2.access`                                                             |
+| `slack.openid`        | `openid.connect.*` (Sign in with Slack)                                       |
+| `slack.pins`          | `pins.*`                                                                      |
+| `slack.reactions`     | `reactions.*`                                                                 |
+| `slack.reminders`     | `reminders.*`                                                                 |
+| `slack.search`        | `search.*`                                                                    |
+| `slack.slackLists`    | `slackLists.*` (Lists API)                                                    |
+| `slack.stars`         | `stars.*` (superseded by "Later" but still served)                            |
+| `slack.team`          | `team.*` (incl. `profile`, `billing`, `preferences`, `externalTeams`)         |
+| `slack.tooling`       | `tooling.tokens.rotate`                                                       |
+| `slack.usergroups`    | `usergroups.*` (incl. `users`)                                                |
+| `slack.users`         | `users.*` (incl. `profile`, `setPhoto`, `discoverableContacts`)               |
+| `slack.views`         | `views.*`                                                                     |
+| `slack.workflows`     | `workflows.featured.*`                                                        |
 
-Method names mirror Slack's, with a trailing underscore where the name is a
-JavaScript reserved word: `chat.delete_()`, `files.delete_()`, `canvases.delete_()`.
+Method names mirror Slack's exactly — including `delete`: `chat.delete()`,
+`files.delete()`, `canvases.delete()`. (The older `delete_` aliases still work.)
 
 ## Removed / not included
 

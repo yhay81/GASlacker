@@ -20,8 +20,19 @@ const blobFile = join(workDir, 'blob')
 
 // UrlFetchApp.fetch 互換の同期 HTTP(curl 利用、依存ゼロ)
 const fetchImpl = (url, params = {}) => {
-  const args = ['-s', '-X', (params.method || 'get').toUpperCase(), '-o', bodyFile, '-D', headerFile, '-w', '%{http_code}']
-  for (const [key, value] of Object.entries(params.headers || {})) args.push('-H', `${key}: ${value}`)
+  const args = [
+    '-s',
+    '-X',
+    (params.method || 'get').toUpperCase(),
+    '-o',
+    bodyFile,
+    '-D',
+    headerFile,
+    '-w',
+    '%{http_code}',
+  ]
+  for (const [key, value] of Object.entries(params.headers || {}))
+    args.push('-H', `${key}: ${value}`)
   if (params.contentType) args.push('-H', `Content-Type: ${params.contentType}`)
   const payload = params.payload
   if (payload != null) {
@@ -31,7 +42,8 @@ const fetchImpl = (url, params = {}) => {
       writeFileSync(blobFile, Buffer.from(payload.getBytes()))
       args.push('--data-binary', `@${blobFile}`)
     } else {
-      for (const [key, value] of Object.entries(payload)) args.push('--data-urlencode', `${key}=${value}`)
+      for (const [key, value] of Object.entries(payload))
+        args.push('--data-urlencode', `${key}=${value}`)
     }
   }
   args.push(url)
@@ -109,7 +121,11 @@ check(
 // 5. JSON POST 経路
 if (token && channel) {
   const post = slack.chat.postMessage({ channel, text: 'GASlacker verify-live: chat.postMessage' })
-  check('chat.postMessage (JSON POST)', post.ok === true, `ok=${post.ok} error=${post.error ?? '-'}`)
+  check(
+    'chat.postMessage (JSON POST)',
+    post.ok === true,
+    `ok=${post.ok} error=${post.error ?? '-'}`,
+  )
 } else {
   const post = slack.chat.postMessage({ channel: 'C000', text: 'x' })
   check(
@@ -122,8 +138,16 @@ if (token && channel) {
 // 6. ファイルアップロード(3 ステップ合成)
 const blob = newBlob('GASlacker verify-live upload\n', 'text/plain', 'gaslacker-verify.txt')
 if (token && channel) {
-  const upload = slack.files.uploadV2({ channel_id: channel, file: blob, initial_comment: 'verify-live upload' })
-  check('files.uploadV2 (3-step upload)', upload.ok === true, `ok=${upload.ok} error=${upload.error ?? '-'}`)
+  const upload = slack.files.uploadV2({
+    channel_id: channel,
+    file: blob,
+    initial_comment: 'verify-live upload',
+  })
+  check(
+    'files.uploadV2 (3-step upload)',
+    upload.ok === true,
+    `ok=${upload.ok} error=${upload.error ?? '-'}`,
+  )
 } else {
   const upload = slack.files.uploadV2({ file: blob })
   check(
@@ -134,5 +158,8 @@ if (token && channel) {
 }
 
 console.log(`\n${failed === 0 ? '最小検証セット: すべて成功' : `失敗: ${failed} 件`}`)
-if (!token) console.log('(実投稿まで検証するには SLACK_ACCESS_TOKEN と SLACK_TEST_CHANNEL を設定してください)')
+if (!token)
+  console.log(
+    '(実投稿まで検証するには SLACK_ACCESS_TOKEN と SLACK_TEST_CHANNEL を設定してください)',
+  )
 process.exit(failed === 0 ? 0 : 1)

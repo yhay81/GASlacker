@@ -1,10 +1,18 @@
 import BaseAPI from './BaseAPI'
 
+class UsersDiscoverableContacts extends BaseAPI {
+  public lookup(params: Record<string, any> = {}) {
+    return this._post('users.discoverableContacts.lookup', params)
+  }
+}
+
 export default class Users extends BaseAPI {
   public profile
+  public discoverableContacts
   constructor(token: string, retries_limit?: number) {
     super(token, retries_limit)
     this.profile = new UsersProfile(token, retries_limit)
+    this.discoverableContacts = new UsersDiscoverableContacts(token, retries_limit)
   }
 
   public conversations(params: Record<string, any> = {}) {

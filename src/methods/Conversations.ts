@@ -6,11 +6,59 @@ class ConversationsCanvases extends BaseAPI {
   }
 }
 
+class ConversationsExternalInvitePermissions extends BaseAPI {
+  public set(params: Record<string, any> = {}) {
+    return this._post('conversations.externalInvitePermissions.set', params)
+  }
+}
+
+class ConversationsRequestSharedInvite extends BaseAPI {
+  public approve(params: Record<string, any> = {}) {
+    return this._post('conversations.requestSharedInvite.approve', params)
+  }
+
+  public deny(params: Record<string, any> = {}) {
+    return this._post('conversations.requestSharedInvite.deny', params)
+  }
+
+  public list(params: Record<string, any> = {}) {
+    return this._get('conversations.requestSharedInvite.list', params)
+  }
+}
+
 export default class Conversations extends BaseAPI {
   public canvases
+  public externalInvitePermissions
+  public requestSharedInvite
   constructor(token: string, retries_limit?: number) {
     super(token, retries_limit)
     this.canvases = new ConversationsCanvases(token, retries_limit)
+    this.externalInvitePermissions = new ConversationsExternalInvitePermissions(
+      token,
+      retries_limit,
+    )
+    this.requestSharedInvite = new ConversationsRequestSharedInvite(token, retries_limit)
+  }
+
+  // Slack Connect(外部共有チャンネル)関連
+  public acceptSharedInvite(params: Record<string, any> = {}) {
+    return this._post('conversations.acceptSharedInvite', params)
+  }
+
+  public approveSharedInvite(params: Record<string, any> = {}) {
+    return this._post('conversations.approveSharedInvite', params)
+  }
+
+  public declineSharedInvite(params: Record<string, any> = {}) {
+    return this._post('conversations.declineSharedInvite', params)
+  }
+
+  public inviteShared(params: Record<string, any> = {}) {
+    return this._post('conversations.inviteShared', params)
+  }
+
+  public listConnectInvites(params: Record<string, any> = {}) {
+    return this._get('conversations.listConnectInvites', params)
   }
 
   public archive(params: Record<string, any> = {}) {

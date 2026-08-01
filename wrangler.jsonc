@@ -1,0 +1,11 @@
+// Cloudflare Workers (static assets) config: serves docs/ at https://gaslacker.yhay81.com
+// Deployed by Workers Builds (dashboard Git integration) via `npx wrangler deploy`.
+// No Worker script (`main`) — this is an assets-only deployment.
+{
+  "name": "gaslacker",
+  "compatibility_date": "2026-08-01",
+  "assets": {
+    "directory": "./docs"
+  },
+  "routes": [{ "pattern": "gaslacker.yhay81.com", "custom_domain": true }]
+}

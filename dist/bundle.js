@@ -177,10 +177,11 @@ function methods(token, retries_limit = 3) {
 			if (method === "form") return this._post_form(api, params);
 			return this._post(api, params);
 		}
-		paginate(api, params = {}, method = "post", max_pages = 20) {
+		paginate(api, params = {}, method = "post", max_pages) {
+			if (max_pages !== void 0 && (!Number.isInteger(max_pages) || max_pages < 1)) throw new Error("max_pages must be a positive integer");
 			const pages = [];
 			let cursor = null;
-			while (pages.length < max_pages) {
+			while (max_pages === void 0 || pages.length < max_pages) {
 				var _res$response_metadat;
 				const res = this.call(api, cursor ? {
 					...params,
@@ -1053,7 +1054,7 @@ function methods(token, retries_limit = 3) {
 		call(api, params = {}, method = "post") {
 			return this.api.call(api, params, method);
 		}
-		paginate(api, params = {}, method = "post", max_pages = 20) {
+		paginate(api, params = {}, method = "post", max_pages) {
 			return this.api.paginate(api, params, method, max_pages);
 		}
 	};

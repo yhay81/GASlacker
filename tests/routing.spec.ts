@@ -244,6 +244,36 @@ describe('routing', () => {
   })
 })
 
+describe('AI method catalog', () => {
+  it('matches every route and transport in the routing table', () => {
+    const catalog = JSON.parse(
+      readFileSync(new URL('../docs/methods.json', import.meta.url), 'utf8'),
+    )
+    const transports = {
+      get: 'get',
+      post: 'json',
+      post_form: 'form',
+      post_file: 'multipart',
+    }
+    const expected = CASES.map(([path, , type, endpoint]) => ({
+      path: `slack.${path}`,
+      endpoint: endpoint ?? path,
+      transport: transports[type],
+    }))
+    const actual = catalog.methods.map(({ path, endpoint, transport }: any) => ({
+      path,
+      endpoint,
+      transport,
+    }))
+
+    expect(catalog.method_count).toBe(CASES.length)
+    expect(actual).toEqual(expected)
+    expect(
+      catalog.methods.every(({ effect }: any) => ['read', 'write', 'destructive'].includes(effect)),
+    ).toBe(true)
+  })
+})
+
 // README and the landing page cite the method count as a literal number;
 // pin every mention (all languages) to the size of the table above.
 describe('docs method count', () => {
@@ -274,6 +304,16 @@ describe('docs safety regressions', () => {
     expect(text).not.toContain('sheet.getLastRow() - 1')
   })
 
+  it('initializes the Slack client in every landing-page sheet example', () => {
+    const text = readFileSync(new URL('../docs/index.html', import.meta.url), 'utf8')
+
+    expect(
+      text.match(
+        /function dailySummary\(\) \{(?:\n|\\n)  var token = PropertiesService\.getScriptProperties\(\)\.getProperty\('SLACK_ACCESS_TOKEN'\);/g,
+      ),
+    ).toHaveLength(6)
+  })
+
   it('does not publish an unverified Apps Script Events API handler', () => {
     const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8')
     const landingPage = readFileSync(new URL('../docs/index.html', import.meta.url), 'utf8')
@@ -282,5 +322,18 @@ describe('docs safety regressions', () => {
     expect(readme).not.toContain('function doPost')
     expect(landingPage).not.toContain('Events API')
     expect(existsSync(new URL('../examples/events-api-bot.js', import.meta.url))).toBe(false)
+  })
+
+  it('keeps the AI draft example behind explicit, fail-closed guardrails', () => {
+    const text = readFileSync(new URL('../examples/ai-approved-draft.js', import.meta.url), 'utf8')
+
+    expect(text).toContain('row[2] === true')
+    expect(text).toContain('SLACK_ALLOWED_CHANNEL_IDS')
+    expect(text).toContain('MAX_POSTS_PER_RUN')
+    expect(text).toContain('LockService.getScriptLock()')
+    expect(text).toContain("setNumberFormat('@').setValue(draft)")
+    const postingState = text.indexOf("resultCell.setValue('posting:")
+    expect(postingState).toBeGreaterThan(-1)
+    expect(postingState).toBeLessThan(text.indexOf('slack.chat.postMessage'))
   })
 })

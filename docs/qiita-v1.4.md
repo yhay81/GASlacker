@@ -12,7 +12,7 @@
 
 5分で試せる多言語ガイドも用意しました。
 
-https://yhay81.github.io/GASlacker/
+https://gaslacker.yhay81.com/
 
 ## 5分で導入する
 

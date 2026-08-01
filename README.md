@@ -1,12 +1,44 @@
-# GASlacker
+<p align="center">
+  <a href="https://gaslacker.yhay81.com/">
+    <img src="docs/assets/hero-automation.webp" alt="Automate Slack workflows from Google Apps Script with GASlacker" width="100%" />
+  </a>
+</p>
 
-[![CI](https://github.com/yhay81/GASlacker/actions/workflows/ci.yml/badge.svg)](https://github.com/yhay81/GASlacker/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
+<h1 align="center">GASlacker</h1>
 
-**New here? Try the [5-minute quickstart guide](https://yhay81.github.io/GASlacker/)** — also
-available in 日本語, 简体中文, 한국어, Español, and Português via the language switcher.
+<p align="center">
+  <strong>The complete Slack Web API client for Google Apps Script.</strong><br />
+  From a spreadsheet to Slack in five minutes — no build step, server, or runtime dependency.
+</p>
 
-A lightweight Slack Web API client for Google Apps Script.
+<p align="center">
+  <a href="https://github.com/yhay81/GASlacker/actions/workflows/ci.yml"><img src="https://github.com/yhay81/GASlacker/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
+  <a href="https://github.com/yhay81/GASlacker/releases/latest"><img src="https://img.shields.io/github/v/release/yhay81/GASlacker?label=release&color=287976" alt="Latest release" /></a>
+  <img src="https://img.shields.io/badge/Slack_API_methods-168-d84d39" alt="168 Slack API methods" />
+  <img src="https://img.shields.io/badge/runtime_dependencies-0-287976" alt="Zero runtime dependencies" />
+  <a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-e0a625" alt="MIT License" /></a>
+</p>
+
+<p align="center">
+  <a href="https://gaslacker.yhay81.com/"><strong>5-minute quickstart</strong></a>
+  ·
+  <a href="#examples">Examples</a>
+  ·
+  <a href="docs/ai.md">AI guide</a>
+  ·
+  <a href="#api-coverage">API coverage</a>
+  ·
+  <a href="https://github.com/yhay81/GASlacker/issues">Issues</a>
+</p>
+
+<p align="center">
+  English · 日本語 · 简体中文 · 한국어 · Español · Português
+</p>
+
+---
+
+GASlacker is a lightweight Slack Web API client designed specifically for the Apps Script V8
+runtime.
 
 - 168 Slack Web API methods organized like the official SDKs: `slack.chat.postMessage({...})` —
   full parity with Slack's official SDK method list (minus `admin.*` and discontinued APIs)
@@ -16,6 +48,7 @@ A lightweight Slack Web API client for Google Apps Script.
 - Zero runtime dependencies — a single `bundle.js` for the GAS V8 runtime
 - Cursor pagination helper: `slack.paginate('conversations.list', { limit: 200 }, 'get')`
 - Escape hatch for any method: `slack.call('some.method', params)`
+- AI-readable method catalog and a human-approved action pattern
 
 Every endpoint name in this library is verified to exist on the live Slack API
 (dead endpoints answer `unknown_method`; see [tests/routing.spec.ts](tests/routing.spec.ts)),
@@ -106,8 +139,9 @@ tokenFree.call('tooling.tokens.rotate', { refresh_token: refreshToken }, 'form')
 
 ### Pagination
 
-`paginate` follows `response_metadata.next_cursor` and returns one response per
-page (with the same rate-limit retries as every other call):
+`paginate` follows `response_metadata.next_cursor` until it is empty and returns one response per
+page (with the same rate-limit retries as every other call). Pass a positive integer as the
+optional fourth argument only when you intentionally want to cap the number of pages:
 
 ```javascript
 var pages = slack.paginate('conversations.list', { limit: 200 }, 'get')
@@ -168,11 +202,31 @@ final response. Retry waits are capped at five minutes in total, so a longer sin
 repeated long waits return that structured response instead of exhausting Apps Script's
 execution time.
 
+## AI-assisted automations
+
+GASlacker is designed to be the deterministic Slack action layer in an AI-assisted Google
+Workspace automation. Let a model classify, summarize, or draft; let small Apps Script code apply
+an explicit destination allowlist, action cap, duplicate protection, and human approval before a
+consequential Slack write.
+
+- [`docs/ai.md`](docs/ai.md) explains when to use GASlacker, the official Slack MCP server, or a
+  real-time Slack agent framework.
+- [`docs/llms.txt`](docs/llms.txt) gives coding assistants concise, security-oriented project
+  context.
+- [`docs/methods.json`](docs/methods.json) lists every wrapper path, endpoint, transport style,
+  conservative effect classification, and official method documentation URL.
+
+The core library intentionally remains model-provider-neutral and has no AI runtime dependency.
+
 ## Examples
 
 Copy-paste-ready scripts live in [`examples/`](examples/):
 
 - [`notify-from-spreadsheet.js`](examples/notify-from-spreadsheet.js) — daily sheet summary with Block Kit
+- [`form-response-notification.js`](examples/form-response-notification.js) — Google Form response → Slack notification
+- [`daily-calendar-agenda.js`](examples/daily-calendar-agenda.js) — every morning's Google Calendar agenda
+- [`overdue-task-reminder.js`](examples/overdue-task-reminder.js) — idempotent overdue-task DMs from a sheet
+- [`ai-approved-draft.js`](examples/ai-approved-draft.js) — allowlisted, human-approved AI drafts
 - [`upload-and-paginate.js`](examples/upload-and-paginate.js) — file upload + walking all channels
 
 ## API coverage
@@ -226,7 +280,8 @@ Method names mirror Slack's exactly — including `delete`: `chat.delete()`,
 pnpm run lint        # oxlint
 pnpm run typecheck   # tsc --noEmit
 pnpm run test        # vitest
-pnpm run build       # lint + typecheck + test + vite build
+pnpm run catalog     # regenerate docs/methods.json from the routing table
+pnpm run build       # catalog + lint + typecheck + test + vite build
 pnpm run deploy      # build + clasp push
 ```
 

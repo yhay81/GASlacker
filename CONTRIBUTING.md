@@ -36,7 +36,8 @@ Node.js 22.12+ and pnpm are required.
 3. Register new top-level clients in `src/index.ts`.
 4. Add one row to the table in `tests/routing.spec.ts`.
 5. Update the API coverage table in `README.md` if you added a new family.
-6. `pnpm run build` must pass (lint + typecheck + tests + bundle).
+6. Run `pnpm run catalog` to refresh the AI-readable `docs/methods.json` catalog.
+7. `pnpm run build` must pass (catalog + lint + typecheck + tests + bundle).
 
 ## Testing
 

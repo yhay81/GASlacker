@@ -4,6 +4,9 @@
 
 ### Fixed
 
+- `paginate` now follows cursors until the collection is exhausted instead of silently stopping
+  after 20 pages. Its optional `max_pages` argument remains available as an explicit positive-
+  integer cap.
 - **`openid.connect.userInfo` could never succeed.** The whole `openid.*` client was built
   with a null token, so the request went out without an `Authorization` header and Slack
   always answered `not_authed`. `userInfo` now carries the token passed to `methods()`,
@@ -33,6 +36,11 @@
 
 ### Added
 
+- AI-assisted automation resources: an `llms.txt` context file, a provider-neutral safety guide,
+  and a human-approved Sheet-to-Slack draft example with destination allowlisting, action caps,
+  locking, and fail-closed duplicate protection. A generated `docs/methods.json` catalog now gives
+  coding assistants every method path, endpoint, transport style, conservative effect class, and
+  official documentation link; the build and CI keep it synchronized with the routing table.
 - `chat.scheduledMessages.list`, matching how every other dotted endpoint is nested
   (`files.remote.*`, `apps.manifest.*`, …) and how the official SDK names it. The previous
   flat `chat.scheduledMessagesList` remains as an alias, like the `delete_` ones.

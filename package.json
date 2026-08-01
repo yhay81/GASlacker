@@ -26,8 +26,10 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "catalog": "node scripts/generate-method-catalog.mjs",
+    "catalog:check": "node scripts/generate-method-catalog.mjs --check",
     "verify:live": "node scripts/verify-live.mjs",
-    "build": "pnpm run lint && pnpm run typecheck && pnpm run test && node -e \"fs.rmSync('dist',{recursive:true,force:true})\" && vite build && tsc -p tsconfig.dts.json && node -e \"fs.copyFileSync('appsscript.json','dist/appsscript.json')\"",
+    "build": "pnpm run catalog && pnpm run lint && pnpm run typecheck && pnpm run test && node -e \"fs.rmSync('dist',{recursive:true,force:true})\" && vite build && tsc -p tsconfig.dts.json && node -e \"fs.copyFileSync('appsscript.json','dist/appsscript.json')\"",
     "deploy": "pnpm run build && pnpm dlx @google/clasp@3 push",
     "fmt": "oxfmt --write ."
   },

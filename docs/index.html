@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#f8f2e8" />
+    <link rel="alternate" type="text/plain" href="llms.txt" title="GASlacker for LLMs" />
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='8' y='5' width='26' height='48' rx='11' fill='%23d84d39'/%3E%3Crect x='25' y='22' width='31' height='34' rx='11' fill='%23287976' fill-opacity='.95'/%3E%3C/svg%3E"
@@ -19,11 +20,8 @@
       content="No build step — just add a library ID. Post to Slack from your spreadsheet, schedule messages, and upload files in 5 minutes."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://yhay81.github.io/GASlacker/" />
-    <meta
-      property="og:image"
-      content="https://yhay81.github.io/GASlacker/assets/hero-automation.webp"
-    />
+    <meta property="og:url" content="https://gaslacker.yhay81.com/" />
+    <meta property="og:image" content="https://gaslacker.yhay81.com/assets/hero-automation.webp" />
     <meta property="og:image:width" content="1600" />
     <meta property="og:image:height" content="835" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -1157,6 +1155,9 @@ function hello() {
               data-i18n="code.example"
             ><span class="comment">// Example: post sheet contents every morning (set a time trigger)</span>
 function dailySummary() {
+  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
+  var slack = GASlacker.methods(token);
+
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');
   var lastRow = sheet.getLastRow();
   if (lastRow &lt; 2) return;
@@ -1352,7 +1353,7 @@ function dailySummary() {
           'card6.p':
             '<code class="inline">slack.call(\'メソッド名\', params)</code> でどの API でも。',
           'code.example':
-            "<span class=\"comment\">// 例: シートの内容を毎朝 Slack へ(時間トリガーに設定)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
+            "<span class=\"comment\">// 例: シートの内容を毎朝 Slack へ(時間トリガーに設定)</span>\nfunction dailySummary() {\n  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\n  var slack = GASlacker.methods(token);\n\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': '安心して使えます',
           'safe3.t': 'トークンは手元だけ',
           'safe3.p':
@@ -1436,7 +1437,7 @@ function dailySummary() {
           'card6.t': '未封装的也能调',
           'card6.p': '<code class="inline">slack.call(\'方法名\', params)</code> 可调用任意 API。',
           'code.example':
-            "<span class=\"comment\">// 示例: 每天早晨把表格内容发到 Slack(设置时间触发器)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
+            "<span class=\"comment\">// 示例: 每天早晨把表格内容发到 Slack(设置时间触发器)</span>\nfunction dailySummary() {\n  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\n  var slack = GASlacker.methods(token);\n\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': '可以放心使用',
           'safe3.t': '令牌只在你手里',
           'safe3.p': '只与 Slack API 通信。令牌仅保存在你的脚本属性中。',
@@ -1522,7 +1523,7 @@ function dailySummary() {
           'card6.p':
             '<code class="inline">slack.call(\'metodo\', params)</code> llega a cualquier API.',
           'code.example':
-            "<span class=\"comment\">// Ejemplo: publica la hoja cada mañana (con activador de tiempo)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
+            "<span class=\"comment\">// Ejemplo: publica la hoja cada mañana (con activador de tiempo)</span>\nfunction dailySummary() {\n  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\n  var slack = GASlacker.methods(token);\n\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': 'Hecho para confiar',
           'safe3.t': 'Tu token es tuyo',
           'safe3.p': 'Solo se habla con la Slack API. El token vive en tus propiedades del script.',
@@ -1611,7 +1612,7 @@ function dailySummary() {
           'card6.p':
             '<code class="inline">slack.call(\'metodo\', params)</code> alcança qualquer API.',
           'code.example':
-            "<span class=\"comment\">// Exemplo: publique a planilha toda manhã (com acionador de tempo)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
+            "<span class=\"comment\">// Exemplo: publique a planilha toda manhã (com acionador de tempo)</span>\nfunction dailySummary() {\n  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\n  var slack = GASlacker.methods(token);\n\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': 'Feito para confiar',
           'safe3.t': 'Seu token fica com você',
           'safe3.p':
@@ -1699,7 +1700,7 @@ function dailySummary() {
           'card6.t': '미지원 메서드도 호출',
           'card6.p': '<code class="inline">slack.call(\'메서드명\', params)</code>로 어떤 API든.',
           'code.example':
-            "<span class=\"comment\">// 예: 시트 내용을 매일 아침 Slack으로(시간 트리거 설정)</span>\nfunction dailySummary() {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
+            "<span class=\"comment\">// 예: 시트 내용을 매일 아침 Slack으로(시간 트리거 설정)</span>\nfunction dailySummary() {\n  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\n  var slack = GASlacker.methods(token);\n\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': '안심하고 쓸 수 있어요',
           'safe3.t': '토큰은 내 손안에만',
           'safe3.p': '통신 대상은 Slack API뿐. 토큰은 내 스크립트 속성에만 저장됩니다.',

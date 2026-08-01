@@ -211,6 +211,27 @@ describe('paginate', () => {
     expect(pages).toHaveLength(3)
   })
 
+  it('follows more than 20 pages by default', () => {
+    const responses = Array.from({ length: 21 }, (_, index) => ({
+      ok: true,
+      response_metadata: { next_cursor: index === 20 ? '' : `c${index + 1}` },
+    }))
+    const { api, seen } = pageSpy(responses)
+
+    const pages = api.paginate('conversations.list')
+
+    expect(pages).toHaveLength(21)
+    expect(seen).toHaveLength(21)
+  })
+
+  it.each([0, -1, 0.5, NaN, Infinity])('rejects invalid max_pages %s', (maxPages) => {
+    const api = new API('token')
+
+    expect(() => api.paginate('conversations.list', {}, 'post', maxPages)).toThrow(
+      'max_pages must be a positive integer',
+    )
+  })
+
   it('is exposed on Methods', () => {
     const methods = new Methods('token') as any
     methods.api._get = () => ({ ok: true })

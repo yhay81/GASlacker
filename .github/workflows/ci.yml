@@ -18,12 +18,12 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # Runs lint / typecheck / test / vite build together
       - run: pnpm run build
-      # dist/ is committed as the distributable, so ensure it stays in sync with src/
+      # Generated artifacts are committed, so ensure they stay in sync with their sources.
       # (git status catches both uncommitted changes and new files)
-      - name: Check dist is in sync with src
+      - name: Check generated artifacts are in sync
         run: |
-          if [ -n "$(git status --porcelain dist)" ]; then
-            git status --porcelain dist
-            echo "dist/ is out of sync. Run 'pnpm run build' and commit dist/." >&2
+          if [ -n "$(git status --porcelain dist docs/methods.json)" ]; then
+            git status --porcelain dist docs/methods.json
+            echo "Generated artifacts are out of sync. Run 'pnpm run build' and commit them." >&2
             exit 1
           fi

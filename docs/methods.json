@@ -1,0 +1,1204 @@
+{
+  "schema_version": 1,
+  "generated_from": "tests/routing.spec.ts",
+  "effect_policy": "GET routes are read; non-GET routes are write; destructive action-name prefixes are destructive.",
+  "method_count": 168,
+  "methods": [
+    {
+      "path": "slack.api.test",
+      "endpoint": "api.test",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/api.test/"
+    },
+    {
+      "path": "slack.apps.uninstall",
+      "endpoint": "apps.uninstall",
+      "transport": "form",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/apps.uninstall/"
+    },
+    {
+      "path": "slack.apps.manifest.create",
+      "endpoint": "apps.manifest.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/apps.manifest.create/"
+    },
+    {
+      "path": "slack.apps.manifest.delete",
+      "endpoint": "apps.manifest.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/apps.manifest.delete/"
+    },
+    {
+      "path": "slack.apps.manifest.export",
+      "endpoint": "apps.manifest.export",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/apps.manifest.export/"
+    },
+    {
+      "path": "slack.apps.manifest.update",
+      "endpoint": "apps.manifest.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/apps.manifest.update/"
+    },
+    {
+      "path": "slack.apps.manifest.validate",
+      "endpoint": "apps.manifest.validate",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/apps.manifest.validate/"
+    },
+    {
+      "path": "slack.apps.user.connection.update",
+      "endpoint": "apps.user.connection.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/apps.user.connection.update/"
+    },
+    {
+      "path": "slack.apps.connections.open",
+      "endpoint": "apps.connections.open",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/apps.connections.open/"
+    },
+    {
+      "path": "slack.apps.eventAuthorizations.list",
+      "endpoint": "apps.event.authorizations.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/apps.event.authorizations.list/"
+    },
+    {
+      "path": "slack.assistant.threads.setStatus",
+      "endpoint": "assistant.threads.setStatus",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/assistant.threads.setStatus/"
+    },
+    {
+      "path": "slack.assistant.threads.setSuggestedPrompts",
+      "endpoint": "assistant.threads.setSuggestedPrompts",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/assistant.threads.setSuggestedPrompts/"
+    },
+    {
+      "path": "slack.assistant.threads.setTitle",
+      "endpoint": "assistant.threads.setTitle",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/assistant.threads.setTitle/"
+    },
+    {
+      "path": "slack.auth.revoke",
+      "endpoint": "auth.revoke",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/auth.revoke/"
+    },
+    {
+      "path": "slack.auth.test",
+      "endpoint": "auth.test",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/auth.test/"
+    },
+    {
+      "path": "slack.auth.teams.list",
+      "endpoint": "auth.teams.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/auth.teams.list/"
+    },
+    {
+      "path": "slack.bookmarks.add",
+      "endpoint": "bookmarks.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/bookmarks.add/"
+    },
+    {
+      "path": "slack.bookmarks.edit",
+      "endpoint": "bookmarks.edit",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/bookmarks.edit/"
+    },
+    {
+      "path": "slack.bookmarks.list",
+      "endpoint": "bookmarks.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/bookmarks.list/"
+    },
+    {
+      "path": "slack.bookmarks.remove",
+      "endpoint": "bookmarks.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/bookmarks.remove/"
+    },
+    {
+      "path": "slack.bots.info",
+      "endpoint": "bots.info",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/bots.info/"
+    },
+    {
+      "path": "slack.calls.add",
+      "endpoint": "calls.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/calls.add/"
+    },
+    {
+      "path": "slack.calls.end",
+      "endpoint": "calls.end",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/calls.end/"
+    },
+    {
+      "path": "slack.calls.info",
+      "endpoint": "calls.info",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/calls.info/"
+    },
+    {
+      "path": "slack.calls.update",
+      "endpoint": "calls.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/calls.update/"
+    },
+    {
+      "path": "slack.calls.participants.add",
+      "endpoint": "calls.participants.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/calls.participants.add/"
+    },
+    {
+      "path": "slack.calls.participants.remove",
+      "endpoint": "calls.participants.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/calls.participants.remove/"
+    },
+    {
+      "path": "slack.canvases.create",
+      "endpoint": "canvases.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/canvases.create/"
+    },
+    {
+      "path": "slack.canvases.edit",
+      "endpoint": "canvases.edit",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/canvases.edit/"
+    },
+    {
+      "path": "slack.canvases.delete",
+      "endpoint": "canvases.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/canvases.delete/"
+    },
+    {
+      "path": "slack.canvases.access.set",
+      "endpoint": "canvases.access.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/canvases.access.set/"
+    },
+    {
+      "path": "slack.canvases.access.delete",
+      "endpoint": "canvases.access.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/canvases.access.delete/"
+    },
+    {
+      "path": "slack.canvases.sections.lookup",
+      "endpoint": "canvases.sections.lookup",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/canvases.sections.lookup/"
+    },
+    {
+      "path": "slack.chat.delete",
+      "endpoint": "chat.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/chat.delete/"
+    },
+    {
+      "path": "slack.chat.appendStream",
+      "endpoint": "chat.appendStream",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/chat.appendStream/"
+    },
+    {
+      "path": "slack.chat.startStream",
+      "endpoint": "chat.startStream",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/chat.startStream/"
+    },
+    {
+      "path": "slack.chat.stopStream",
+      "endpoint": "chat.stopStream",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/chat.stopStream/"
+    },
+    {
+      "path": "slack.chat.deleteScheduledMessage",
+      "endpoint": "chat.deleteScheduledMessage",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/chat.deleteScheduledMessage/"
+    },
+    {
+      "path": "slack.chat.getPermalink",
+      "endpoint": "chat.getPermalink",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/chat.getPermalink/"
+    },
+    {
+      "path": "slack.chat.meMessage",
+      "endpoint": "chat.meMessage",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/chat.meMessage/"
+    },
+    {
+      "path": "slack.chat.postEphemeral",
+      "endpoint": "chat.postEphemeral",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/chat.postEphemeral/"
+    },
+    {
+      "path": "slack.chat.postMessage",
+      "endpoint": "chat.postMessage",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/chat.postMessage/"
+    },
+    {
+      "path": "slack.chat.scheduleMessage",
+      "endpoint": "chat.scheduleMessage",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/chat.scheduleMessage/"
+    },
+    {
+      "path": "slack.chat.scheduledMessages.list",
+      "endpoint": "chat.scheduledMessages.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/chat.scheduledMessages.list/"
+    },
+    {
+      "path": "slack.chat.unfurl",
+      "endpoint": "chat.unfurl",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/chat.unfurl/"
+    },
+    {
+      "path": "slack.chat.update",
+      "endpoint": "chat.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/chat.update/"
+    },
+    {
+      "path": "slack.conversations.archive",
+      "endpoint": "conversations.archive",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.archive/"
+    },
+    {
+      "path": "slack.conversations.canvases.create",
+      "endpoint": "conversations.canvases.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.canvases.create/"
+    },
+    {
+      "path": "slack.conversations.acceptSharedInvite",
+      "endpoint": "conversations.acceptSharedInvite",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.acceptSharedInvite/"
+    },
+    {
+      "path": "slack.conversations.approveSharedInvite",
+      "endpoint": "conversations.approveSharedInvite",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.approveSharedInvite/"
+    },
+    {
+      "path": "slack.conversations.declineSharedInvite",
+      "endpoint": "conversations.declineSharedInvite",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.declineSharedInvite/"
+    },
+    {
+      "path": "slack.conversations.externalInvitePermissions.set",
+      "endpoint": "conversations.externalInvitePermissions.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.externalInvitePermissions.set/"
+    },
+    {
+      "path": "slack.conversations.inviteShared",
+      "endpoint": "conversations.inviteShared",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.inviteShared/"
+    },
+    {
+      "path": "slack.conversations.listConnectInvites",
+      "endpoint": "conversations.listConnectInvites",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.listConnectInvites/"
+    },
+    {
+      "path": "slack.conversations.requestSharedInvite.approve",
+      "endpoint": "conversations.requestSharedInvite.approve",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.requestSharedInvite.approve/"
+    },
+    {
+      "path": "slack.conversations.requestSharedInvite.deny",
+      "endpoint": "conversations.requestSharedInvite.deny",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.requestSharedInvite.deny/"
+    },
+    {
+      "path": "slack.conversations.requestSharedInvite.list",
+      "endpoint": "conversations.requestSharedInvite.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.requestSharedInvite.list/"
+    },
+    {
+      "path": "slack.conversations.close",
+      "endpoint": "conversations.close",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.close/"
+    },
+    {
+      "path": "slack.conversations.create",
+      "endpoint": "conversations.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.create/"
+    },
+    {
+      "path": "slack.conversations.history",
+      "endpoint": "conversations.history",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.history/"
+    },
+    {
+      "path": "slack.conversations.info",
+      "endpoint": "conversations.info",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.info/"
+    },
+    {
+      "path": "slack.conversations.invite",
+      "endpoint": "conversations.invite",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.invite/"
+    },
+    {
+      "path": "slack.conversations.join",
+      "endpoint": "conversations.join",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.join/"
+    },
+    {
+      "path": "slack.conversations.kick",
+      "endpoint": "conversations.kick",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.kick/"
+    },
+    {
+      "path": "slack.conversations.leave",
+      "endpoint": "conversations.leave",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.leave/"
+    },
+    {
+      "path": "slack.conversations.list",
+      "endpoint": "conversations.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.list/"
+    },
+    {
+      "path": "slack.conversations.mark",
+      "endpoint": "conversations.mark",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.mark/"
+    },
+    {
+      "path": "slack.conversations.members",
+      "endpoint": "conversations.members",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.members/"
+    },
+    {
+      "path": "slack.conversations.open",
+      "endpoint": "conversations.open",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.open/"
+    },
+    {
+      "path": "slack.conversations.rename",
+      "endpoint": "conversations.rename",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.rename/"
+    },
+    {
+      "path": "slack.conversations.replies",
+      "endpoint": "conversations.replies",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.replies/"
+    },
+    {
+      "path": "slack.conversations.setPurpose",
+      "endpoint": "conversations.setPurpose",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.setPurpose/"
+    },
+    {
+      "path": "slack.conversations.setTopic",
+      "endpoint": "conversations.setTopic",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.setTopic/"
+    },
+    {
+      "path": "slack.conversations.unarchive",
+      "endpoint": "conversations.unarchive",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/conversations.unarchive/"
+    },
+    {
+      "path": "slack.dialog.open",
+      "endpoint": "dialog.open",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/dialog.open/"
+    },
+    {
+      "path": "slack.dnd.endDnd",
+      "endpoint": "dnd.endDnd",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/dnd.endDnd/"
+    },
+    {
+      "path": "slack.dnd.endSnooze",
+      "endpoint": "dnd.endSnooze",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/dnd.endSnooze/"
+    },
+    {
+      "path": "slack.dnd.info",
+      "endpoint": "dnd.info",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/dnd.info/"
+    },
+    {
+      "path": "slack.dnd.setSnooze",
+      "endpoint": "dnd.setSnooze",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/dnd.setSnooze/"
+    },
+    {
+      "path": "slack.dnd.teamInfo",
+      "endpoint": "dnd.teamInfo",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/dnd.teamInfo/"
+    },
+    {
+      "path": "slack.emoji.list",
+      "endpoint": "emoji.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/emoji.list/"
+    },
+    {
+      "path": "slack.entity.presentDetails",
+      "endpoint": "entity.presentDetails",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/entity.presentDetails/"
+    },
+    {
+      "path": "slack.files.delete",
+      "endpoint": "files.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/files.delete/"
+    },
+    {
+      "path": "slack.files.info",
+      "endpoint": "files.info",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/files.info/"
+    },
+    {
+      "path": "slack.files.list",
+      "endpoint": "files.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/files.list/"
+    },
+    {
+      "path": "slack.files.revokePublicURL",
+      "endpoint": "files.revokePublicURL",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/files.revokePublicURL/"
+    },
+    {
+      "path": "slack.files.sharedPublicURL",
+      "endpoint": "files.sharedPublicURL",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/files.sharedPublicURL/"
+    },
+    {
+      "path": "slack.files.getUploadURLExternal",
+      "endpoint": "files.getUploadURLExternal",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/files.getUploadURLExternal/"
+    },
+    {
+      "path": "slack.files.completeUploadExternal",
+      "endpoint": "files.completeUploadExternal",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/files.completeUploadExternal/"
+    },
+    {
+      "path": "slack.files.remote.add",
+      "endpoint": "files.remote.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/files.remote.add/"
+    },
+    {
+      "path": "slack.files.remote.info",
+      "endpoint": "files.remote.info",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/files.remote.info/"
+    },
+    {
+      "path": "slack.files.remote.list",
+      "endpoint": "files.remote.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/files.remote.list/"
+    },
+    {
+      "path": "slack.files.remote.remove",
+      "endpoint": "files.remote.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/files.remote.remove/"
+    },
+    {
+      "path": "slack.files.remote.share",
+      "endpoint": "files.remote.share",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/files.remote.share/"
+    },
+    {
+      "path": "slack.files.remote.update",
+      "endpoint": "files.remote.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/files.remote.update/"
+    },
+    {
+      "path": "slack.functions.completeError",
+      "endpoint": "functions.completeError",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/functions.completeError/"
+    },
+    {
+      "path": "slack.functions.completeSuccess",
+      "endpoint": "functions.completeSuccess",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/functions.completeSuccess/"
+    },
+    {
+      "path": "slack.oauth.access",
+      "endpoint": "oauth.v2.access",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/oauth.v2.access/"
+    },
+    {
+      "path": "slack.openid.connect.token",
+      "endpoint": "openid.connect.token",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/openid.connect.token/"
+    },
+    {
+      "path": "slack.openid.connect.userInfo",
+      "endpoint": "openid.connect.userInfo",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/openid.connect.userInfo/"
+    },
+    {
+      "path": "slack.pins.add",
+      "endpoint": "pins.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/pins.add/"
+    },
+    {
+      "path": "slack.pins.list",
+      "endpoint": "pins.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/pins.list/"
+    },
+    {
+      "path": "slack.pins.remove",
+      "endpoint": "pins.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/pins.remove/"
+    },
+    {
+      "path": "slack.reactions.add",
+      "endpoint": "reactions.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/reactions.add/"
+    },
+    {
+      "path": "slack.reactions.get",
+      "endpoint": "reactions.get",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/reactions.get/"
+    },
+    {
+      "path": "slack.reactions.list",
+      "endpoint": "reactions.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/reactions.list/"
+    },
+    {
+      "path": "slack.reactions.remove",
+      "endpoint": "reactions.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/reactions.remove/"
+    },
+    {
+      "path": "slack.reminders.add",
+      "endpoint": "reminders.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/reminders.add/"
+    },
+    {
+      "path": "slack.reminders.complete",
+      "endpoint": "reminders.complete",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/reminders.complete/"
+    },
+    {
+      "path": "slack.reminders.delete",
+      "endpoint": "reminders.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/reminders.delete/"
+    },
+    {
+      "path": "slack.reminders.info",
+      "endpoint": "reminders.info",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/reminders.info/"
+    },
+    {
+      "path": "slack.reminders.list",
+      "endpoint": "reminders.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/reminders.list/"
+    },
+    {
+      "path": "slack.search.all",
+      "endpoint": "search.all",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/search.all/"
+    },
+    {
+      "path": "slack.search.files",
+      "endpoint": "search.files",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/search.files/"
+    },
+    {
+      "path": "slack.search.messages",
+      "endpoint": "search.messages",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/search.messages/"
+    },
+    {
+      "path": "slack.slackLists.create",
+      "endpoint": "slackLists.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.create/"
+    },
+    {
+      "path": "slack.slackLists.update",
+      "endpoint": "slackLists.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.update/"
+    },
+    {
+      "path": "slack.slackLists.access.set",
+      "endpoint": "slackLists.access.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.access.set/"
+    },
+    {
+      "path": "slack.slackLists.access.delete",
+      "endpoint": "slackLists.access.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.access.delete/"
+    },
+    {
+      "path": "slack.slackLists.download.get",
+      "endpoint": "slackLists.download.get",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.download.get/"
+    },
+    {
+      "path": "slack.slackLists.download.start",
+      "endpoint": "slackLists.download.start",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.download.start/"
+    },
+    {
+      "path": "slack.slackLists.items.create",
+      "endpoint": "slackLists.items.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.items.create/"
+    },
+    {
+      "path": "slack.slackLists.items.delete",
+      "endpoint": "slackLists.items.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.items.delete/"
+    },
+    {
+      "path": "slack.slackLists.items.deleteMultiple",
+      "endpoint": "slackLists.items.deleteMultiple",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.items.deleteMultiple/"
+    },
+    {
+      "path": "slack.slackLists.items.info",
+      "endpoint": "slackLists.items.info",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.items.info/"
+    },
+    {
+      "path": "slack.slackLists.items.list",
+      "endpoint": "slackLists.items.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.items.list/"
+    },
+    {
+      "path": "slack.slackLists.items.update",
+      "endpoint": "slackLists.items.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/slackLists.items.update/"
+    },
+    {
+      "path": "slack.stars.add",
+      "endpoint": "stars.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/stars.add/"
+    },
+    {
+      "path": "slack.stars.list",
+      "endpoint": "stars.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/stars.list/"
+    },
+    {
+      "path": "slack.stars.remove",
+      "endpoint": "stars.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/stars.remove/"
+    },
+    {
+      "path": "slack.team.accessLogs",
+      "endpoint": "team.accessLogs",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/team.accessLogs/"
+    },
+    {
+      "path": "slack.team.billableInfo",
+      "endpoint": "team.billableInfo",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/team.billableInfo/"
+    },
+    {
+      "path": "slack.team.info",
+      "endpoint": "team.info",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/team.info/"
+    },
+    {
+      "path": "slack.team.integrationLogs",
+      "endpoint": "team.integrationLogs",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/team.integrationLogs/"
+    },
+    {
+      "path": "slack.team.profile.get",
+      "endpoint": "team.profile.get",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/team.profile.get/"
+    },
+    {
+      "path": "slack.team.billing.info",
+      "endpoint": "team.billing.info",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/team.billing.info/"
+    },
+    {
+      "path": "slack.team.preferences.list",
+      "endpoint": "team.preferences.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/team.preferences.list/"
+    },
+    {
+      "path": "slack.team.externalTeams.disconnect",
+      "endpoint": "team.externalTeams.disconnect",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/team.externalTeams.disconnect/"
+    },
+    {
+      "path": "slack.team.externalTeams.list",
+      "endpoint": "team.externalTeams.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/team.externalTeams.list/"
+    },
+    {
+      "path": "slack.tooling.tokens.rotate",
+      "endpoint": "tooling.tokens.rotate",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/tooling.tokens.rotate/"
+    },
+    {
+      "path": "slack.usergroups.create",
+      "endpoint": "usergroups.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/usergroups.create/"
+    },
+    {
+      "path": "slack.usergroups.disable",
+      "endpoint": "usergroups.disable",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/usergroups.disable/"
+    },
+    {
+      "path": "slack.usergroups.enable",
+      "endpoint": "usergroups.enable",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/usergroups.enable/"
+    },
+    {
+      "path": "slack.usergroups.list",
+      "endpoint": "usergroups.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/usergroups.list/"
+    },
+    {
+      "path": "slack.usergroups.update",
+      "endpoint": "usergroups.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/usergroups.update/"
+    },
+    {
+      "path": "slack.usergroups.users.list",
+      "endpoint": "usergroups.users.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/usergroups.users.list/"
+    },
+    {
+      "path": "slack.usergroups.users.update",
+      "endpoint": "usergroups.users.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/usergroups.users.update/"
+    },
+    {
+      "path": "slack.users.conversations",
+      "endpoint": "users.conversations",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/users.conversations/"
+    },
+    {
+      "path": "slack.users.deletePhoto",
+      "endpoint": "users.deletePhoto",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/users.deletePhoto/"
+    },
+    {
+      "path": "slack.users.getPresence",
+      "endpoint": "users.getPresence",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/users.getPresence/"
+    },
+    {
+      "path": "slack.users.identity",
+      "endpoint": "users.identity",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/users.identity/"
+    },
+    {
+      "path": "slack.users.info",
+      "endpoint": "users.info",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/users.info/"
+    },
+    {
+      "path": "slack.users.list",
+      "endpoint": "users.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/users.list/"
+    },
+    {
+      "path": "slack.users.lookupByEmail",
+      "endpoint": "users.lookupByEmail",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/users.lookupByEmail/"
+    },
+    {
+      "path": "slack.users.setActive",
+      "endpoint": "users.setActive",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/users.setActive/"
+    },
+    {
+      "path": "slack.users.setPhoto",
+      "endpoint": "users.setPhoto",
+      "transport": "multipart",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/users.setPhoto/"
+    },
+    {
+      "path": "slack.users.setPresence",
+      "endpoint": "users.setPresence",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/users.setPresence/"
+    },
+    {
+      "path": "slack.users.profile.get",
+      "endpoint": "users.profile.get",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/users.profile.get/"
+    },
+    {
+      "path": "slack.users.profile.set",
+      "endpoint": "users.profile.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/users.profile.set/"
+    },
+    {
+      "path": "slack.users.discoverableContacts.lookup",
+      "endpoint": "users.discoverableContacts.lookup",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/users.discoverableContacts.lookup/"
+    },
+    {
+      "path": "slack.views.open",
+      "endpoint": "views.open",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/views.open/"
+    },
+    {
+      "path": "slack.views.publish",
+      "endpoint": "views.publish",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/views.publish/"
+    },
+    {
+      "path": "slack.views.push",
+      "endpoint": "views.push",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/views.push/"
+    },
+    {
+      "path": "slack.views.update",
+      "endpoint": "views.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/views.update/"
+    },
+    {
+      "path": "slack.workflows.featured.add",
+      "endpoint": "workflows.featured.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/workflows.featured.add/"
+    },
+    {
+      "path": "slack.workflows.featured.list",
+      "endpoint": "workflows.featured.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/workflows.featured.list/"
+    },
+    {
+      "path": "slack.workflows.featured.remove",
+      "endpoint": "workflows.featured.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/workflows.featured.remove/"
+    },
+    {
+      "path": "slack.workflows.featured.set",
+      "endpoint": "workflows.featured.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/workflows.featured.set/"
+    }
+  ],
+  "helpers": [
+    {
+      "path": "slack.call",
+      "transport": "dynamic",
+      "effect": "depends_on_endpoint",
+      "docs": "https://github.com/yhay81/GASlacker#calling-any-method"
+    },
+    {
+      "path": "slack.paginate",
+      "transport": "dynamic",
+      "effect": "depends_on_endpoint",
+      "docs": "https://github.com/yhay81/GASlacker#pagination"
+    },
+    {
+      "path": "slack.files.uploadV2",
+      "transport": "composite",
+      "effect": "write",
+      "docs": "https://github.com/yhay81/GASlacker#uploading-files"
+    }
+  ]
+}

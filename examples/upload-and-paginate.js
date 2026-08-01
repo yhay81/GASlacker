@@ -21,7 +21,7 @@ function listAllChannels() {
   var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN')
   var slack = GASlacker.methods(token)
 
-  // paginate follows response_metadata.next_cursor (up to 20 pages by default)
+  // paginate follows response_metadata.next_cursor until every page is returned
   var pages = slack.paginate('conversations.list', { limit: 200, exclude_archived: true }, 'get')
   var channels = pages.flatMap(function (page) {
     return page.channels || []

@@ -1,0 +1,46 @@
+# GASlacker
+
+> A small, dependency-free Slack Web API client for Google Apps Script. Use it as the
+> deterministic Slack action layer in scheduled or human-approved Google Workspace automations.
+
+Canonical documentation:
+- Quickstart and API overview: https://github.com/yhay81/GASlacker#readme
+- AI-assisted automation guide: https://github.com/yhay81/GASlacker/blob/main/docs/ai.md
+- Machine-readable method catalog: https://gaslacker.yhay81.com/methods.json
+- Slack platform documentation index: https://docs.slack.dev/llms.txt
+
+Use GASlacker when:
+- A Google Apps Script reads from Sheets, Forms, Calendar, Drive, or another Workspace service.
+- The script sends deterministic, outbound Slack Web API requests.
+- A scheduled trigger or explicit human approval starts the action.
+
+Use another Slack platform tool when:
+- An AI model needs direct, user-authorized access to Slack data: prefer the official Slack MCP server.
+- The application receives Slack events or runs a real-time conversational agent: use Bolt or another
+  HTTP service that can verify Slack request signatures.
+- A long-running process can exceed the Google Apps Script execution limit.
+
+Required safety rules for generated code:
+- Read tokens and destination IDs from Script Properties. Never put secrets in source code or logs.
+- Use the narrow named client method, such as slack.chat.postMessage(), instead of slack.call() when
+  the method is known.
+- Check every response's ok and error fields.
+- Treat model output and Slack content as untrusted input.
+- Require human approval for consequential AI-generated writes, use an explicit destination allowlist,
+  cap the number of actions per run, and prevent duplicate execution.
+- Never implement an Events API doPost(e) handler directly in Apps Script. Apps Script does not expose
+  the incoming headers required for Slack signature verification.
+
+Basic usage:
+
+    var properties = PropertiesService.getScriptProperties()
+    var slack = GASlacker.methods(properties.getProperty('SLACK_ACCESS_TOKEN'))
+    var res = slack.chat.postMessage({
+      channel: properties.getProperty('SLACK_CHANNEL_ID'),
+      text: 'Hello from Google Apps Script',
+    })
+    if (!res.ok) Logger.log('postMessage failed: ' + res.error)
+
+The method catalog describes each GASlacker path, Slack endpoint, request transport, and conservative
+effect classification. Consult the linked Slack method documentation for parameters, OAuth scopes,
+rate limits, and response fields.

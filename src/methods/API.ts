@@ -25,11 +25,14 @@ export default class API extends BaseAPI {
     api: string,
     params: SlackParams = {},
     method: 'get' | 'post' = 'post',
-    max_pages: number = 20,
+    max_pages?: number,
   ): SlackResponse[] {
+    if (max_pages !== undefined && (!Number.isInteger(max_pages) || max_pages < 1)) {
+      throw new Error('max_pages must be a positive integer')
+    }
     const pages: SlackResponse[] = []
     let cursor: string | null = null
-    while (pages.length < max_pages) {
+    while (max_pages === undefined || pages.length < max_pages) {
       const res = this.call(api, cursor ? { ...params, cursor } : params, method)
       pages.push(res)
       if (!res.ok) break

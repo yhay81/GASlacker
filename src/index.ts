@@ -110,7 +110,7 @@ export class Methods {
     api: string,
     params: SlackParams = {},
     method: 'get' | 'post' = 'post',
-    max_pages: number = 20,
+    max_pages?: number,
   ) {
     return this.api.paginate(api, params, method, max_pages)
   }

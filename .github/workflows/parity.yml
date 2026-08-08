@@ -3,7 +3,7 @@ name: API parity
 # Diffs against the official Slack SDK method list weekly and files an issue when new APIs appear
 on:
   schedule:
-    - cron: '0 3 * * 1' # every Monday 03:00 UTC
+    - cron: "40 15 * * 4"
   workflow_dispatch:
 
 permissions:
@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   parity:
+    timeout-minutes: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7

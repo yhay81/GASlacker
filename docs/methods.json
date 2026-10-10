@@ -2,8 +2,85 @@
   "schema_version": 1,
   "generated_from": "tests/routing.spec.ts",
   "effect_policy": "GET routes are read; non-GET routes are write; destructive action-name prefixes are destructive.",
-  "method_count": 168,
+  "method_count": 180,
   "methods": [
+    {
+      "path": "slack.agents.conversations.archive",
+      "endpoint": "agents.conversations.archive",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/agents.conversations.archive/"
+    },
+    {
+      "path": "slack.agents.conversations.create",
+      "endpoint": "agents.conversations.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/agents.conversations.create/"
+    },
+    {
+      "path": "slack.agents.conversations.getCanvas",
+      "endpoint": "agents.conversations.getCanvas",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/agents.conversations.getCanvas/"
+    },
+    {
+      "path": "slack.agents.conversations.listViews",
+      "endpoint": "agents.conversations.listViews",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/agents.conversations.listViews/"
+    },
+    {
+      "path": "slack.agents.conversations.removeView",
+      "endpoint": "agents.conversations.removeView",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/agents.conversations.removeView/"
+    },
+    {
+      "path": "slack.agents.conversations.setCanvasContent",
+      "endpoint": "agents.conversations.setCanvasContent",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/agents.conversations.setCanvasContent/"
+    },
+    {
+      "path": "slack.agents.conversations.setCommands",
+      "endpoint": "agents.conversations.setCommands",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/agents.conversations.setCommands/"
+    },
+    {
+      "path": "slack.agents.conversations.setProperties",
+      "endpoint": "agents.conversations.setProperties",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/agents.conversations.setProperties/"
+    },
+    {
+      "path": "slack.agents.conversations.setView",
+      "endpoint": "agents.conversations.setView",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/agents.conversations.setView/"
+    },
+    {
+      "path": "slack.agents.sessions.rename",
+      "endpoint": "agents.sessions.rename",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/agents.sessions.rename/"
+    },
+    {
+      "path": "slack.agents.sessions.setStatus",
+      "endpoint": "agents.sessions.setStatus",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/agents.sessions.setStatus/"
+    },
     {
       "path": "slack.api.test",
       "endpoint": "api.test",
@@ -115,6 +192,13 @@
       "transport": "get",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/auth.teams.list/"
+    },
+    {
+      "path": "slack.blocks.validate",
+      "endpoint": "blocks.validate",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/blocks.validate/"
     },
     {
       "path": "slack.bookmarks.add",

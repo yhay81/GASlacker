@@ -348,3 +348,32 @@ pnpm run verify:live                     # with token: real post + real upload
   request-path smoke test), and the bundle structure (GAS stub, `global.methods`, `exports`)
 - Result: everything passed. The build is roughly 3x faster, and `dist/types/` now ships type
   definitions.
+
+
+## Verification Log (agents and blocks parity)
+
+- Run at: 2026-10-10 (UTC)
+- Source: the [2026-10-08 parity run](https://github.com/yhay81/GASlacker/actions/runs/37803969473)
+  reports 12 missing methods; issue #40 only lists the earlier three.
+- Verified the names against the official
+  [node-slack-sdk definitions](https://github.com/slackapi/node-slack-sdk/blob/main/packages/web-api/src/methods.ts)
+  and each method's Slack reference. All 12 are POST endpoints. In particular,
+  [getCanvas](https://docs.slack.dev/reference/methods/agents.conversations.getCanvas/) and
+  [listViews](https://docs.slack.dev/reference/methods/agents.conversations.listViews/) use POST.
+- Token-free liveness probes: all nine `agents.conversations.*` methods plus
+  `agents.sessions.rename` and `agents.sessions.setStatus` returned `not_authed`.
+  `blocks.validate` returned its documented `invalid_arguments` for an empty request.
+  No probe returned `unknown_method`.
+- Finding: `blocks.validate` ignored both a JSON array and a JSON-encoded string in JSON
+  request bodies (returned `invalid_arguments`). Sending the same JSON-encoded blocks
+  string as a form field returned `ok: true`. The wrapper therefore uses `_post_form`.
+  Pass exactly one of `blocks`, `view`, or `message` as a JSON string, as required by the
+  [method reference](https://docs.slack.dev/reference/methods/blocks.validate/).
+- Limits: authenticated agent operations were not exercised; probes confirm endpoint
+  liveness, while routing tests pin transports. No agent conversation was created or modified.
+- Repeated the probes through the generated `dist/bundle.js`: all 11 agent routes returned
+  `not_authed`, and token-free form validation returned `ok: true`. The existing seven-check
+  `node scripts/verify-live.mjs` no-token smoke suite passed.
+- Validation: `pnpm run build` passed lint, typecheck, 258 tests and bundle/declaration
+  generation. The unchanged `node scripts/check-parity.mjs` passed against 280 SDK methods
+  (180 in-scope methods in GASlacker).

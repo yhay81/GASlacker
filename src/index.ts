@@ -1,7 +1,9 @@
 import API from './methods/API'
+import Agents from './methods/Agents'
 import Apps from './methods/Apps'
 import Assistant from './methods/Assistant'
 import Auth from './methods/Auth'
+import Blocks from './methods/Blocks'
 import Bookmarks from './methods/Bookmarks'
 import Bots from './methods/Bots'
 import Calls from './methods/Calls'
@@ -35,9 +37,11 @@ export type { SlackParams, SlackResponse } from './methods/BaseAPI'
 
 export class Methods {
   public api
+  public agents
   public apps
   public assistant
   public auth
+  public blocks
   public bookmarks
   public bots
   public calls
@@ -67,9 +71,11 @@ export class Methods {
 
   constructor(token: string | null, retries_limit: number = DEFAULT_RETRIES) {
     this.api = new API(token, retries_limit)
+    this.agents = new Agents(token, retries_limit)
     this.apps = new Apps(token, retries_limit)
     this.assistant = new Assistant(token, retries_limit)
     this.auth = new Auth(token, retries_limit)
+    this.blocks = new Blocks(token, retries_limit)
     this.bookmarks = new Bookmarks(token, retries_limit)
     this.bots = new Bots(token, retries_limit)
     this.calls = new Calls(token, retries_limit)

@@ -14,7 +14,7 @@
 <p align="center">
   <a href="https://github.com/yhay81/GASlacker/actions/workflows/ci.yml"><img src="https://github.com/yhay81/GASlacker/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
   <a href="https://github.com/yhay81/GASlacker/releases/latest"><img src="https://img.shields.io/github/v/release/yhay81/GASlacker?label=release&color=287976" alt="Latest release" /></a>
-  <img src="https://img.shields.io/badge/Slack_API_methods-168-d84d39" alt="168 Slack API methods" />
+  <img src="https://img.shields.io/badge/Slack_API_methods-180-d84d39" alt="180 Slack API methods" />
   <img src="https://img.shields.io/badge/runtime_dependencies-0-287976" alt="Zero runtime dependencies" />
   <a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-e0a625" alt="MIT License" /></a>
 </p>
@@ -40,7 +40,7 @@
 GASlacker is a lightweight Slack Web API client designed specifically for the Apps Script V8
 runtime.
 
-- 168 Slack Web API methods organized like the official SDKs: `slack.chat.postMessage({...})` —
+- 180 Slack Web API methods organized like the official SDKs: `slack.chat.postMessage({...})` —
   full parity with Slack's official SDK method list (minus `admin.*` and discontinued APIs)
 - Bearer authorization + JSON requests, with automatic retry on rate limits (HTTP 429, honoring `Retry-After`)
 - File uploads implemented with the current 3-step external upload flow (`files.uploadV2`)
@@ -190,7 +190,7 @@ Type definitions are generated into [`dist/types/`](dist/types/). In a
 clasp + TypeScript project, copy that folder in and include it in your
 `tsconfig.json` — [`gas-global.d.ts`](dist/types/gas-global.d.ts) declares the
 `GASlacker` global (library use) and the `methods` global (direct paste), so
-all 168 methods autocomplete.
+all 180 methods autocomplete.
 
 ### Rate-limit retries
 
@@ -233,10 +233,12 @@ Copy-paste-ready scripts live in [`examples/`](examples/):
 
 | Property              | Slack API family                                                           |
 | --------------------- | -------------------------------------------------------------------------- |
+| `slack.agents`        | `agents.conversations.*`, `agents.sessions.*`                              |
 | `slack.api`           | `api.test`, plus `call()` / `paginate()` for arbitrary methods             |
 | `slack.apps`          | `apps.*` (incl. `connections`, `event.authorizations`, `manifest`, `user`) |
 | `slack.assistant`     | `assistant.threads.*`                                                      |
 | `slack.auth`          | `auth.*` (incl. `teams.list`)                                              |
+| `slack.blocks`        | `blocks.validate`                                                          |
 | `slack.bookmarks`     | `bookmarks.*`                                                              |
 | `slack.bots`          | `bots.*`                                                                   |
 | `slack.calls`         | `calls.*` (incl. `participants`)                                           |

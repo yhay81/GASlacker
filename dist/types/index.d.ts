@@ -1,7 +1,9 @@
 import API from './methods/API';
+import Agents from './methods/Agents';
 import Apps from './methods/Apps';
 import Assistant from './methods/Assistant';
 import Auth from './methods/Auth';
+import Blocks from './methods/Blocks';
 import Bookmarks from './methods/Bookmarks';
 import Bots from './methods/Bots';
 import Calls from './methods/Calls';
@@ -32,9 +34,11 @@ import { type SlackParams } from './methods/BaseAPI';
 export type { SlackParams, SlackResponse } from './methods/BaseAPI';
 export declare class Methods {
     api: API;
+    agents: Agents;
     apps: Apps;
     assistant: Assistant;
     auth: Auth;
+    blocks: Blocks;
     bookmarks: Bookmarks;
     bots: Bots;
     calls: Calls;

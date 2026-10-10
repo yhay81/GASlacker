@@ -40,6 +40,21 @@ const spyAll = (root: any): Call[] => {
 // (checked by confirming that nonexistent method names answer unknown_method).
 // [method path, invocation, HTTP style, endpoint name (omitted when it equals the method path)]
 const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
+  ['agents.conversations.archive', (m) => m.agents.conversations.archive(), 'post'],
+  ['agents.conversations.create', (m) => m.agents.conversations.create(), 'post'],
+  ['agents.conversations.getCanvas', (m) => m.agents.conversations.getCanvas(), 'post'],
+  ['agents.conversations.listViews', (m) => m.agents.conversations.listViews(), 'post'],
+  ['agents.conversations.removeView', (m) => m.agents.conversations.removeView(), 'post'],
+  [
+    'agents.conversations.setCanvasContent',
+    (m) => m.agents.conversations.setCanvasContent(),
+    'post',
+  ],
+  ['agents.conversations.setCommands', (m) => m.agents.conversations.setCommands(), 'post'],
+  ['agents.conversations.setProperties', (m) => m.agents.conversations.setProperties(), 'post'],
+  ['agents.conversations.setView', (m) => m.agents.conversations.setView(), 'post'],
+  ['agents.sessions.rename', (m) => m.agents.sessions.rename(), 'post'],
+  ['agents.sessions.setStatus', (m) => m.agents.sessions.setStatus(), 'post'],
   ['api.test', (m) => m.api.test(), 'get'],
   ['apps.uninstall', (m) => m.apps.uninstall(), 'post_form'],
   ['apps.manifest.create', (m) => m.apps.manifest.create(), 'post'],
@@ -65,6 +80,7 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
   ['auth.revoke', (m) => m.auth.revoke(), 'post'],
   ['auth.test', (m) => m.auth.test(), 'get'],
   ['auth.teams.list', (m) => m.auth.teams.list(), 'get'],
+  ['blocks.validate', (m) => m.blocks.validate(), 'post_form'],
   ['bookmarks.add', (m) => m.bookmarks.add(), 'post'],
   ['bookmarks.edit', (m) => m.bookmarks.edit(), 'post'],
   ['bookmarks.list', (m) => m.bookmarks.list(), 'get'],

@@ -199,6 +199,52 @@ function methods(token, retries_limit = 3) {
 		}
 	};
 	//#endregion
+	//#region src/methods/Agents.ts
+	var AgentsConversations = class extends BaseAPI {
+		archive(params = {}) {
+			return this._post("agents.conversations.archive", params);
+		}
+		create(params = {}) {
+			return this._post("agents.conversations.create", params);
+		}
+		getCanvas(params = {}) {
+			return this._post("agents.conversations.getCanvas", params);
+		}
+		listViews(params = {}) {
+			return this._post("agents.conversations.listViews", params);
+		}
+		removeView(params = {}) {
+			return this._post("agents.conversations.removeView", params);
+		}
+		setCanvasContent(params = {}) {
+			return this._post("agents.conversations.setCanvasContent", params);
+		}
+		setCommands(params = {}) {
+			return this._post("agents.conversations.setCommands", params);
+		}
+		setProperties(params = {}) {
+			return this._post("agents.conversations.setProperties", params);
+		}
+		setView(params = {}) {
+			return this._post("agents.conversations.setView", params);
+		}
+	};
+	var AgentsSessions = class extends BaseAPI {
+		rename(params = {}) {
+			return this._post("agents.sessions.rename", params);
+		}
+		setStatus(params = {}) {
+			return this._post("agents.sessions.setStatus", params);
+		}
+	};
+	var Agents = class extends BaseAPI {
+		constructor(token, retries_limit) {
+			super(token, retries_limit);
+			this.conversations = new AgentsConversations(token, retries_limit);
+			this.sessions = new AgentsSessions(token, retries_limit);
+		}
+	};
+	//#endregion
 	//#region src/methods/Apps.ts
 	var AppsConnections = class extends BaseAPI {
 		open(params = {}) {
@@ -289,6 +335,13 @@ function methods(token, retries_limit = 3) {
 		}
 		test(params = {}) {
 			return this._get("auth.test", params);
+		}
+	};
+	//#endregion
+	//#region src/methods/Blocks.ts
+	var Blocks = class extends BaseAPI {
+		validate(params = {}) {
+			return this._post_form("blocks.validate", params);
 		}
 	};
 	//#endregion
@@ -1021,9 +1074,11 @@ function methods(token, retries_limit = 3) {
 	var Methods = class {
 		constructor(token, retries_limit = 3) {
 			this.api = new API(token, retries_limit);
+			this.agents = new Agents(token, retries_limit);
 			this.apps = new Apps(token, retries_limit);
 			this.assistant = new Assistant(token, retries_limit);
 			this.auth = new Auth(token, retries_limit);
+			this.blocks = new Blocks(token, retries_limit);
 			this.bookmarks = new Bookmarks(token, retries_limit);
 			this.bots = new Bots(token, retries_limit);
 			this.calls = new Calls(token, retries_limit);

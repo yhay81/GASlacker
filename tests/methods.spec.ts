@@ -532,3 +532,31 @@ describe('Files.uploadV2', () => {
     )
   })
 })
+
+describe('Blocks.validate', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('sends JSON-encoded blocks as a token-free form and preserves validation errors', () => {
+    const blocks = JSON.stringify([
+      { type: 'section', text: { type: 'invalid_text', text: 'Hello world' } },
+    ])
+    const response = {
+      ok: false,
+      error: 'invalid_blocks',
+      errors: [{ pointer: '/0/text/type', code: 'failed_constraint' }],
+    }
+    const fetch = vi.fn().mockReturnValue(jsonResponse(response))
+    vi.stubGlobal('UrlFetchApp', { fetch })
+
+    expect(new Methods(null).blocks.validate({ blocks })).toEqual(response)
+    expect(fetch).toHaveBeenCalledWith(
+      'https://slack.com/api/blocks.validate',
+      expect.objectContaining({
+        method: 'post',
+        contentType: 'application/x-www-form-urlencoded',
+        headers: {},
+        payload: { blocks },
+      }),
+    )
+  })
+})

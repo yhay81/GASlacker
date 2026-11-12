@@ -368,6 +368,14 @@ Only add and edit were retired. See [Slack’s file comment notice](https://docs
 - Result: everything passed. The build is roughly 3x faster, and `dist/types/` now ships type
   definitions.
 
+## Agent methods and Block Kit validation, 2026-10-10 (UTC)
+
+- The 11 `agents.conversations.*` and `agents.sessions.*` routes exercised in
+  [PR #42](https://github.com/yhay81/GASlacker/pull/42) returned `not_authed` without a token.
+- For `blocks.validate`, Slack accepted JSON-encoded blocks in a form field and returned
+  `ok: true`. The same request sent as a JSON body returned `invalid_arguments`.
+  The wrapper uses form encoding and preserves Slack’s field-level validation errors.
+
 ## Verification log for the November 2026 dependency update
 
 On 2026-11-12, a clean install from the frozen lockfile succeeded with pnpm 12.18.0 and

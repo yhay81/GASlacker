@@ -5,4 +5,3 @@ declare global {
     };
     function methods(token: string | null, retries_limit?: number): Methods;
 }
-export {};

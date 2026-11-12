@@ -5,7 +5,7 @@
   "name": "gaslacker",
   "compatibility_date": "2026-08-01",
   "assets": {
-    "directory": "./docs"
+    "directory": "./docs",
   },
-  "routes": [{ "pattern": "gaslacker.yhay81.com", "custom_domain": true }]
+  "routes": [{ "pattern": "gaslacker.yhay81.com", "custom_domain": true }],
 }

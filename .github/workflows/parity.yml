@@ -1,9 +1,9 @@
 name: API parity
 
-# Diffs against the official Slack SDK method list weekly and files an issue when new APIs appear
+# Check the official Web API index and SDK bindings weekly.
 on:
   schedule:
-    - cron: "40 15 * * 4"
+    - cron: '40 15 * * 4'
   workflow_dispatch:
 
 permissions:
@@ -17,22 +17,23 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - id: check
-        name: Check parity against node-slack-sdk
+        name: Compare tested routes with the Slack Web API index and Node SDK
         run: |
-          set +e
-          node scripts/check-parity.mjs | tee parity.txt
-          # $? would be tee's status, so read the script's own exit code
-          echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
-      - name: File an issue when new methods appear
+          status=0
+          node scripts/check-parity.mjs > parity.txt || status=$?
+          cat parity.txt
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+      - name: Report missing methods
         if: steps.check.outputs.status == '1'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           title="New Slack API methods detected by the weekly parity check"
-          existing=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq length)
-          if [ "$existing" = "0" ]; then
-            gh issue create --title "$title" --label enhancement \
-              --body "$(printf 'The weekly parity check found methods in the official Slack SDK that GASlacker does not cover yet:\n\n```\n%s\n```\nSee CONTRIBUTING.md for how to add them (verify liveness, one line in the class, one line in the routing table).' "$(cat parity.txt)")"
+          existing=$(gh issue list --state open --search "\"$title\" in:title" --json number,title --jq '.[] | select(.title == "New Slack API methods detected by the weekly parity check") | .number' | head -n 1)
+          if [ -z "$existing" ]; then
+            gh issue create --title "$title" --label enhancement --body-file parity.txt
+          else
+            gh issue edit "$existing" --body-file parity.txt
           fi
       - name: Fail the run when parity is broken
         if: steps.check.outputs.status != '0'

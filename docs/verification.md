@@ -16,7 +16,7 @@ Confirm that GASlacker can reliably call the Slack Web API from Google Apps Scri
 
 ## Prerequisites
 
-- Node.js 22.12 or later
+- Node.js 22.12+ (22.x), 24.x, or 26+
 - A test Slack workspace and Slack App
 - A test Bot Token already saved in Script Properties
 - A test channel (e.g. `#gaslacker-test`)
@@ -49,7 +49,7 @@ pnpm run build
 **Expected result**
 
 - `dist/bundle.js` is generated
-- `global.methods` exists inside `dist/bundle.js`
+- Both the top-level `methods(token)` and `GASlacker.methods(token)` create a usable client
 
 ### 2. Utility check
 
@@ -91,10 +91,12 @@ function smoke() {
 **Purpose**: confirm the GET and JSON POST request paths are correct
 **Steps**
 
-- GET: `auth.test` or `conversations.list`
+- GET: `conversations.list`
 - JSON POST: `chat.postMessage` / `chat.update`
 - GET (arbitrary method): `slack.call('conversations.list', { limit: 1 }, 'get')`
-  **Expected result**
+
+**Expected result**
+
 - Returns `ok: true`
 - The GET query string is attached correctly
 
@@ -104,11 +106,13 @@ function smoke() {
 **Steps (example)**
 
 - Run `oauth.v2.access` against a test app
-  (even a failure confirms the request path, as long as `ok: false` with `error` comes back)
+  using a dummy code and check for `invalid_code`
 - Run `tooling.tokens.rotate` with `refresh_token: 'verification-dummy'` through a client that
   was constructed with a normal Slack token
-  **Expected result**
-- Returns `ok: true`, or `ok: false` with `error`, as JSON
+
+**Expected result**
+
+- The dummy code returns `invalid_code` as JSON
 - `tooling.tokens.rotate` returns `invalid_refresh_token`, not `invalid_auth`
 
 ### 6. File upload check
@@ -144,6 +148,7 @@ function uploadLarge() {
   var slack = GASlacker.methods(token);
   var blob = Utilities.newBlob('hello', 'text/plain', 'hello.txt');
   var res = slack.files.getUploadURLExternal({ filename: 'hello.txt', length: blob.getBytes().length });
+  if (!res.ok) throw new Error(res.error);
   var uploadUrl = res.upload_url;
   var fileId = res.file_id;
   UrlFetchApp.fetch(uploadUrl, { method: 'post', payload: blob });
@@ -165,7 +170,8 @@ function uploadLarge() {
 function socketMode() {
   var token = PropertiesService.getScriptProperties().getProperty('SLACK_APP_LEVEL_TOKEN');
   var slack = GASlacker.methods(token);
-  Logger.log(slack.apps.connections.open());
+  var res = slack.apps.connections.open();
+  Logger.log(res.ok ? res.url.startsWith('wss://') : res.error);
 }
 ```
 
@@ -185,7 +191,11 @@ function openModal(triggerId) {
   var slack = GASlacker.methods(token);
   Logger.log(slack.views.open({
     trigger_id: triggerId,
-    view: { type: 'modal', title: { type: 'plain_text', text: 'GASlacker' }, blocks: [] }
+    view: {
+      type: 'modal',
+      title: { type: 'plain_text', text: 'GASlacker' },
+      blocks: [{ type: 'section', text: { type: 'plain_text', text: 'Modal check' } }]
+    }
   }));
 }
 ```
@@ -201,7 +211,9 @@ function openModal(triggerId) {
 
 - Run `auth.test` with an invalid token
 - Run `call` with a nonexistent API name
-  **Expected result**
+
+**Expected result**
+
 - Returns `ok: false` with `error`
 
 ### 11. Rate-limit check (optional)
@@ -212,7 +224,9 @@ function openModal(triggerId) {
 - Trigger a 429 with high-frequency calls
 - Unit-test `Retry-After` values at 300 and 301 seconds, repeated 300-second waits, and invalid
   retry limits
-  **Expected result**
+
+**Expected result**
+
 - Retries after waiting for the number of seconds in `retry-after`
 - At 301 seconds, or before cumulative waits exceed five minutes, returns `ratelimited`
   immediately
@@ -225,7 +239,9 @@ function openModal(triggerId) {
 
 - Paste `dist/bundle.js` into Apps Script and publish it as a library
 - Add it as a library from a separate Apps Script project and call `GASlacker.methods`
-  **Expected result**
+
+**Expected result**
+
 - `GASlacker.methods` is reachable
 - `auth.test` succeeds
 
@@ -251,7 +267,7 @@ function openModal(triggerId) {
 ## Automated Verification Harness
 
 `scripts/verify-live.mjs` runs this document's minimal verification set against the real Slack
-API. It evaluates `dist/bundle.js` itself (the actual distributable) with GAS global stubs, so it
+API. Set the token and channel together for authenticated verification. It evaluates `dist/bundle.js` itself (the actual distributable) with GAS global stubs, so it
 doubles as a bundle smoke test.
 
 ```sh
@@ -268,11 +284,14 @@ pnpm run verify:live                     # with token: real post + real upload
   judging existence (`not_authed`) versus discontinuation (`unknown_method`)
 - Result: confirmed all 116 endpoints the library provided at the time actually exist.
   `files.uploadV2` (not an HTTP endpoint), `files.comments.add/edit/delete`, and
-  `apps.permissions.*` were judged discontinued and removed or replaced with a composite
+  `apps.permissions.*` were judged discontinued at the time and removed or replaced with a composite
   implementation. The newly added `canvases.*` / `conversations.canvases.create` /
   `assistant.threads.*` were also confirmed to exist.
 - Notes: token-based real-API verification (the minimal verification set) was not yet performed;
   recommended before release.
+
+Correction (2026-11-13): Slack still supports retrieval and deletion of historical file comments.
+Only add and edit were retired. See [Slack’s file comment notice](https://docs.slack.dev/changelog/2019/02/01/cemented-fate-for-file-comments/).
 
 ## Verification Log (request-path smoke test — verify:live)
 
@@ -348,3 +367,42 @@ pnpm run verify:live                     # with token: real post + real upload
   request-path smoke test), and the bundle structure (GAS stub, `global.methods`, `exports`)
 - Result: everything passed. The build is roughly 3x faster, and `dist/types/` now ships type
   definitions.
+
+## Verification log for the November 2026 dependency update
+
+On 2026-11-12, a clean install from the frozen lockfile succeeded with pnpm 12.18.0 and
+Node.js 22.12.0. The build and all 245 tests passed, including a second run with V8 coverage.
+The rebuilt bundle passed all seven checks in `pnpm run verify:live` without a Slack token.
+
+## Repository review, 2026-11-12 to 2026-11-13 (JST)
+
+- Checked all 183 candidate endpoints with unauthenticated POST requests. Of those, 178 returned
+  `not_authed`, two returned `invalid_code`, two returned `invalid_arguments`, and `api.test`
+  succeeded. Slack documents `users.setActive` as a no-op, so it was removed. The 182 remaining
+  endpoints cover all in-scope methods in Slack's Node SDK. All 182 catalog documentation links
+  resolved.
+- Built with Node.js 22.12.0 and repeated the build from a clean install on 26.13.1. Both runs
+  passed all 281 tests and produced identical distribution files and method catalogs.
+- Ran all seven token-free checks against Slack using the distribution bundle. A separate
+  `blocks.validate` request accepted the form-encoded Block Kit array.
+- Tested the quickstart in all six languages, including clipboard fallback and mobile layout.
+  Spreadsheet and Calendar examples were checked locally. Authenticated posting, file sharing
+  and uploads in a real workspace, and publishing to Apps Script were outside this run.
+
+## Current Web API coverage, 2026-11-13 (JST)
+
+- The [official method index](https://docs.slack.dev/reference/methods.md) contained 357 entries.
+  The bundle sent the documented HTTP verb to the correct URL for all 355 functional entries,
+  including all 131 indexed admin methods. Slack retired `files.upload` and made
+  `users.setActive` non-functional. The catalog also covers 36 methods from other official
+  Slack guides, SDKs and the CLI.
+- Replayed all 391 bundle routes with empty arguments and no token against Slack. The results
+  were 383 `not_authed`, four `invalid_code`, three `invalid_arguments`, and one `ok: true`
+  from `api.test`. The separate seven-check `verify:live` smoke test also passed.
+- Regression tests cover binary analytics downloads, form and multipart encoding, classic OAuth,
+  short-token rotation, and documented success responses without an `ok` field.
+  Successful operations requiring an authenticated workspace or Enterprise permissions
+  were not exercised in this check.
+- `pnpm run parity` found no missing current methods in either the index or the Node SDK.
+  The parity tests detect new general and admin methods, preserve case, and reject malformed
+  source data.

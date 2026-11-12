@@ -2,7 +2,7 @@ import BaseAPI, { SlackParams } from './BaseAPI'
 
 class ChatScheduledMessages extends BaseAPI {
   public list(params: SlackParams = {}) {
-    return this._get('chat.scheduledMessages.list', params)
+    return this._post('chat.scheduledMessages.list', params)
   }
 }
 

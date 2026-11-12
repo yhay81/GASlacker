@@ -3,6 +3,6 @@ export default class API extends BaseAPI {
     get(api: string, params?: SlackParams): SlackResponse;
     post(api: string, params?: SlackParams): SlackResponse;
     call(api: string, params?: SlackParams, method?: 'get' | 'post' | 'form'): SlackResponse;
-    paginate(api: string, params?: SlackParams, method?: 'get' | 'post', max_pages?: number): SlackResponse[];
+    paginate(api: string, params?: SlackParams, method?: 'get' | 'post' | 'form', max_pages?: number): SlackResponse[];
     test(params?: SlackParams): SlackResponse;
 }

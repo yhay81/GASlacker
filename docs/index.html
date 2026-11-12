@@ -37,7 +37,6 @@
         --coral: #d84d39;
         --coral-dark: #a83225;
         --teal: #287976;
-        --yellow: #e0a625;
         --code-bg: #1d211f;
         --code-fg: #f7f3ea;
       }
@@ -381,12 +380,6 @@
         font-size: 0.8rem;
         font-weight: 800;
         text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
-      }
-
-      .proof-line span + span::before {
-        content: '•';
-        margin-right: 12px;
-        color: var(--yellow);
       }
 
       .hero-kicker,
@@ -976,19 +969,17 @@
           <div class="step">
             <div class="num">3</div>
             <div>
-              <h3 data-i18n="step3.t">Post in 3 lines</h3>
+              <h3 data-i18n="step3.t">Post your first message</h3>
               <p data-i18n="step3.p">
-                Paste into the editor and run <code class="inline">hello</code>. The channel ID is
-                at the bottom of &ldquo;View channel details&rdquo;.
+                Paste the code into the editor, replace <code class="inline">C0123456789</code> with
+                the ID from “View channel details”, then run <code class="inline">hello</code>.
               </p>
               <div class="codebox">
-                <pre id="code-hello" data-i18n="step3.code">
-var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
-var slack = GASlacker.methods(token);
-
-function hello() {
+                <pre id="code-hello">function hello() {
+  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
+  var slack = GASlacker.methods(token);
   var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });
-  Logger.log(res.ok ? 'Posted!' : 'Error: ' + res.error);
+  Logger.log(res.ok ? '<span data-i18n="code.ok">Posted!</span>' : res.error);
 }</pre>
                 <button class="copy" type="button" data-target="code-hello">
                   <svg
@@ -1009,7 +1000,7 @@ function hello() {
               <p class="note" data-i18n="step3.note">
                 If it fails, check <code class="inline">res.error</code> in the log:
                 <code class="inline">not_in_channel</code> → step 2-6,
-                <code class="inline">invalid_auth</code> → check the property name.
+                <code class="inline">not_authed</code> → check the property name.
               </p>
             </div>
           </div>
@@ -1020,7 +1011,7 @@ function hello() {
         <div class="shell narrow">
           <h2 id="examples-title" data-i18n="ex.title">What you can do</h2>
           <p class="sub" data-i18n="ex.sub">
-            Call all 168 Slack Web API methods by their own names. Copy-paste scripts live in
+            The bundle on GitHub includes 391 Slack Web API methods. Copy-paste scripts live in
             <a href="https://github.com/yhay81/GASlacker/tree/main/examples">examples/</a>.
           </p>
 
@@ -1152,18 +1143,19 @@ function hello() {
           <div class="codebox" style="margin-top: 24px">
             <pre
               id="code-notify"
-              data-i18n="code.example"
-            ><span class="comment">// Example: post sheet contents every morning (set a time trigger)</span>
+            ><span class="comment">// Post sheet contents every morning with a time trigger.</span>
 function dailySummary() {
   var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');
   var slack = GASlacker.methods(token);
 
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');
+  if (!sheet) throw new Error('Create a KPI sheet first');
   var lastRow = sheet.getLastRow();
   if (lastRow &lt; 2) return;
-  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();
-  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });
-  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\n') });
+  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getDisplayValues();
+  var lines = rows.map(function (r) { return '• ' + r[0] + ': ' + r[1]; });
+  var res = slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\n'), mrkdwn: false });
+  if (!res.ok) Logger.log(res.error);
 }</pre>
             <button class="copy" type="button" data-target="code-notify">
               <svg
@@ -1326,16 +1318,15 @@ function dailySummary() {
             'Apps Script の <b>プロジェクトの設定 → スクリプト プロパティ</b> に、プロパティ名 <code class="inline">SLACK_ACCESS_TOKEN</code> として保存',
           'step2.li6':
             '投稿したいチャンネルで <code class="inline">/invite @アプリ名</code> して bot を招待(忘れると <code class="inline">not_in_channel</code> エラーになります)',
-          'step3.t': '3 行で投稿する',
+          'step3.t': '最初のメッセージを投稿する',
           'step3.p':
-            'エディタに貼り付けて <code class="inline">hello</code> を実行。チャンネル ID はチャンネル名を右クリック →「チャンネル詳細を表示」の最下部にあります。',
-          'step3.code':
-            "var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\nvar slack = GASlacker.methods(token);\n\nfunction hello() {\n  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });\n  Logger.log(res.ok ? '投稿できました' : 'エラー: ' + res.error);\n}",
+            'コードをエディタに貼り付け、<code class="inline">C0123456789</code> を「チャンネル詳細を表示」にある ID に置き換えてから、<code class="inline">hello</code> を実行します。',
+          'code.ok': '投稿できました',
           'step3.note':
-            'うまくいかないときはログの <code class="inline">res.error</code> を見てください。<code class="inline">not_in_channel</code> なら手順 2-6、<code class="inline">invalid_auth</code> ならトークンの保存名を確認します。',
+            'うまくいかないときはログの <code class="inline">res.error</code> を見てください。<code class="inline">not_in_channel</code> なら手順 2-6、<code class="inline">not_authed</code> ならトークンの保存名を確認します。',
           'ex.title': 'できること',
           'ex.sub':
-            'Slack Web API の 168 メソッドをそのままの名前で呼べます。よく使う形は <a href="https://github.com/yhay81/GASlacker/tree/main/examples">examples/</a> にコピペ用スクリプトがあります。',
+            'GitHub の配布版には Slack Web API の 391 メソッドが含まれます。よく使う形は <a href="https://github.com/yhay81/GASlacker/tree/main/examples">examples/</a> にコピペ用スクリプトがあります。',
           'card1.t': 'シートから毎朝通知',
           'card1.p':
             '時間トリガー + <code class="inline">chat.postMessage</code>。Block Kit で見やすい整形も。',
@@ -1352,8 +1343,6 @@ function dailySummary() {
           'card6.t': '未対応でも呼べる',
           'card6.p':
             '<code class="inline">slack.call(\'メソッド名\', params)</code> でどの API でも。',
-          'code.example':
-            "<span class=\"comment\">// 例: シートの内容を毎朝 Slack へ(時間トリガーに設定)</span>\nfunction dailySummary() {\n  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\n  var slack = GASlacker.methods(token);\n\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': '安心して使えます',
           'safe3.t': 'トークンは手元だけ',
           'safe3.p':
@@ -1412,16 +1401,15 @@ function dailySummary() {
             '在 Apps Script 的<b>项目设置 → 脚本属性</b>中,以属性名 <code class="inline">SLACK_ACCESS_TOKEN</code> 保存',
           'step2.li6':
             '在目标频道执行 <code class="inline">/invite @应用名</code> 邀请 bot(忘记会报 <code class="inline">not_in_channel</code>)',
-          'step3.t': '3 行代码发消息',
+          'step3.t': '发送第一条消息',
           'step3.p':
-            '粘贴到编辑器并运行 <code class="inline">hello</code>。频道 ID 在「查看频道详情」的最底部。',
-          'step3.code':
-            "var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\nvar slack = GASlacker.methods(token);\n\nfunction hello() {\n  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });\n  Logger.log(res.ok ? '发送成功' : '错误: ' + res.error);\n}",
+            '将代码粘贴到编辑器，把 <code class="inline">C0123456789</code> 替换为「查看频道详情」中的频道 ID，再运行 <code class="inline">hello</code>。',
+          'code.ok': '发送成功',
           'step3.note':
-            '如果失败,查看日志中的 <code class="inline">res.error</code>:<code class="inline">not_in_channel</code> → 步骤 2-6,<code class="inline">invalid_auth</code> → 检查属性名。',
+            '如果失败,查看日志中的 <code class="inline">res.error</code>:<code class="inline">not_in_channel</code> → 步骤 2-6,<code class="inline">not_authed</code> → 检查属性名。',
           'ex.title': '能做什么',
           'ex.sub':
-            '可以按原名调用 Slack Web API 的 168 个方法。常用示例脚本在 <a href="https://github.com/yhay81/GASlacker/tree/main/examples">examples/</a>。',
+            'GitHub 上的构建版本包含 Slack Web API 的 391 个方法。常用示例脚本在 <a href="https://github.com/yhay81/GASlacker/tree/main/examples">examples/</a>。',
           'card1.t': '每天早晨从表格发通知',
           'card1.p':
             '时间触发器 + <code class="inline">chat.postMessage</code>,还可用 Block Kit 排版。',
@@ -1436,8 +1424,6 @@ function dailySummary() {
             '<code class="inline">canvases.*</code> / <code class="inline">slackLists.*</code> 等新 API 也已覆盖。',
           'card6.t': '未封装的也能调',
           'card6.p': '<code class="inline">slack.call(\'方法名\', params)</code> 可调用任意 API。',
-          'code.example':
-            "<span class=\"comment\">// 示例: 每天早晨把表格内容发到 Slack(设置时间触发器)</span>\nfunction dailySummary() {\n  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\n  var slack = GASlacker.methods(token);\n\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': '可以放心使用',
           'safe3.t': '令牌只在你手里',
           'safe3.p': '只与 Slack API 通信。令牌仅保存在你的脚本属性中。',
@@ -1495,16 +1481,15 @@ function dailySummary() {
             'En Apps Script, guárdalo en <b>Configuración del proyecto → Propiedades del script</b> con el nombre <code class="inline">SLACK_ACCESS_TOKEN</code>',
           'step2.li6':
             'Ejecuta <code class="inline">/invite @TuApp</code> en el canal de destino (si lo olvidas: <code class="inline">not_in_channel</code>)',
-          'step3.t': 'Publica en 3 líneas',
+          'step3.t': 'Publica tu primer mensaje',
           'step3.p':
-            'Pega en el editor y ejecuta <code class="inline">hello</code>. El ID del canal está al final de «Ver detalles del canal».',
-          'step3.code':
-            "var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\nvar slack = GASlacker.methods(token);\n\nfunction hello() {\n  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });\n  Logger.log(res.ok ? '¡Publicado!' : 'Error: ' + res.error);\n}",
+            'Pega el código en el editor, sustituye <code class="inline">C0123456789</code> por el ID de «Ver detalles del canal» y ejecuta <code class="inline">hello</code>.',
+          'code.ok': '¡Publicado!',
           'step3.note':
-            'Si falla, mira <code class="inline">res.error</code> en el registro: <code class="inline">not_in_channel</code> → paso 2-6, <code class="inline">invalid_auth</code> → revisa el nombre de la propiedad.',
+            'Si falla, mira <code class="inline">res.error</code> en el registro: <code class="inline">not_in_channel</code> → paso 2-6, <code class="inline">not_authed</code> → revisa el nombre de la propiedad.',
           'ex.title': 'Qué puedes hacer',
           'ex.sub':
-            'Llama a los 168 métodos de la Slack Web API con sus propios nombres. Hay scripts listos para copiar en <a href="https://github.com/yhay81/GASlacker/tree/main/examples">examples/</a>.',
+            'La versión de GitHub incluye 391 métodos de la Slack Web API. Hay scripts listos para copiar en <a href="https://github.com/yhay81/GASlacker/tree/main/examples">examples/</a>.',
           'card1.t': 'Avisos matutinos desde Hojas',
           'card1.p':
             'Activador de tiempo + <code class="inline">chat.postMessage</code>. Block Kit para dar formato.',
@@ -1522,8 +1507,6 @@ function dailySummary() {
           'card6.t': 'Llama a lo que sea',
           'card6.p':
             '<code class="inline">slack.call(\'metodo\', params)</code> llega a cualquier API.',
-          'code.example':
-            "<span class=\"comment\">// Ejemplo: publica la hoja cada mañana (con activador de tiempo)</span>\nfunction dailySummary() {\n  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\n  var slack = GASlacker.methods(token);\n\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': 'Hecho para confiar',
           'safe3.t': 'Tu token es tuyo',
           'safe3.p': 'Solo se habla con la Slack API. El token vive en tus propiedades del script.',
@@ -1584,16 +1567,15 @@ function dailySummary() {
             'No Apps Script, salve em <b>Configurações do projeto → Propriedades do script</b> com o nome <code class="inline">SLACK_ACCESS_TOKEN</code>',
           'step2.li6':
             'Rode <code class="inline">/invite @SeuApp</code> no canal de destino (esquecer causa <code class="inline">not_in_channel</code>)',
-          'step3.t': 'Publique em 3 linhas',
+          'step3.t': 'Publique sua primeira mensagem',
           'step3.p':
-            'Cole no editor e execute <code class="inline">hello</code>. O ID do canal fica no fim de “Ver detalhes do canal”.',
-          'step3.code':
-            "var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\nvar slack = GASlacker.methods(token);\n\nfunction hello() {\n  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });\n  Logger.log(res.ok ? 'Publicado!' : 'Erro: ' + res.error);\n}",
+            'Cole o código no editor, substitua <code class="inline">C0123456789</code> pelo ID em “Ver detalhes do canal” e execute <code class="inline">hello</code>.',
+          'code.ok': 'Publicado!',
           'step3.note':
-            'Se falhar, veja <code class="inline">res.error</code> no log: <code class="inline">not_in_channel</code> → passo 2-6, <code class="inline">invalid_auth</code> → confira o nome da propriedade.',
+            'Se falhar, veja <code class="inline">res.error</code> no log: <code class="inline">not_in_channel</code> → passo 2-6, <code class="inline">not_authed</code> → confira o nome da propriedade.',
           'ex.title': 'O que dá para fazer',
           'ex.sub':
-            'Chame os 168 métodos da Slack Web API pelos próprios nomes. Scripts prontos para copiar em <a href="https://github.com/yhay81/GASlacker/tree/main/examples">examples/</a>.',
+            'A versão no GitHub inclui 391 métodos da Slack Web API. Scripts prontos para copiar em <a href="https://github.com/yhay81/GASlacker/tree/main/examples">examples/</a>.',
           'card1.t': 'Resumo matinal da planilha',
           'card1.p':
             'Acionador de tempo + <code class="inline">chat.postMessage</code>. Block Kit para formatar bonito.',
@@ -1611,8 +1593,6 @@ function dailySummary() {
           'card6.t': 'Chame qualquer coisa',
           'card6.p':
             '<code class="inline">slack.call(\'metodo\', params)</code> alcança qualquer API.',
-          'code.example':
-            "<span class=\"comment\">// Exemplo: publique a planilha toda manhã (com acionador de tempo)</span>\nfunction dailySummary() {\n  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\n  var slack = GASlacker.methods(token);\n\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': 'Feito para confiar',
           'safe3.t': 'Seu token fica com você',
           'safe3.p':
@@ -1674,16 +1654,15 @@ function dailySummary() {
             'Apps Script의 <b>프로젝트 설정 → 스크립트 속성</b>에 속성 이름 <code class="inline">SLACK_ACCESS_TOKEN</code>으로 저장',
           'step2.li6':
             '게시할 채널에서 <code class="inline">/invite @앱이름</code>으로 봇 초대(잊으면 <code class="inline">not_in_channel</code> 오류)',
-          'step3.t': '3줄로 게시하기',
+          'step3.t': '첫 메시지 게시하기',
           'step3.p':
-            '편집기에 붙여넣고 <code class="inline">hello</code>를 실행하세요. 채널 ID는 「채널 세부정보 보기」 맨 아래에 있습니다.',
-          'step3.code':
-            "var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\nvar slack = GASlacker.methods(token);\n\nfunction hello() {\n  var res = slack.chat.postMessage({ channel: 'C0123456789', text: 'Hello from GAS!' });\n  Logger.log(res.ok ? '게시 완료' : '오류: ' + res.error);\n}",
+            '편집기에 코드를 붙여넣고 <code class="inline">C0123456789</code>를 「채널 세부정보 보기」의 채널 ID로 바꾼 후 <code class="inline">hello</code>를 실행하세요.',
+          'code.ok': '게시 완료',
           'step3.note':
-            '실패하면 로그의 <code class="inline">res.error</code>를 확인하세요. <code class="inline">not_in_channel</code>이면 단계 2-6, <code class="inline">invalid_auth</code>면 속성 이름을 확인합니다.',
+            '실패하면 로그의 <code class="inline">res.error</code>를 확인하세요. <code class="inline">not_in_channel</code>이면 단계 2-6, <code class="inline">not_authed</code>면 속성 이름을 확인합니다.',
           'ex.title': '할 수 있는 일',
           'ex.sub':
-            'Slack Web API의 168개 메서드를 그대로의 이름으로 호출할 수 있습니다. 자주 쓰는 예시는 <a href="https://github.com/yhay81/GASlacker/tree/main/examples">examples/</a>에 있습니다.',
+            'GitHub 배포본에는 Slack Web API의 391개 메서드가 포함되어 있습니다. 자주 쓰는 예시는 <a href="https://github.com/yhay81/GASlacker/tree/main/examples">examples/</a>에 있습니다.',
           'card1.t': '시트에서 아침 알림',
           'card1.p':
             '시간 트리거 + <code class="inline">chat.postMessage</code>. Block Kit으로 보기 좋게.',
@@ -1699,8 +1678,6 @@ function dailySummary() {
             '<code class="inline">canvases.*</code> / <code class="inline">slackLists.*</code> 같은 새 API도 지원.',
           'card6.t': '미지원 메서드도 호출',
           'card6.p': '<code class="inline">slack.call(\'메서드명\', params)</code>로 어떤 API든.',
-          'code.example':
-            "<span class=\"comment\">// 예: 시트 내용을 매일 아침 Slack으로(시간 트리거 설정)</span>\nfunction dailySummary() {\n  var token = PropertiesService.getScriptProperties().getProperty('SLACK_ACCESS_TOKEN');\n  var slack = GASlacker.methods(token);\n\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('KPI');\n  var lastRow = sheet.getLastRow();\n  if (lastRow &lt; 2) return;\n  var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();\n  var lines = rows.map(function (r) { return '• ' + r[0] + ': *' + r[1] + '*'; });\n  slack.chat.postMessage({ channel: 'C0123456789', text: lines.join('\\n') });\n}",
           'safe.title': '안심하고 쓸 수 있어요',
           'safe3.t': '토큰은 내 손안에만',
           'safe3.p': '통신 대상은 Slack API뿐. 토큰은 내 스크립트 속성에만 저장됩니다.',
@@ -1730,9 +1707,13 @@ function dailySummary() {
         },
       }
 
-      var baseStore = { _title: document.title, _desc: '' }
       var descMeta = document.querySelector('meta[name="description"]')
-      baseStore._desc = descMeta.getAttribute('content')
+      var baseStore = {
+        _title: document.title,
+        _desc: descMeta.content,
+        'js.copied': 'Copied!',
+        'js.manual': 'Press ⌘C / Ctrl+C',
+      }
       document.querySelectorAll('[data-i18n]').forEach(function (el) {
         baseStore[el.dataset.i18n] = el.innerHTML
       })
@@ -1790,7 +1771,7 @@ function dailySummary() {
 
       // ---- Copy buttons ----
       document.querySelectorAll('.copy').forEach(function (button) {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', async function () {
           var target = document.getElementById(button.dataset.target)
           var label = button.querySelector('[data-i18n="js.copy"]')
           var reset = function () {
@@ -1800,23 +1781,19 @@ function dailySummary() {
             }, 1600)
           }
 
-          navigator.clipboard.writeText(target.innerText).then(
-            function () {
-              label.textContent = t('js.copied')
-              button.classList.add('done')
-              reset()
-            },
-            function () {
-              // Fall back to selecting the text when the clipboard API is unavailable
-              var range = document.createRange()
-              var selection = window.getSelection()
-              range.selectNodeContents(target)
-              selection.removeAllRanges()
-              selection.addRange(range)
-              label.textContent = t('js.manual')
-              reset()
-            },
-          )
+          try {
+            await navigator.clipboard.writeText(target.textContent)
+            label.textContent = t('js.copied')
+            button.classList.add('done')
+          } catch {
+            var range = document.createRange()
+            var selection = window.getSelection()
+            range.selectNodeContents(target)
+            selection.removeAllRanges()
+            selection.addRange(range)
+            label.textContent = t('js.manual')
+          }
+          reset()
         })
       })
 

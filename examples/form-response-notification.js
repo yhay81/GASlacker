@@ -10,15 +10,17 @@ function onFormSubmit(e) {
   var channel = properties.getProperty('SLACK_CHANNEL_ID')
 
   var fields = Object.keys(e.namedValues).map(function (question) {
-    return '*' + question + '*\n' + e.namedValues[question].join(', ')
+    return question + '\n' + e.namedValues[question].join(', ')
   })
 
+  var answers = fields.join('\n\n') || 'No answers'
+  var characters = Array.from(answers)
+  if (characters.length > 3000) answers = characters.slice(0, 2999).join('') + '…'
   var res = slack.chat.postMessage({
     channel: channel,
-    text: 'A new form response was submitted',
     blocks: [
       { type: 'header', text: { type: 'plain_text', text: 'New form response' } },
-      { type: 'section', text: { type: 'mrkdwn', text: fields.join('\n\n') } },
+      { type: 'section', text: { type: 'plain_text', text: answers } },
     ],
   })
 

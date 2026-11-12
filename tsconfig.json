@@ -6,7 +6,7 @@
     "target": "es2019",
     "noEmit": true,
     "skipLibCheck": true,
-    "types": ["google-apps-script", "vitest/globals"]
+    "types": ["google-apps-script", "node", "vitest/globals"]
   },
-  "include": ["src", "tests", "vite.config.ts"]
+  "include": ["src", "tests", "vite.config.mts"]
 }

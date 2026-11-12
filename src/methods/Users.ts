@@ -30,7 +30,7 @@ export default class Users extends BaseAPI {
   }
 
   public deletePhoto(params: SlackParams = {}) {
-    return this._post('users.deletePhoto', params)
+    return this._get('users.deletePhoto', params)
   }
 
   public getPresence(params: SlackParams = {}) {
@@ -51,10 +51,6 @@ export default class Users extends BaseAPI {
 
   public lookupByEmail(params: SlackParams = {}) {
     return this._get('users.lookupByEmail', params)
-  }
-
-  public setActive(params: SlackParams = {}) {
-    return this._post('users.setActive', params)
   }
 
   public setPhoto(params: SlackParams = {}) {

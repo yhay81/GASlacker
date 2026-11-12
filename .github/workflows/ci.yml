@@ -17,6 +17,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # Runs lint / typecheck / test / vite build together
       - run: pnpm run build
+      - name: Check official Slack API coverage
+        run: pnpm run parity
       # Generated artifacts are committed, so ensure they stay in sync with their sources.
       # (git status catches both uncommitted changes and new files)
       - name: Check generated artifacts are in sync

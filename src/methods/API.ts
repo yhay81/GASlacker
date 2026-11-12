@@ -16,7 +16,8 @@ export default class API extends BaseAPI {
   ): SlackResponse {
     if (method === 'get') return this._get(api, params)
     if (method === 'form') return this._post_form(api, params)
-    return this._post(api, params)
+    if (method === 'post') return this._post(api, params)
+    throw new Error('method must be get, post, or form')
   }
 
   // Follows cursor pagination, returning one response per page.
@@ -24,25 +25,32 @@ export default class API extends BaseAPI {
   public paginate(
     api: string,
     params: SlackParams = {},
-    method: 'get' | 'post' = 'post',
+    method: 'get' | 'post' | 'form' = 'post',
     max_pages?: number,
   ): SlackResponse[] {
     if (max_pages !== undefined && (!Number.isInteger(max_pages) || max_pages < 1)) {
       throw new Error('max_pages must be a positive integer')
     }
     const pages: SlackResponse[] = []
-    let cursor: string | null = null
+    const requestedCursors = new Set<string>()
+    let pageParams = params
     while (max_pages === undefined || pages.length < max_pages) {
-      const res = this.call(api, cursor ? { ...params, cursor } : params, method)
+      const cursor = pageParams?.cursor
+      if (cursor) {
+        if (requestedCursors.has(cursor))
+          throw new Error('Slack returned a repeated pagination cursor')
+        requestedCursors.add(cursor)
+      }
+      const res = this.call(api, pageParams, method)
       pages.push(res)
-      if (!res.ok) break
-      cursor = res.response_metadata?.next_cursor || null
-      if (!cursor) break
+      const nextCursor = res.response_metadata?.next_cursor
+      if (!res.ok || !nextCursor) break
+      pageParams = { ...params, cursor: nextCursor }
     }
     return pages
   }
 
   public test(params: SlackParams = {}): SlackResponse {
-    return this._get('api.test', params)
+    return this._post_form('api.test', params)
   }
 }

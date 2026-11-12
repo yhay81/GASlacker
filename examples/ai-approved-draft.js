@@ -4,7 +4,7 @@
 // Setup:
 //   1. Add GASlacker and create a sheet named "AI drafts" with the columns above.
 //   2. Save SLACK_ACCESS_TOKEN and a comma-separated SLACK_ALLOWED_CHANNEL_IDS in Script Properties.
-//   3. Let a model integration call stageSlackDraft(), or paste its output into the sheet.
+//   3. Give the model integration access only to stageSlackDraft(), not sheet editing or posting.
 //   4. Review the exact draft and destination, select Approved, then run postApprovedSlackDrafts().
 
 var AI_DRAFT_SHEET_NAME = 'AI drafts'
@@ -20,13 +20,21 @@ function stageSlackDraft(draft, channelId) {
 
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(AI_DRAFT_SHEET_NAME)
   if (!sheet) throw new Error('Create a sheet named "' + AI_DRAFT_SHEET_NAME + '" first')
-  var nextRow = Math.max(sheet.getLastRow() + 1, 2)
-  var row = sheet.getRange(nextRow, 1, 1, 5)
-  // Plain-text formatting prevents untrusted model output beginning with "=" from becoming a
-  // spreadsheet formula before a person reviews it.
-  row.getCell(1, 1).setNumberFormat('@').setValue(draft)
-  row.getCell(1, 2).setNumberFormat('@').setValue(channelId)
-  row.getCell(1, 3).setValue(false)
+  var lock = LockService.getScriptLock()
+  lock.waitLock(10000)
+  try {
+    var nextRow = Math.max(sheet.getLastRow() + 1, 2)
+    if (nextRow > sheet.getMaxRows()) sheet.insertRowAfter(nextRow - 1)
+    // Rich text stores literal strings, including drafts that begin with a formula marker.
+    var values = [draft, channelId.trim()].map(function (text) {
+      return SpreadsheetApp.newRichTextValue().setText(text).build()
+    })
+    sheet.getRange(nextRow, 1, 1, 2).setRichTextValues([values])
+    sheet.getRange(nextRow, 3).insertCheckboxes()
+    SpreadsheetApp.flush()
+  } finally {
+    lock.releaseLock()
+  }
 }
 
 function postApprovedSlackDrafts() {
@@ -49,26 +57,34 @@ function postApprovedSlackDrafts() {
     if (lastRow < 2) return
 
     var rows = sheet.getRange(2, 1, lastRow - 1, 5).getValues()
-    var postedCount = 0
+    var attempts = 0
 
-    rows.forEach(function (row, index) {
-      if (postedCount >= MAX_POSTS_PER_RUN) return
-
+    for (var index = 0; index < rows.length && attempts < MAX_POSTS_PER_RUN; index++) {
+      var row = rows[index]
       var draft = String(row[0] || '')
       var channelId = String(row[1] || '')
       var approved = row[2] === true
       var postedAt = row[3]
       var result = String(row[4] || '')
-      if (!approved || postedAt || result) return
+      if (!approved || postedAt || result) continue
+
+      // The script lock serializes runs, but a reviewer can still edit or move a sheet row.
+      var current = sheet.getRange(index + 2, 1, 1, 5).getValues()[0]
+      if (
+        row.some(function (value, column) {
+          return value !== current[column]
+        })
+      )
+        continue
 
       var resultCell = sheet.getRange(index + 2, 5)
-      if (!draft || draft.length > MAX_DRAFT_CHARACTERS) {
+      if (!draft.trim() || draft.length > MAX_DRAFT_CHARACTERS) {
         resultCell.setValue('rejected: invalid draft length')
-        return
+        continue
       }
       if (allowedChannels.indexOf(channelId) === -1) {
         resultCell.setValue('rejected: destination is not allowlisted')
-        return
+        continue
       }
 
       // Persist an uncertain state before the external action. If execution stops after Slack
@@ -77,22 +93,23 @@ function postApprovedSlackDrafts() {
       SpreadsheetApp.flush()
 
       var response
+      attempts += 1
       try {
-        response = slack.chat.postMessage({ channel: channelId, text: draft })
+        response = slack.chat.postMessage({ channel: channelId, text: draft, mrkdwn: false })
       } catch (error) {
-        resultCell.setValue('uncertain: ' + safeErrorName(error))
-        return
+        resultCell.setValue('uncertain: ' + (error && error.name ? error.name : 'request_failed'))
+        continue
       }
 
       if (!response.ok) {
         resultCell.setValue('error: ' + String(response.error || 'unknown_error'))
-        return
+        continue
       }
 
       sheet.getRange(index + 2, 4).setValue(new Date())
       resultCell.setValue('posted')
-      postedCount += 1
-    })
+    }
+    SpreadsheetApp.flush()
   } finally {
     lock.releaseLock()
   }
@@ -107,9 +124,4 @@ function parseAllowedChannels(value) {
     .filter(function (channelId) {
       return channelId !== ''
     })
-}
-
-function safeErrorName(error) {
-  if (error && error.name) return String(error.name)
-  return 'request_failed'
 }

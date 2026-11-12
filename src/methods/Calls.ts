@@ -26,7 +26,7 @@ export default class Calls extends BaseAPI {
   }
 
   public info(params: SlackParams = {}) {
-    return this._get('calls.info', params)
+    return this._post('calls.info', params)
   }
 
   public update(params: SlackParams = {}) {

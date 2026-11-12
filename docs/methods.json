@@ -1,9 +1,989 @@
 {
   "schema_version": 1,
   "generated_from": "tests/routing.spec.ts",
-  "effect_policy": "GET routes are read; non-GET routes are write; destructive action-name prefixes are destructive.",
-  "method_count": 180,
+  "effect_policy": "Known reads are read. Destructive action names are destructive. All other actions are write.",
+  "method_count": 391,
   "methods": [
+    {
+      "path": "slack.admin.analytics.getFile",
+      "endpoint": "admin.analytics.getFile",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.analytics.getFile/"
+    },
+    {
+      "path": "slack.admin.analytics.messages.activity",
+      "endpoint": "admin.analytics.messages.activity",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.analytics.messages.activity/"
+    },
+    {
+      "path": "slack.admin.analytics.messages.metadata",
+      "endpoint": "admin.analytics.messages.metadata",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.analytics.messages.metadata/"
+    },
+    {
+      "path": "slack.admin.analytics.slackbot.skills",
+      "endpoint": "admin.analytics.slackbot.skills",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.analytics.slackbot.skills/"
+    },
+    {
+      "path": "slack.admin.analytics.slackbot.tools",
+      "endpoint": "admin.analytics.slackbot.tools",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.analytics.slackbot.tools/"
+    },
+    {
+      "path": "slack.admin.apps.activities.list",
+      "endpoint": "admin.apps.activities.list",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.activities.list/"
+    },
+    {
+      "path": "slack.admin.apps.approve",
+      "endpoint": "admin.apps.approve",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.approve/"
+    },
+    {
+      "path": "slack.admin.apps.approved.list",
+      "endpoint": "admin.apps.approved.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.approved.list/"
+    },
+    {
+      "path": "slack.admin.apps.clearResolution",
+      "endpoint": "admin.apps.clearResolution",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.clearResolution/"
+    },
+    {
+      "path": "slack.admin.apps.config.lookup",
+      "endpoint": "admin.apps.config.lookup",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.config.lookup/"
+    },
+    {
+      "path": "slack.admin.apps.config.set",
+      "endpoint": "admin.apps.config.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.config.set/"
+    },
+    {
+      "path": "slack.admin.apps.mcp.servers.list",
+      "endpoint": "admin.apps.mcp.servers.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.mcp.servers.list/"
+    },
+    {
+      "path": "slack.admin.apps.mcp.servers.permissions.list",
+      "endpoint": "admin.apps.mcp.servers.permissions.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.mcp.servers.permissions.list/"
+    },
+    {
+      "path": "slack.admin.apps.mcp.servers.permissions.set",
+      "endpoint": "admin.apps.mcp.servers.permissions.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.mcp.servers.permissions.set/"
+    },
+    {
+      "path": "slack.admin.apps.permissions.add",
+      "endpoint": "admin.apps.permissions.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.permissions.add/"
+    },
+    {
+      "path": "slack.admin.apps.permissions.list",
+      "endpoint": "admin.apps.permissions.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.permissions.list/"
+    },
+    {
+      "path": "slack.admin.apps.permissions.remove",
+      "endpoint": "admin.apps.permissions.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.permissions.remove/"
+    },
+    {
+      "path": "slack.admin.apps.permissions.set",
+      "endpoint": "admin.apps.permissions.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.permissions.set/"
+    },
+    {
+      "path": "slack.admin.apps.requests.cancel",
+      "endpoint": "admin.apps.requests.cancel",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.requests.cancel/"
+    },
+    {
+      "path": "slack.admin.apps.requests.list",
+      "endpoint": "admin.apps.requests.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.requests.list/"
+    },
+    {
+      "path": "slack.admin.apps.restrict",
+      "endpoint": "admin.apps.restrict",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.restrict/"
+    },
+    {
+      "path": "slack.admin.apps.restricted.list",
+      "endpoint": "admin.apps.restricted.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.restricted.list/"
+    },
+    {
+      "path": "slack.admin.apps.uninstall",
+      "endpoint": "admin.apps.uninstall",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.apps.uninstall/"
+    },
+    {
+      "path": "slack.admin.audit.anomaly.allow.getItem",
+      "endpoint": "admin.audit.anomaly.allow.getItem",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.audit.anomaly.allow.getItem/"
+    },
+    {
+      "path": "slack.admin.audit.anomaly.allow.updateItem",
+      "endpoint": "admin.audit.anomaly.allow.updateItem",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.audit.anomaly.allow.updateItem/"
+    },
+    {
+      "path": "slack.admin.auth.policy.assignEntities",
+      "endpoint": "admin.auth.policy.assignEntities",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.auth.policy.assignEntities/"
+    },
+    {
+      "path": "slack.admin.auth.policy.getEntities",
+      "endpoint": "admin.auth.policy.getEntities",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.auth.policy.getEntities/"
+    },
+    {
+      "path": "slack.admin.auth.policy.removeEntities",
+      "endpoint": "admin.auth.policy.removeEntities",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.auth.policy.removeEntities/"
+    },
+    {
+      "path": "slack.admin.barriers.create",
+      "endpoint": "admin.barriers.create",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.barriers.create/"
+    },
+    {
+      "path": "slack.admin.barriers.delete",
+      "endpoint": "admin.barriers.delete",
+      "transport": "form",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.barriers.delete/"
+    },
+    {
+      "path": "slack.admin.barriers.list",
+      "endpoint": "admin.barriers.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.barriers.list/"
+    },
+    {
+      "path": "slack.admin.barriers.update",
+      "endpoint": "admin.barriers.update",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.barriers.update/"
+    },
+    {
+      "path": "slack.admin.conversations.archive",
+      "endpoint": "admin.conversations.archive",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.archive/"
+    },
+    {
+      "path": "slack.admin.conversations.bulkArchive",
+      "endpoint": "admin.conversations.bulkArchive",
+      "transport": "form",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.bulkArchive/"
+    },
+    {
+      "path": "slack.admin.conversations.bulkDelete",
+      "endpoint": "admin.conversations.bulkDelete",
+      "transport": "form",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.bulkDelete/"
+    },
+    {
+      "path": "slack.admin.conversations.bulkMove",
+      "endpoint": "admin.conversations.bulkMove",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.bulkMove/"
+    },
+    {
+      "path": "slack.admin.conversations.bulkSetExcludeFromSlackAi",
+      "endpoint": "admin.conversations.bulkSetExcludeFromSlackAi",
+      "transport": "get",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.bulkSetExcludeFromSlackAi/"
+    },
+    {
+      "path": "slack.admin.conversations.bulkSetProperties",
+      "endpoint": "admin.conversations.bulkSetProperties",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.bulkSetProperties/"
+    },
+    {
+      "path": "slack.admin.conversations.convertToPrivate",
+      "endpoint": "admin.conversations.convertToPrivate",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.convertToPrivate/"
+    },
+    {
+      "path": "slack.admin.conversations.convertToPublic",
+      "endpoint": "admin.conversations.convertToPublic",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.convertToPublic/"
+    },
+    {
+      "path": "slack.admin.conversations.create",
+      "endpoint": "admin.conversations.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.create/"
+    },
+    {
+      "path": "slack.admin.conversations.createForObjects",
+      "endpoint": "admin.conversations.createForObjects",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.createForObjects/"
+    },
+    {
+      "path": "slack.admin.conversations.delete",
+      "endpoint": "admin.conversations.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.delete/"
+    },
+    {
+      "path": "slack.admin.conversations.disconnectShared",
+      "endpoint": "admin.conversations.disconnectShared",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.disconnectShared/"
+    },
+    {
+      "path": "slack.admin.conversations.ekm.listOriginalConnectedChannelInfo",
+      "endpoint": "admin.conversations.ekm.listOriginalConnectedChannelInfo",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.ekm.listOriginalConnectedChannelInfo/"
+    },
+    {
+      "path": "slack.admin.conversations.getConversationPrefs",
+      "endpoint": "admin.conversations.getConversationPrefs",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.getConversationPrefs/"
+    },
+    {
+      "path": "slack.admin.conversations.getCustomRetention",
+      "endpoint": "admin.conversations.getCustomRetention",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.getCustomRetention/"
+    },
+    {
+      "path": "slack.admin.conversations.getTeams",
+      "endpoint": "admin.conversations.getTeams",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.getTeams/"
+    },
+    {
+      "path": "slack.admin.conversations.invite",
+      "endpoint": "admin.conversations.invite",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.invite/"
+    },
+    {
+      "path": "slack.admin.conversations.kick",
+      "endpoint": "admin.conversations.kick",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.kick/"
+    },
+    {
+      "path": "slack.admin.conversations.linkObjects",
+      "endpoint": "admin.conversations.linkObjects",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.linkObjects/"
+    },
+    {
+      "path": "slack.admin.conversations.lookup",
+      "endpoint": "admin.conversations.lookup",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.lookup/"
+    },
+    {
+      "path": "slack.admin.conversations.removeCustomRetention",
+      "endpoint": "admin.conversations.removeCustomRetention",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.removeCustomRetention/"
+    },
+    {
+      "path": "slack.admin.conversations.rename",
+      "endpoint": "admin.conversations.rename",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.rename/"
+    },
+    {
+      "path": "slack.admin.conversations.restrictAccess.addGroup",
+      "endpoint": "admin.conversations.restrictAccess.addGroup",
+      "transport": "get",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.restrictAccess.addGroup/"
+    },
+    {
+      "path": "slack.admin.conversations.restrictAccess.listGroups",
+      "endpoint": "admin.conversations.restrictAccess.listGroups",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.restrictAccess.listGroups/"
+    },
+    {
+      "path": "slack.admin.conversations.restrictAccess.removeGroup",
+      "endpoint": "admin.conversations.restrictAccess.removeGroup",
+      "transport": "get",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.restrictAccess.removeGroup/"
+    },
+    {
+      "path": "slack.admin.conversations.search",
+      "endpoint": "admin.conversations.search",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.search/"
+    },
+    {
+      "path": "slack.admin.conversations.setConversationPrefs",
+      "endpoint": "admin.conversations.setConversationPrefs",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.setConversationPrefs/"
+    },
+    {
+      "path": "slack.admin.conversations.setCustomRetention",
+      "endpoint": "admin.conversations.setCustomRetention",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.setCustomRetention/"
+    },
+    {
+      "path": "slack.admin.conversations.setTeams",
+      "endpoint": "admin.conversations.setTeams",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.setTeams/"
+    },
+    {
+      "path": "slack.admin.conversations.unarchive",
+      "endpoint": "admin.conversations.unarchive",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.unarchive/"
+    },
+    {
+      "path": "slack.admin.conversations.unlinkObjects",
+      "endpoint": "admin.conversations.unlinkObjects",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.conversations.unlinkObjects/"
+    },
+    {
+      "path": "slack.admin.emoji.add",
+      "endpoint": "admin.emoji.add",
+      "transport": "get",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.emoji.add/"
+    },
+    {
+      "path": "slack.admin.emoji.addAlias",
+      "endpoint": "admin.emoji.addAlias",
+      "transport": "get",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.emoji.addAlias/"
+    },
+    {
+      "path": "slack.admin.emoji.list",
+      "endpoint": "admin.emoji.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.emoji.list/"
+    },
+    {
+      "path": "slack.admin.emoji.remove",
+      "endpoint": "admin.emoji.remove",
+      "transport": "get",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.emoji.remove/"
+    },
+    {
+      "path": "slack.admin.emoji.rename",
+      "endpoint": "admin.emoji.rename",
+      "transport": "get",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.emoji.rename/"
+    },
+    {
+      "path": "slack.admin.functions.list",
+      "endpoint": "admin.functions.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.functions.list/"
+    },
+    {
+      "path": "slack.admin.functions.permissions.lookup",
+      "endpoint": "admin.functions.permissions.lookup",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.functions.permissions.lookup/"
+    },
+    {
+      "path": "slack.admin.functions.permissions.set",
+      "endpoint": "admin.functions.permissions.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.functions.permissions.set/"
+    },
+    {
+      "path": "slack.admin.inviteRequests.approve",
+      "endpoint": "admin.inviteRequests.approve",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.inviteRequests.approve/"
+    },
+    {
+      "path": "slack.admin.inviteRequests.approved.list",
+      "endpoint": "admin.inviteRequests.approved.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.inviteRequests.approved.list/"
+    },
+    {
+      "path": "slack.admin.inviteRequests.denied.list",
+      "endpoint": "admin.inviteRequests.denied.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.inviteRequests.denied.list/"
+    },
+    {
+      "path": "slack.admin.inviteRequests.deny",
+      "endpoint": "admin.inviteRequests.deny",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.inviteRequests.deny/"
+    },
+    {
+      "path": "slack.admin.inviteRequests.list",
+      "endpoint": "admin.inviteRequests.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.inviteRequests.list/"
+    },
+    {
+      "path": "slack.admin.legalHold.entities.add",
+      "endpoint": "admin.legalHold.entities.add",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/legal-holds-api-reference/#entities_add"
+    },
+    {
+      "path": "slack.admin.legalHold.entities.list",
+      "endpoint": "admin.legalHold.entities.list",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/legal-holds-api-reference/#entities_list"
+    },
+    {
+      "path": "slack.admin.legalHold.entities.remove",
+      "endpoint": "admin.legalHold.entities.remove",
+      "transport": "form",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/legal-holds-api-reference/#entities_remove"
+    },
+    {
+      "path": "slack.admin.legalHold.policies.activate",
+      "endpoint": "admin.legalHold.policies.activate",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/legal-holds-api-reference/#policies_activate"
+    },
+    {
+      "path": "slack.admin.legalHold.policies.create",
+      "endpoint": "admin.legalHold.policies.create",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/legal-holds-api-reference/#policies_create"
+    },
+    {
+      "path": "slack.admin.legalHold.policies.info",
+      "endpoint": "admin.legalHold.policies.info",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/legal-holds-api-reference/#policies_info"
+    },
+    {
+      "path": "slack.admin.legalHold.policies.list",
+      "endpoint": "admin.legalHold.policies.list",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/legal-holds-api-reference/#policies_list"
+    },
+    {
+      "path": "slack.admin.legalHold.policies.release",
+      "endpoint": "admin.legalHold.policies.release",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/legal-holds-api-reference/#policies_release"
+    },
+    {
+      "path": "slack.admin.legalHold.policies.set",
+      "endpoint": "admin.legalHold.policies.set",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/legal-holds-api-reference/#policies_set"
+    },
+    {
+      "path": "slack.admin.roles.addAssignments",
+      "endpoint": "admin.roles.addAssignments",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.roles.addAssignments/"
+    },
+    {
+      "path": "slack.admin.roles.listAssignments",
+      "endpoint": "admin.roles.listAssignments",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.roles.listAssignments/"
+    },
+    {
+      "path": "slack.admin.roles.removeAssignments",
+      "endpoint": "admin.roles.removeAssignments",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.roles.removeAssignments/"
+    },
+    {
+      "path": "slack.admin.slackbot.skills.list",
+      "endpoint": "admin.slackbot.skills.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.slackbot.skills.list/"
+    },
+    {
+      "path": "slack.admin.slackbot.skills.publish",
+      "endpoint": "admin.slackbot.skills.publish",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.slackbot.skills.publish/"
+    },
+    {
+      "path": "slack.admin.slackbot.skills.setAutoEnabled",
+      "endpoint": "admin.slackbot.skills.setAutoEnabled",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.slackbot.skills.setAutoEnabled/"
+    },
+    {
+      "path": "slack.admin.slackbot.skills.unpublish",
+      "endpoint": "admin.slackbot.skills.unpublish",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.slackbot.skills.unpublish/"
+    },
+    {
+      "path": "slack.admin.teams.admins.list",
+      "endpoint": "admin.teams.admins.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.teams.admins.list/"
+    },
+    {
+      "path": "slack.admin.teams.create",
+      "endpoint": "admin.teams.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.teams.create/"
+    },
+    {
+      "path": "slack.admin.teams.list",
+      "endpoint": "admin.teams.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.teams.list/"
+    },
+    {
+      "path": "slack.admin.teams.owners.list",
+      "endpoint": "admin.teams.owners.list",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.teams.owners.list/"
+    },
+    {
+      "path": "slack.admin.teams.settings.info",
+      "endpoint": "admin.teams.settings.info",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.teams.settings.info/"
+    },
+    {
+      "path": "slack.admin.teams.settings.setDefaultChannels",
+      "endpoint": "admin.teams.settings.setDefaultChannels",
+      "transport": "get",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.teams.settings.setDefaultChannels/"
+    },
+    {
+      "path": "slack.admin.teams.settings.setDescription",
+      "endpoint": "admin.teams.settings.setDescription",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.teams.settings.setDescription/"
+    },
+    {
+      "path": "slack.admin.teams.settings.setDiscoverability",
+      "endpoint": "admin.teams.settings.setDiscoverability",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.teams.settings.setDiscoverability/"
+    },
+    {
+      "path": "slack.admin.teams.settings.setIcon",
+      "endpoint": "admin.teams.settings.setIcon",
+      "transport": "get",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.teams.settings.setIcon/"
+    },
+    {
+      "path": "slack.admin.teams.settings.setName",
+      "endpoint": "admin.teams.settings.setName",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.teams.settings.setName/"
+    },
+    {
+      "path": "slack.admin.usergroups.addChannels",
+      "endpoint": "admin.usergroups.addChannels",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.usergroups.addChannels/"
+    },
+    {
+      "path": "slack.admin.usergroups.addTeams",
+      "endpoint": "admin.usergroups.addTeams",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.usergroups.addTeams/"
+    },
+    {
+      "path": "slack.admin.usergroups.addUsers",
+      "endpoint": "admin.usergroups.addUsers",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.usergroups.addUsers/"
+    },
+    {
+      "path": "slack.admin.usergroups.create",
+      "endpoint": "admin.usergroups.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.usergroups.create/"
+    },
+    {
+      "path": "slack.admin.usergroups.fetch",
+      "endpoint": "admin.usergroups.fetch",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.usergroups.fetch/"
+    },
+    {
+      "path": "slack.admin.usergroups.listChannels",
+      "endpoint": "admin.usergroups.listChannels",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.usergroups.listChannels/"
+    },
+    {
+      "path": "slack.admin.usergroups.removeChannels",
+      "endpoint": "admin.usergroups.removeChannels",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.usergroups.removeChannels/"
+    },
+    {
+      "path": "slack.admin.usergroups.removeTeams",
+      "endpoint": "admin.usergroups.removeTeams",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.usergroups.removeTeams/"
+    },
+    {
+      "path": "slack.admin.usergroups.removeUsers",
+      "endpoint": "admin.usergroups.removeUsers",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.usergroups.removeUsers/"
+    },
+    {
+      "path": "slack.admin.usergroups.update",
+      "endpoint": "admin.usergroups.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.usergroups.update/"
+    },
+    {
+      "path": "slack.admin.usergroups.uploadUsers",
+      "endpoint": "admin.usergroups.uploadUsers",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.usergroups.uploadUsers/"
+    },
+    {
+      "path": "slack.admin.users.access.pause",
+      "endpoint": "admin.users.access.pause",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.access.pause/"
+    },
+    {
+      "path": "slack.admin.users.access.resume",
+      "endpoint": "admin.users.access.resume",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.access.resume/"
+    },
+    {
+      "path": "slack.admin.users.assign",
+      "endpoint": "admin.users.assign",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.assign/"
+    },
+    {
+      "path": "slack.admin.users.deactivate",
+      "endpoint": "admin.users.deactivate",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.deactivate/"
+    },
+    {
+      "path": "slack.admin.users.getExpiration",
+      "endpoint": "admin.users.getExpiration",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.getExpiration/"
+    },
+    {
+      "path": "slack.admin.users.invite",
+      "endpoint": "admin.users.invite",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.invite/"
+    },
+    {
+      "path": "slack.admin.users.list",
+      "endpoint": "admin.users.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.list/"
+    },
+    {
+      "path": "slack.admin.users.remove",
+      "endpoint": "admin.users.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.remove/"
+    },
+    {
+      "path": "slack.admin.users.session.clearSettings",
+      "endpoint": "admin.users.session.clearSettings",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.session.clearSettings/"
+    },
+    {
+      "path": "slack.admin.users.session.getSettings",
+      "endpoint": "admin.users.session.getSettings",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.session.getSettings/"
+    },
+    {
+      "path": "slack.admin.users.session.invalidate",
+      "endpoint": "admin.users.session.invalidate",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.session.invalidate/"
+    },
+    {
+      "path": "slack.admin.users.session.list",
+      "endpoint": "admin.users.session.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.session.list/"
+    },
+    {
+      "path": "slack.admin.users.session.reset",
+      "endpoint": "admin.users.session.reset",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.session.reset/"
+    },
+    {
+      "path": "slack.admin.users.session.resetBulk",
+      "endpoint": "admin.users.session.resetBulk",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.session.resetBulk/"
+    },
+    {
+      "path": "slack.admin.users.session.setSettings",
+      "endpoint": "admin.users.session.setSettings",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.session.setSettings/"
+    },
+    {
+      "path": "slack.admin.users.setAdmin",
+      "endpoint": "admin.users.setAdmin",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.setAdmin/"
+    },
+    {
+      "path": "slack.admin.users.setExpiration",
+      "endpoint": "admin.users.setExpiration",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.setExpiration/"
+    },
+    {
+      "path": "slack.admin.users.setOwner",
+      "endpoint": "admin.users.setOwner",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.setOwner/"
+    },
+    {
+      "path": "slack.admin.users.setRegular",
+      "endpoint": "admin.users.setRegular",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.setRegular/"
+    },
+    {
+      "path": "slack.admin.users.unsupportedVersions.export",
+      "endpoint": "admin.users.unsupportedVersions.export",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.users.unsupportedVersions.export/"
+    },
+    {
+      "path": "slack.admin.workflows.collaborators.add",
+      "endpoint": "admin.workflows.collaborators.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.workflows.collaborators.add/"
+    },
+    {
+      "path": "slack.admin.workflows.collaborators.remove",
+      "endpoint": "admin.workflows.collaborators.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.workflows.collaborators.remove/"
+    },
+    {
+      "path": "slack.admin.workflows.permissions.lookup",
+      "endpoint": "admin.workflows.permissions.lookup",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.workflows.permissions.lookup/"
+    },
+    {
+      "path": "slack.admin.workflows.search",
+      "endpoint": "admin.workflows.search",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.workflows.search/"
+    },
+    {
+      "path": "slack.admin.workflows.triggers.types.permissions.lookup",
+      "endpoint": "admin.workflows.triggers.types.permissions.lookup",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.workflows.triggers.types.permissions.lookup/"
+    },
+    {
+      "path": "slack.admin.workflows.triggers.types.permissions.set",
+      "endpoint": "admin.workflows.triggers.types.permissions.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/admin.workflows.triggers.types.permissions.set/"
+    },
+    {
+      "path": "slack.admin.workflows.unpublish",
+      "endpoint": "admin.workflows.unpublish",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/admin.workflows.unpublish/"
+    },
     {
       "path": "slack.agents.conversations.archive",
       "endpoint": "agents.conversations.archive",
@@ -22,14 +1002,14 @@
       "path": "slack.agents.conversations.getCanvas",
       "endpoint": "agents.conversations.getCanvas",
       "transport": "json",
-      "effect": "write",
+      "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/agents.conversations.getCanvas/"
     },
     {
       "path": "slack.agents.conversations.listViews",
       "endpoint": "agents.conversations.listViews",
       "transport": "json",
-      "effect": "write",
+      "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/agents.conversations.listViews/"
     },
     {
@@ -84,9 +1064,114 @@
     {
       "path": "slack.api.test",
       "endpoint": "api.test",
-      "transport": "get",
+      "transport": "form",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/api.test/"
+    },
+    {
+      "path": "slack.apps.managed.permissions.set",
+      "endpoint": "apps.managed.permissions.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/apps.managed.permissions.set/"
+    },
+    {
+      "path": "slack.apps.links.toggle",
+      "endpoint": "apps.links.toggle",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/authentication/sign-in-with-slack/setting-up-sign-in-with-slack-links/#kill_switch"
+    },
+    {
+      "path": "slack.apps.icon.set",
+      "endpoint": "apps.icon.set",
+      "transport": "multipart",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/apps.icon.set/"
+    },
+    {
+      "path": "slack.apps.datastore.update",
+      "endpoint": "apps.datastore.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/apps.datastore.update/"
+    },
+    {
+      "path": "slack.apps.datastore.query",
+      "endpoint": "apps.datastore.query",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/apps.datastore.query/"
+    },
+    {
+      "path": "slack.apps.datastore.put",
+      "endpoint": "apps.datastore.put",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/apps.datastore.put/"
+    },
+    {
+      "path": "slack.apps.datastore.get",
+      "endpoint": "apps.datastore.get",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/apps.datastore.get/"
+    },
+    {
+      "path": "slack.apps.datastore.delete",
+      "endpoint": "apps.datastore.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/apps.datastore.delete/"
+    },
+    {
+      "path": "slack.apps.datastore.count",
+      "endpoint": "apps.datastore.count",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/apps.datastore.count/"
+    },
+    {
+      "path": "slack.apps.datastore.bulkPut",
+      "endpoint": "apps.datastore.bulkPut",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/apps.datastore.bulkPut/"
+    },
+    {
+      "path": "slack.apps.datastore.bulkGet",
+      "endpoint": "apps.datastore.bulkGet",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/apps.datastore.bulkGet/"
+    },
+    {
+      "path": "slack.apps.datastore.bulkDelete",
+      "endpoint": "apps.datastore.bulkDelete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/apps.datastore.bulkDelete/"
+    },
+    {
+      "path": "slack.apps.auth.external.get",
+      "endpoint": "apps.auth.external.get",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/apps.auth.external.get/"
+    },
+    {
+      "path": "slack.apps.auth.external.delete",
+      "endpoint": "apps.auth.external.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/apps.auth.external.delete/"
+    },
+    {
+      "path": "slack.apps.activities.list",
+      "endpoint": "apps.activities.list",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/apps.activities.list/"
     },
     {
       "path": "slack.apps.uninstall",
@@ -112,7 +1197,7 @@
     {
       "path": "slack.apps.manifest.export",
       "endpoint": "apps.manifest.export",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/apps.manifest.export/"
     },
@@ -127,8 +1212,22 @@
       "path": "slack.apps.manifest.validate",
       "endpoint": "apps.manifest.validate",
       "transport": "json",
-      "effect": "write",
+      "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/apps.manifest.validate/"
+    },
+    {
+      "path": "slack.apps.user.connection.bulkUpdate",
+      "endpoint": "apps.user.connection.bulkUpdate",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/tools/node-slack-sdk/reference/web-api/type-aliases/AppsUserConnectionBulkUpdateArguments/"
+    },
+    {
+      "path": "slack.apps.user.connection.requestAuth",
+      "endpoint": "apps.user.connection.requestAuth",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/tools/node-slack-sdk/reference/web-api/type-aliases/AppsUserConnectionRequestAuthArguments/"
     },
     {
       "path": "slack.apps.user.connection.update",
@@ -145,11 +1244,25 @@
       "docs": "https://docs.slack.dev/reference/methods/apps.connections.open/"
     },
     {
-      "path": "slack.apps.eventAuthorizations.list",
+      "path": "slack.apps.event.authorizations.list",
       "endpoint": "apps.event.authorizations.list",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/apps.event.authorizations.list/"
+    },
+    {
+      "path": "slack.assistant.search.info",
+      "endpoint": "assistant.search.info",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/assistant.search.info/"
+    },
+    {
+      "path": "slack.assistant.search.context",
+      "endpoint": "assistant.search.context",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/assistant.search.context/"
     },
     {
       "path": "slack.assistant.threads.setStatus",
@@ -175,21 +1288,21 @@
     {
       "path": "slack.auth.revoke",
       "endpoint": "auth.revoke",
-      "transport": "json",
+      "transport": "get",
       "effect": "destructive",
       "docs": "https://docs.slack.dev/reference/methods/auth.revoke/"
     },
     {
       "path": "slack.auth.test",
       "endpoint": "auth.test",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/auth.test/"
     },
     {
       "path": "slack.auth.teams.list",
       "endpoint": "auth.teams.list",
-      "transport": "get",
+      "transport": "form",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/auth.teams.list/"
     },
@@ -197,7 +1310,7 @@
       "path": "slack.blocks.validate",
       "endpoint": "blocks.validate",
       "transport": "form",
-      "effect": "write",
+      "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/blocks.validate/"
     },
     {
@@ -217,7 +1330,7 @@
     {
       "path": "slack.bookmarks.list",
       "endpoint": "bookmarks.list",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/bookmarks.list/"
     },
@@ -252,7 +1365,7 @@
     {
       "path": "slack.calls.info",
       "endpoint": "calls.info",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/calls.info/"
     },
@@ -283,6 +1396,13 @@
       "transport": "json",
       "effect": "write",
       "docs": "https://docs.slack.dev/reference/methods/canvases.create/"
+    },
+    {
+      "path": "slack.canvases.getContent",
+      "endpoint": "canvases.getContent",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/canvases.getContent/"
     },
     {
       "path": "slack.canvases.edit",
@@ -316,7 +1436,7 @@
       "path": "slack.canvases.sections.lookup",
       "endpoint": "canvases.sections.lookup",
       "transport": "json",
-      "effect": "write",
+      "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/canvases.sections.lookup/"
     },
     {
@@ -392,7 +1512,7 @@
     {
       "path": "slack.chat.scheduledMessages.list",
       "endpoint": "chat.scheduledMessages.list",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/chat.scheduledMessages.list/"
     },
@@ -441,14 +1561,14 @@
     {
       "path": "slack.conversations.declineSharedInvite",
       "endpoint": "conversations.declineSharedInvite",
-      "transport": "json",
+      "transport": "get",
       "effect": "destructive",
       "docs": "https://docs.slack.dev/reference/methods/conversations.declineSharedInvite/"
     },
     {
       "path": "slack.conversations.externalInvitePermissions.set",
       "endpoint": "conversations.externalInvitePermissions.set",
-      "transport": "json",
+      "transport": "form",
       "effect": "write",
       "docs": "https://docs.slack.dev/reference/methods/conversations.externalInvitePermissions.set/"
     },
@@ -462,7 +1582,7 @@
     {
       "path": "slack.conversations.listConnectInvites",
       "endpoint": "conversations.listConnectInvites",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/conversations.listConnectInvites/"
     },
@@ -477,13 +1597,13 @@
       "path": "slack.conversations.requestSharedInvite.deny",
       "endpoint": "conversations.requestSharedInvite.deny",
       "transport": "json",
-      "effect": "write",
+      "effect": "destructive",
       "docs": "https://docs.slack.dev/reference/methods/conversations.requestSharedInvite.deny/"
     },
     {
       "path": "slack.conversations.requestSharedInvite.list",
       "endpoint": "conversations.requestSharedInvite.list",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/conversations.requestSharedInvite.list/"
     },
@@ -491,7 +1611,7 @@
       "path": "slack.conversations.close",
       "endpoint": "conversations.close",
       "transport": "json",
-      "effect": "write",
+      "effect": "destructive",
       "docs": "https://docs.slack.dev/reference/methods/conversations.close/"
     },
     {
@@ -656,11 +1776,74 @@
       "docs": "https://docs.slack.dev/reference/methods/emoji.list/"
     },
     {
+      "path": "slack.enterprise.auth.idpconfig.apply",
+      "endpoint": "enterprise.auth.idpconfig.apply",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://github.com/slackapi/deno-slack-api/blob/2.9.3/src/generated/method-types/enterprise.ts"
+    },
+    {
+      "path": "slack.enterprise.auth.idpconfig.get",
+      "endpoint": "enterprise.auth.idpconfig.get",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://github.com/slackapi/deno-slack-api/blob/2.9.3/src/generated/method-types/enterprise.ts"
+    },
+    {
+      "path": "slack.enterprise.auth.idpconfig.list",
+      "endpoint": "enterprise.auth.idpconfig.list",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://github.com/slackapi/deno-slack-api/blob/2.9.3/src/generated/method-types/enterprise.ts"
+    },
+    {
+      "path": "slack.enterprise.auth.idpconfig.remove",
+      "endpoint": "enterprise.auth.idpconfig.remove",
+      "transport": "form",
+      "effect": "destructive",
+      "docs": "https://github.com/slackapi/deno-slack-api/blob/2.9.3/src/generated/method-types/enterprise.ts"
+    },
+    {
+      "path": "slack.enterprise.auth.idpconfig.set",
+      "endpoint": "enterprise.auth.idpconfig.set",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://github.com/slackapi/deno-slack-api/blob/2.9.3/src/generated/method-types/enterprise.ts"
+    },
+    {
+      "path": "slack.entity.presentComments",
+      "endpoint": "entity.presentComments",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/entity.presentComments/"
+    },
+    {
+      "path": "slack.entity.acknowledgeCommentAction",
+      "endpoint": "entity.acknowledgeCommentAction",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/entity.acknowledgeCommentAction/"
+    },
+    {
       "path": "slack.entity.presentDetails",
       "endpoint": "entity.presentDetails",
       "transport": "json",
       "effect": "write",
       "docs": "https://docs.slack.dev/reference/methods/entity.presentDetails/"
+    },
+    {
+      "path": "slack.files.comments.get",
+      "endpoint": "files.comments.get",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/changelog/2019/02/01/cemented-fate-for-file-comments/"
+    },
+    {
+      "path": "slack.files.comments.delete",
+      "endpoint": "files.comments.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/files.comments.delete/"
     },
     {
       "path": "slack.files.delete",
@@ -714,7 +1897,7 @@
     {
       "path": "slack.files.remote.add",
       "endpoint": "files.remote.add",
-      "transport": "json",
+      "transport": "multipart",
       "effect": "write",
       "docs": "https://docs.slack.dev/reference/methods/files.remote.add/"
     },
@@ -735,23 +1918,65 @@
     {
       "path": "slack.files.remote.remove",
       "endpoint": "files.remote.remove",
-      "transport": "json",
+      "transport": "form",
       "effect": "destructive",
       "docs": "https://docs.slack.dev/reference/methods/files.remote.remove/"
     },
     {
       "path": "slack.files.remote.share",
       "endpoint": "files.remote.share",
-      "transport": "json",
+      "transport": "get",
       "effect": "write",
       "docs": "https://docs.slack.dev/reference/methods/files.remote.share/"
     },
     {
       "path": "slack.files.remote.update",
       "endpoint": "files.remote.update",
-      "transport": "json",
+      "transport": "multipart",
       "effect": "write",
       "docs": "https://docs.slack.dev/reference/methods/files.remote.update/"
+    },
+    {
+      "path": "slack.functions.workflows.steps.responses.export",
+      "endpoint": "functions.workflows.steps.responses.export",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/functions.workflows.steps.responses.export/"
+    },
+    {
+      "path": "slack.functions.workflows.steps.list",
+      "endpoint": "functions.workflows.steps.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/functions.workflows.steps.list/"
+    },
+    {
+      "path": "slack.functions.distributions.permissions.set",
+      "endpoint": "functions.distributions.permissions.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/functions.distributions.permissions.set/"
+    },
+    {
+      "path": "slack.functions.distributions.permissions.remove",
+      "endpoint": "functions.distributions.permissions.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/functions.distributions.permissions.remove/"
+    },
+    {
+      "path": "slack.functions.distributions.permissions.list",
+      "endpoint": "functions.distributions.permissions.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/functions.distributions.permissions.list/"
+    },
+    {
+      "path": "slack.functions.distributions.permissions.add",
+      "endpoint": "functions.distributions.permissions.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/functions.distributions.permissions.add/"
     },
     {
       "path": "slack.functions.completeError",
@@ -768,7 +1993,56 @@
       "docs": "https://docs.slack.dev/reference/methods/functions.completeSuccess/"
     },
     {
-      "path": "slack.oauth.access",
+      "path": "slack.links.accountLinkedResult",
+      "endpoint": "links.accountLinkedResult",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/authentication/sign-in-with-slack/setting-up-sign-in-with-slack-links/#metrics"
+    },
+    {
+      "path": "slack.migration.exchange",
+      "endpoint": "migration.exchange",
+      "transport": "get",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/migration.exchange/"
+    },
+    {
+      "path": "slack.oauth.v2.user.access",
+      "endpoint": "oauth.v2.user.access",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/oauth.v2.user.access/"
+    },
+    {
+      "path": "slack.oauth.v2.exchange",
+      "endpoint": "oauth.v2.exchange",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/oauth.v2.exchange/"
+    },
+    {
+      "path": "slack.oauth.v2.completeShortTokenRotation",
+      "endpoint": "oauth.v2.completeShortTokenRotation",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/oauth.v2.completeShortTokenRotation/"
+    },
+    {
+      "path": "slack.oauth.v2.beginShortTokenRotation",
+      "endpoint": "oauth.v2.beginShortTokenRotation",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/oauth.v2.beginShortTokenRotation/"
+    },
+    {
+      "path": "slack.oauth.v1.access",
+      "endpoint": "oauth.access",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/oauth.access/"
+    },
+    {
+      "path": "slack.oauth.v2.access",
       "endpoint": "oauth.v2.access",
       "transport": "form",
       "effect": "write",
@@ -784,9 +2058,93 @@
     {
       "path": "slack.openid.connect.userInfo",
       "endpoint": "openid.connect.userInfo",
-      "transport": "json",
-      "effect": "write",
+      "transport": "form",
+      "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/openid.connect.userInfo/"
+    },
+    {
+      "path": "slack.oversight.chat.delete",
+      "endpoint": "oversight.chat.delete",
+      "transport": "form",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#chat_delete"
+    },
+    {
+      "path": "slack.oversight.chat.info",
+      "endpoint": "oversight.chat.info",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#chat_info"
+    },
+    {
+      "path": "slack.oversight.chat.restore",
+      "endpoint": "oversight.chat.restore",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#chat_restore"
+    },
+    {
+      "path": "slack.oversight.chat.tombstone",
+      "endpoint": "oversight.chat.tombstone",
+      "transport": "form",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#chat_tombstone"
+    },
+    {
+      "path": "slack.oversight.chat.update",
+      "endpoint": "oversight.chat.update",
+      "transport": "form",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#chat_update"
+    },
+    {
+      "path": "slack.oversight.conversations.info",
+      "endpoint": "oversight.conversations.info",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#conversations_info"
+    },
+    {
+      "path": "slack.oversight.conversations.list",
+      "endpoint": "oversight.conversations.list",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#conversations_list"
+    },
+    {
+      "path": "slack.oversight.conversations.members",
+      "endpoint": "oversight.conversations.members",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#conversations_members"
+    },
+    {
+      "path": "slack.oversight.enterprise.info",
+      "endpoint": "oversight.enterprise.info",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#enterprise_info"
+    },
+    {
+      "path": "slack.oversight.user.conversations",
+      "endpoint": "oversight.user.conversations",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#user_conversations"
+    },
+    {
+      "path": "slack.oversight.user.info",
+      "endpoint": "oversight.user.info",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#user_info"
+    },
+    {
+      "path": "slack.oversight.users.list",
+      "endpoint": "oversight.users.list",
+      "transport": "form",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/admins/admin-oversight-api/#users_list"
     },
     {
       "path": "slack.pins.add",
@@ -873,6 +2231,20 @@
       "docs": "https://docs.slack.dev/reference/methods/reminders.list/"
     },
     {
+      "path": "slack.rtm.start",
+      "endpoint": "rtm.start",
+      "transport": "get",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/rtm.start/"
+    },
+    {
+      "path": "slack.rtm.connect",
+      "endpoint": "rtm.connect",
+      "transport": "get",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/rtm.connect/"
+    },
+    {
       "path": "slack.search.all",
       "endpoint": "search.all",
       "transport": "get",
@@ -892,6 +2264,55 @@
       "transport": "get",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/search.messages/"
+    },
+    {
+      "path": "slack.slackbot.skills.update",
+      "endpoint": "slackbot.skills.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/slackbot.skills.update/"
+    },
+    {
+      "path": "slack.slackbot.skills.list",
+      "endpoint": "slackbot.skills.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/slackbot.skills.list/"
+    },
+    {
+      "path": "slack.slackbot.skills.library.remove",
+      "endpoint": "slackbot.skills.library.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/slackbot.skills.library.remove/"
+    },
+    {
+      "path": "slack.slackbot.skills.library.add",
+      "endpoint": "slackbot.skills.library.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/slackbot.skills.library.add/"
+    },
+    {
+      "path": "slack.slackbot.skills.info",
+      "endpoint": "slackbot.skills.info",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/slackbot.skills.info/"
+    },
+    {
+      "path": "slack.slackbot.skills.delete",
+      "endpoint": "slackbot.skills.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/slackbot.skills.delete/"
+    },
+    {
+      "path": "slack.slackbot.skills.create",
+      "endpoint": "slackbot.skills.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/slackbot.skills.create/"
     },
     {
       "path": "slack.slackLists.create",
@@ -924,7 +2345,7 @@
     {
       "path": "slack.slackLists.download.get",
       "endpoint": "slackLists.download.get",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/slackLists.download.get/"
     },
@@ -959,14 +2380,14 @@
     {
       "path": "slack.slackLists.items.info",
       "endpoint": "slackLists.items.info",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/slackLists.items.info/"
     },
     {
       "path": "slack.slackLists.items.list",
       "endpoint": "slackLists.items.list",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/slackLists.items.list/"
     },
@@ -1036,21 +2457,21 @@
     {
       "path": "slack.team.billing.info",
       "endpoint": "team.billing.info",
-      "transport": "get",
+      "transport": "form",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/team.billing.info/"
     },
     {
       "path": "slack.team.preferences.list",
       "endpoint": "team.preferences.list",
-      "transport": "get",
+      "transport": "form",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/team.preferences.list/"
     },
     {
       "path": "slack.team.externalTeams.disconnect",
       "endpoint": "team.externalTeams.disconnect",
-      "transport": "json",
+      "transport": "form",
       "effect": "destructive",
       "docs": "https://docs.slack.dev/reference/methods/team.externalTeams.disconnect/"
     },
@@ -1127,7 +2548,7 @@
     {
       "path": "slack.users.deletePhoto",
       "endpoint": "users.deletePhoto",
-      "transport": "json",
+      "transport": "get",
       "effect": "destructive",
       "docs": "https://docs.slack.dev/reference/methods/users.deletePhoto/"
     },
@@ -1167,13 +2588,6 @@
       "docs": "https://docs.slack.dev/reference/methods/users.lookupByEmail/"
     },
     {
-      "path": "slack.users.setActive",
-      "endpoint": "users.setActive",
-      "transport": "json",
-      "effect": "write",
-      "docs": "https://docs.slack.dev/reference/methods/users.setActive/"
-    },
-    {
       "path": "slack.users.setPhoto",
       "endpoint": "users.setPhoto",
       "transport": "multipart",
@@ -1205,7 +2619,7 @@
       "path": "slack.users.discoverableContacts.lookup",
       "endpoint": "users.discoverableContacts.lookup",
       "transport": "json",
-      "effect": "write",
+      "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/users.discoverableContacts.lookup/"
     },
     {
@@ -1237,6 +2651,69 @@
       "docs": "https://docs.slack.dev/reference/methods/views.update/"
     },
     {
+      "path": "slack.workflows.triggers.update",
+      "endpoint": "workflows.triggers.update",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://github.com/slackapi/deno-slack-api/blob/2.9.3/src/typed-method-types/workflows/triggers/mod.ts"
+    },
+    {
+      "path": "slack.workflows.triggers.permissions.set",
+      "endpoint": "workflows.triggers.permissions.set",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/workflows.triggers.permissions.set/"
+    },
+    {
+      "path": "slack.workflows.triggers.permissions.remove",
+      "endpoint": "workflows.triggers.permissions.remove",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://docs.slack.dev/reference/methods/workflows.triggers.permissions.remove/"
+    },
+    {
+      "path": "slack.workflows.triggers.permissions.list",
+      "endpoint": "workflows.triggers.permissions.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/workflows.triggers.permissions.list/"
+    },
+    {
+      "path": "slack.workflows.triggers.permissions.add",
+      "endpoint": "workflows.triggers.permissions.add",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://docs.slack.dev/reference/methods/workflows.triggers.permissions.add/"
+    },
+    {
+      "path": "slack.workflows.triggers.list",
+      "endpoint": "workflows.triggers.list",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://github.com/slackapi/deno-slack-api/blob/2.9.3/src/typed-method-types/workflows/triggers/mod.ts"
+    },
+    {
+      "path": "slack.workflows.triggers.info",
+      "endpoint": "workflows.triggers.info",
+      "transport": "json",
+      "effect": "read",
+      "docs": "https://github.com/slackapi/slack-cli/blob/v4.13.0/internal/api/workflows.go"
+    },
+    {
+      "path": "slack.workflows.triggers.delete",
+      "endpoint": "workflows.triggers.delete",
+      "transport": "json",
+      "effect": "destructive",
+      "docs": "https://github.com/slackapi/deno-slack-api/blob/2.9.3/src/typed-method-types/workflows/triggers/mod.ts"
+    },
+    {
+      "path": "slack.workflows.triggers.create",
+      "endpoint": "workflows.triggers.create",
+      "transport": "json",
+      "effect": "write",
+      "docs": "https://github.com/slackapi/deno-slack-api/blob/2.9.3/src/typed-method-types/workflows/triggers/mod.ts"
+    },
+    {
       "path": "slack.workflows.featured.add",
       "endpoint": "workflows.featured.add",
       "transport": "json",
@@ -1246,7 +2723,7 @@
     {
       "path": "slack.workflows.featured.list",
       "endpoint": "workflows.featured.list",
-      "transport": "get",
+      "transport": "json",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/workflows.featured.list/"
     },

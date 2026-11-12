@@ -15,6 +15,8 @@ export interface SlackResponse {
   [key: string]: any
 }
 
+type ResponseParser = (response: GoogleAppsScript.URL_Fetch.HTTPResponse) => SlackResponse
+
 export default class BaseAPI {
   static API_ENDPOINT = 'https://slack.com/api/'
   constructor(
@@ -30,46 +32,61 @@ export default class BaseAPI {
     }
   }
 
-  protected _get(api: string, args: SlackParams = {}): SlackResponse {
+  protected _get(
+    api: string,
+    args: SlackParams = {},
+    parseResponse?: ResponseParser,
+  ): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
     const encodedArgs: string = queryEncode(safeArgs)
     const query = encodedArgs ? `?${encodedArgs}` : ''
-    const url = `${BaseAPI.API_ENDPOINT}${api}${query}`
-    const params: Record<string, any> = {
-      method: 'get',
-      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-      headers: this._buildHeaders(),
-    }
-    return this._fetch(url, params)
+    return this._request(
+      api,
+      { method: 'get', contentType: 'application/x-www-form-urlencoded; charset=UTF-8' },
+      query,
+      parseResponse,
+    )
   }
 
-  protected _post(api: string, args: SlackParams = {}): SlackResponse {
+  protected _post(
+    api: string,
+    args: SlackParams = {},
+    parseResponse?: ResponseParser,
+  ): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
     const payload: Record<string, any> = createPayload(safeArgs)
-    const url = `${BaseAPI.API_ENDPOINT}${api}`
-    const params: Record<string, any> = {
-      headers: this._buildHeaders(),
-      method: 'post',
-      // Slack warns missing_charset on JSON without it, and superfluous_charset on
-      // form bodies with it, so the two content types differ on purpose (confirmed live)
-      contentType: 'application/json; charset=UTF-8',
-      payload: JSON.stringify(payload),
-    }
-    return this._fetch(url, params)
+    return this._request(
+      api,
+      {
+        method: 'post',
+        // Slack warns missing_charset on JSON without it, and superfluous_charset on
+        // form bodies with it, so the two content types differ on purpose (confirmed live)
+        contentType: 'application/json; charset=UTF-8',
+        payload: JSON.stringify(payload),
+      },
+      '',
+      parseResponse,
+    )
   }
 
-  protected _post_form(api: string, args: SlackParams = {}): SlackResponse {
+  protected _post_form(
+    api: string,
+    args: SlackParams = {},
+    parseResponse?: ResponseParser,
+  ): SlackResponse {
     const safeArgs = this._normalizeArgs(args, 'params')
     const payload: Record<string, any> = createFormPayload(safeArgs)
-    const url = `${BaseAPI.API_ENDPOINT}${api}`
-    const params: Record<string, any> = {
-      headers: this._buildHeaders(),
-      method: 'post',
-      // No charset here: Slack answers superfluous_charset when a form body carries one
-      contentType: 'application/x-www-form-urlencoded',
-      payload,
-    }
-    return this._fetch(url, params)
+    return this._request(
+      api,
+      {
+        method: 'post',
+        // No charset here: Slack answers superfluous_charset when a form body carries one
+        contentType: 'application/x-www-form-urlencoded',
+        payload,
+      },
+      '',
+      parseResponse,
+    )
   }
 
   protected _post_file(api: string, file_args: SlackParams, args: SlackParams = {}): SlackResponse {
@@ -77,65 +94,77 @@ export default class BaseAPI {
     const safeFileArgs = this._normalizeArgs(file_args, 'file_params')
     const payload: Record<string, any> = createFormPayload(safeArgs)
     const filePayload: Record<string, any> = createPayload(safeFileArgs)
-    const url = `${BaseAPI.API_ENDPOINT}${api}`
-    const params: Record<string, any> = {
-      headers: this._buildHeaders(),
+    return this._request(api, {
       method: 'post',
-      payload: Object.assign({}, filePayload, payload),
-    }
-    return this._fetch(url, params)
+      payload: { ...filePayload, ...payload },
+    })
   }
 
-  protected _fetch(url: string, params: Record<string, any> = {}): SlackResponse {
-    const requestParams: Record<string, any> = Object.assign({}, params || {})
-    if (requestParams.muteHttpExceptions == null) {
-      requestParams.muteHttpExceptions = true
+  private _request(
+    api: string,
+    params: Record<string, any>,
+    query = '',
+    parseResponse?: ResponseParser,
+  ): SlackResponse {
+    if (typeof api !== 'string' || !/^[a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)*$/.test(api)) {
+      throw new Error('api must be a Slack method name')
     }
-    const maxAttempts = this._retries_limit + 1
-    let lastRateLimitResponse: any = null
-    let retryAfter = 1
+    return this._fetch(
+      `${BaseAPI.API_ENDPOINT}${api}${query}`,
+      {
+        ...params,
+        headers: this._token ? { Authorization: `Bearer ${this._token}` } : {},
+        followRedirects: false,
+      },
+      parseResponse,
+    )
+  }
+
+  protected _fetch(
+    url: string,
+    params: Record<string, any> = {},
+    parseResponse: ResponseParser = (response) => this._parseResponse(response.getContentText()),
+  ): SlackResponse {
+    const requestParams = { ...params, muteHttpExceptions: params?.muteHttpExceptions ?? true }
     let totalSleepMilliseconds = 0
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      const response: any = UrlFetchApp.fetch(url, requestParams)
+    for (let attempt = 0; ; attempt++) {
+      const response = UrlFetchApp.fetch(url, requestParams)
       // Treat HTTP 429 as a rate limit: wait, then retry
-      if (response.getResponseCode() !== 429) return this._parseResponse(response)
-      lastRateLimitResponse = response
+      const status = response.getResponseCode()
+      if (status !== 429) return parseResponse(response)
       const retryAfterHeader = this._getHeader(response.getHeaders(), 'retry-after')
       const parsedRetryAfter = Number(retryAfterHeader)
-      retryAfter =
+      const retryAfter =
         retryAfterHeader != null &&
         retryAfterHeader.trim() !== '' &&
         Number.isFinite(parsedRetryAfter) &&
         parsedRetryAfter >= 0
           ? parsedRetryAfter
           : 1
-      // No point waiting after the last attempt (GAS caps execution time)
-      if (attempt === maxAttempts - 1) break
       const waitMilliseconds = Math.ceil(retryAfter * 1000)
       // Apps Script executions are time-limited, and Utilities.sleep rejects a single wait
       // above five minutes. Keep the whole retry sequence within the same five-minute budget.
-      if (totalSleepMilliseconds + waitMilliseconds > MAX_TOTAL_SLEEP_MILLISECONDS) break
+      if (
+        attempt === this._retries_limit ||
+        totalSleepMilliseconds + waitMilliseconds > MAX_TOTAL_SLEEP_MILLISECONDS
+      ) {
+        return {
+          ...this._parseResponse(response.getContentText()),
+          ok: false,
+          error: 'ratelimited',
+          retry_after: retryAfter,
+        }
+      }
       Utilities.sleep(waitMilliseconds)
       totalSleepMilliseconds += waitMilliseconds
     }
-    return {
-      ...this._parseResponse(lastRateLimitResponse),
-      ok: false,
-      error: 'ratelimited',
-      retry_after: retryAfter,
-    }
   }
 
-  private _getHeader(headers: Record<string, any>, name: string): string | null {
+  protected _getHeader(headers: Record<string, any>, name: string): string | null {
     if (!headers) return null
     const found = Object.keys(headers).find((key) => key.toLowerCase() === name.toLowerCase())
     if (!found) return null
-    return headers[found]
-  }
-
-  private _buildHeaders(): Record<string, string> {
-    if (!this._token) return {}
-    return { Authorization: `Bearer ${this._token}` }
+    return String(headers[found])
   }
 
   protected _normalizeArgs(args: SlackParams, name: string): SlackParams {
@@ -146,11 +175,15 @@ export default class BaseAPI {
     return args
   }
 
-  private _parseResponse(response: any): SlackResponse {
-    const text = response.getContentText()
+  protected _parseResponse(text: string, isSuccess?: (parsed: any) => boolean): SlackResponse {
     if (!text) return { ok: false, error: 'empty_response' }
     try {
-      return JSON.parse(text)
+      const parsed = JSON.parse(text)
+      if (typeof parsed?.ok === 'boolean') return parsed
+      if (parsed?.ok === undefined && !parsed?.error && isSuccess?.(parsed)) {
+        return { ...parsed, ok: true }
+      }
+      return { ok: false, error: 'invalid_response', raw: text }
     } catch {
       return { ok: false, error: 'invalid_json', raw: text }
     }

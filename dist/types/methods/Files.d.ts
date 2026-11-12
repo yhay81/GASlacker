@@ -8,6 +8,11 @@ declare class FilesRemote extends BaseAPI {
     update(params?: SlackParams): SlackResponse;
 }
 export default class Files extends BaseAPI {
+    comments: {
+        delete: (params?: SlackParams) => SlackResponse;
+        delete_: (params?: SlackParams) => SlackResponse;
+        get: (params?: SlackParams) => SlackResponse;
+    };
     remote: FilesRemote;
     constructor(token: string | null, retries_limit?: number);
     delete(params?: SlackParams): SlackResponse;

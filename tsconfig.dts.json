@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "types": ["google-apps-script"],
     "noEmit": false,
     "emitDeclarationOnly": true,
     "declaration": true,

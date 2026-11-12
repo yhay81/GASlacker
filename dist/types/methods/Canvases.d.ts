@@ -12,6 +12,7 @@ export default class Canvases extends BaseAPI {
     sections: CanvasesSections;
     constructor(token: string | null, retries_limit?: number);
     create(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    getContent(params?: SlackParams): import("./BaseAPI").SlackResponse;
     edit(params?: SlackParams): import("./BaseAPI").SlackResponse;
     delete(params?: SlackParams): import("./BaseAPI").SlackResponse;
     delete_(params?: SlackParams): import("./BaseAPI").SlackResponse;

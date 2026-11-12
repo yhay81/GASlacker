@@ -22,8 +22,8 @@ https://gaslacker.yhay81.com/
 
 発行された `xoxb-` で始まるBot User OAuth Tokenは、コードへ直接書かず、Apps Scriptの「プロジェクトの設定」→「スクリプト プロパティ」に保存します。
 
-| プロパティ | 値 |
-|---|---|
+| プロパティ           | 値         |
+| -------------------- | ---------- |
 | `SLACK_ACCESS_TOKEN` | `xoxb-...` |
 
 ### 2. GASlackerを追加する

@@ -81,6 +81,12 @@ describe('methods', () => {
     ])
   })
 
+  it('rejects an unknown HTTP style before sending the request', () => {
+    const api = new APISpy('token')
+    expect(() => api.call('chat.delete', {}, 'put' as 'post')).toThrow('method must be')
+    expect(api.calls).toEqual([])
+  })
+
   it('Chat.postMessage throws on non-object params', () => {
     const chat = new Chat('token')
     expect(() => chat.postMessage('C123' as unknown as Record<string, any>)).toThrow(
@@ -104,6 +110,11 @@ describe('methods', () => {
       api: 'oauth.v2.access',
       params: { client_id: 'client', client_secret: 'secret' },
     })
+  })
+
+  it('keeps the original app event authorizations path as an alias', () => {
+    const { apps } = new Methods('token')
+    expect(apps.eventAuthorizations).toBe(apps.event.authorizations)
   })
 
   it('Users.setPhoto splits image into file payload', () => {
@@ -157,7 +168,7 @@ describe('methods', () => {
   it('scheduledMessagesList alias calls chat.scheduledMessages.list', () => {
     const methods = new Methods('token')
     const calls: string[] = []
-    ;(methods.chat.scheduledMessages as any)._get = (endpoint: string) => {
+    ;(methods.chat.scheduledMessages as any)._post = (endpoint: string) => {
       calls.push(endpoint)
       return { ok: true }
     }
@@ -205,10 +216,26 @@ describe('paginate', () => {
   })
 
   it('respects max_pages', () => {
-    const { api } = pageSpy([{ ok: true, response_metadata: { next_cursor: 'again' } }])
+    const { api } = pageSpy(
+      ['one', 'two', 'three'].map((next_cursor) => ({
+        ok: true,
+        response_metadata: { next_cursor },
+      })),
+    )
     const pages = api.paginate('conversations.list', {}, 'post', 3)
 
     expect(pages).toHaveLength(3)
+  })
+
+  it('detects a cycle before requesting the same cursor again, including a starting cursor', () => {
+    const { api, seen } = pageSpy([
+      { ok: true, response_metadata: { next_cursor: 'second' } },
+      { ok: true, response_metadata: { next_cursor: 'first' } },
+    ])
+    expect(() => api.paginate('conversations.list', { cursor: 'first' })).toThrow(
+      'repeated pagination cursor',
+    )
+    expect(seen).toEqual([{ cursor: 'first' }, { cursor: 'second' }])
   })
 
   it('follows more than 20 pages by default', () => {
@@ -238,6 +265,13 @@ describe('paginate', () => {
     const pages = methods.paginate('conversations.list', { limit: 1 }, 'get')
 
     expect(pages).toEqual([{ ok: true }])
+  })
+
+  it('supports form-encoded paginated endpoints', () => {
+    const methods = new Methods('token')
+    const postForm = vi.spyOn(methods.api as any, '_post_form').mockReturnValue({ ok: true })
+    expect(methods.paginate('auth.teams.list', { limit: 10 }, 'form')).toEqual([{ ok: true }])
+    expect(postForm).toHaveBeenCalledWith('auth.teams.list', { limit: 10 })
   })
 })
 
@@ -278,6 +312,81 @@ describe('authorization header', () => {
   it('omits the token on the code exchanges', () => {
     expect(headersOf((m) => m.openid.connect.token({ code: 'c' }))).toEqual({})
     expect(headersOf((m) => m.oauth.access({ code: 'c' }))).toEqual({})
+    expect(headersOf((m) => m.oauth.v1.access({ code: 'c' }))).toEqual({})
+    expect(headersOf((m) => m.oauth.v2.user.access({ code: 'c' }))).toEqual({})
+    expect(headersOf((m) => m.oauth.v2.exchange({ token: 'legacy-token' }))).toEqual({})
+  })
+
+  it('authenticates token rotation with the configured token or an explicit target', () => {
+    const credentials = { client_id: 'client', client_secret: 'secret' }
+    const authorization = { Authorization: 'Bearer xoxp-token' }
+    expect(headersOf((m) => m.oauth.v2.exchange(credentials))).toEqual(authorization)
+    expect(headersOf((m) => m.oauth.v2.beginShortTokenRotation(credentials))).toEqual(authorization)
+    expect(
+      headersOf((m) => m.oauth.v2.beginShortTokenRotation({ ...credentials, token: 'other' })),
+    ).toEqual({})
+    expect(
+      headersOf((m) => m.oauth.v2.completeShortTokenRotation({ ...credentials, new_token: 'new' })),
+    ).toEqual(authorization)
+  })
+
+  it('accepts the classic OAuth access-token response without an ok flag', () => {
+    const token = { access_token: 'xoxp-classic', scope: 'groups:write' }
+    const fetch = vi
+      .fn()
+      .mockReturnValueOnce(jsonResponse(token))
+      .mockReturnValueOnce(jsonResponse({ ok: false, error: 'invalid_code' }))
+      .mockReturnValueOnce(jsonResponse({ scope: 'groups:write' }))
+    globalAny.UrlFetchApp = { fetch }
+    const { oauth } = new Methods(null)
+    expect(oauth.v1.access()).toEqual({ ...token, ok: true })
+    expect(oauth.v1.access()).toEqual({ ok: false, error: 'invalid_code' })
+    expect(oauth.v1.access().error).toBe('invalid_response')
+  })
+
+  it('preserves an icon Blob and also accepts a hosted image URL', () => {
+    const fetch = vi.fn().mockReturnValue(jsonResponse({ ok: true }))
+    globalAny.UrlFetchApp = { fetch }
+    const icon = new Methods('token').apps.icon
+    const file = { getBytes: () => [1] }
+    icon.set({ app_id: 'A1', file })
+    expect(fetch.mock.calls[0][1].payload.file).toBe(file)
+    icon.set({ app_id: 'A1', url: 'https://example.com/icon.png' })
+    expect(fetch.mock.calls[1][1].payload).toEqual({
+      app_id: 'A1',
+      url: 'https://example.com/icon.png',
+    })
+  })
+
+  it('encodes SDK connection arguments as CSV or structured form fields', () => {
+    const fetch = vi.fn().mockReturnValue(jsonResponse({ ok: true }))
+    globalAny.UrlFetchApp = { fetch }
+    const connection = new Methods('token').apps.user.connection
+    connection.bulkUpdate({ connected_user_ids: ['U1', 'U2'], disconnected_user_ids: ['U3'] })
+    expect(fetch.mock.calls[0][1].payload).toEqual({
+      connected_user_ids: 'U1,U2',
+      disconnected_user_ids: 'U3',
+    })
+    const primary_provider = { provider_key: 'example', provider_name: 'Example' }
+    connection.requestAuth({ primary_provider })
+    expect(fetch.mock.calls[1][1].payload).toEqual({
+      primary_provider: JSON.stringify(primary_provider),
+    })
+  })
+
+  it('sends a blocks array as JSON in a token-free validation request', () => {
+    const fetch = vi.fn().mockReturnValue(jsonResponse({ ok: true }))
+    globalAny.UrlFetchApp = { fetch }
+    const blocks = [{ type: 'divider' }]
+    new Methods(null).blocks.validate({ blocks })
+    expect(fetch).toHaveBeenCalledWith(
+      'https://slack.com/api/blocks.validate',
+      expect.objectContaining({
+        headers: {},
+        contentType: 'application/x-www-form-urlencoded',
+        payload: { blocks: JSON.stringify(blocks) },
+      }),
+    )
   })
 
   it('omits the token on tooling token rotation', () => {
@@ -429,7 +538,7 @@ describe('Blocks.validate', () => {
 
   it('sends JSON-encoded blocks as a token-free form and preserves validation errors', () => {
     const blocks = JSON.stringify([
-      { type: 'section', text: { type: 'plain_text', text: 'Hello world' } },
+      { type: 'section', text: { type: 'invalid_text', text: 'Hello world' } },
     ])
     const response = {
       ok: false,
@@ -440,12 +549,14 @@ describe('Blocks.validate', () => {
     vi.stubGlobal('UrlFetchApp', { fetch })
 
     expect(new Methods(null).blocks.validate({ blocks })).toEqual(response)
-    expect(fetch).toHaveBeenCalledWith('https://slack.com/api/blocks.validate', {
-      method: 'post',
-      contentType: 'application/x-www-form-urlencoded',
-      headers: {},
-      payload: { blocks },
-      muteHttpExceptions: true,
-    })
+    expect(fetch).toHaveBeenCalledWith(
+      'https://slack.com/api/blocks.validate',
+      expect.objectContaining({
+        method: 'post',
+        contentType: 'application/x-www-form-urlencoded',
+        headers: {},
+        payload: { blocks },
+      }),
+    )
   })
 })

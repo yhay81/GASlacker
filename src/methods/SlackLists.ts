@@ -17,7 +17,7 @@ class SlackListsAccess extends BaseAPI {
 
 class SlackListsDownload extends BaseAPI {
   public get(params: SlackParams = {}) {
-    return this._get('slackLists.download.get', params)
+    return this._post('slackLists.download.get', params)
   }
 
   public start(params: SlackParams = {}) {
@@ -44,11 +44,11 @@ class SlackListsItems extends BaseAPI {
   }
 
   public info(params: SlackParams = {}) {
-    return this._get('slackLists.items.info', params)
+    return this._post('slackLists.items.info', params)
   }
 
   public list(params: SlackParams = {}) {
-    return this._get('slackLists.items.list', params)
+    return this._post('slackLists.items.list', params)
   }
 
   public update(params: SlackParams = {}) {

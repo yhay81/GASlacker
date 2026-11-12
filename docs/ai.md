@@ -36,8 +36,12 @@ an unintended data-export path. See Slack's
 
 [`examples/ai-approved-draft.js`](https://github.com/yhay81/GASlacker/blob/main/examples/ai-approved-draft.js)
 implements this pattern without
-binding the repository to a model provider. A model integration stages a draft in a sheet; a person
-checks the destination and selects **Approved**; a separate function performs the Slack write.
+binding the repository to a model provider. Expose only `stageSlackDraft` to the model. Give
+spreadsheet edit access only to trusted reviewers, who check the draft and destination before
+selecting **Approved**. Clear approval before editing a draft or its destination. The posting
+function rechecks the row and records the attempt before calling Slack. Once a row is marked
+`posting`, it may already be on its way. If that status remains or the result is `uncertain`,
+check the destination before clearing the result to retry.
 
 ## Instructions for coding assistants
 
@@ -51,7 +55,7 @@ Do not create a Slack Events API doPost handler in Apps Script.
 For AI-generated writes, separate draft creation from execution, require explicit approval,
 cap actions per run, fail closed on uncertain results, and avoid logging secrets or message bodies.
 Use https://gaslacker.yhay81.com/methods.json to discover wrapper paths and transport styles,
-then consult the linked official Slack method page for arguments and scopes.
+then consult the linked Slack method or SDK reference for arguments. Check the method scopes.
 ```
 
 Slack also publishes an [LLM-oriented documentation index](https://docs.slack.dev/llms.txt). Prefer
@@ -64,15 +68,13 @@ Each entry contains:
 
 - `path`: the GASlacker property and method path;
 - `endpoint`: the Slack Web API endpoint actually called;
-- `transport`: GET, JSON POST, or form POST;
+- `transport`: GET, JSON POST, form POST, or multipart POST;
 - `effect`: a conservative `read`, `write`, or `destructive` classification;
-- `docs`: the corresponding official Slack method documentation.
+- `docs`: Slack’s official method page, guide or SDK reference.
 
-`effect` is a name-based guardrail hint, not an authorization system. GET routes are reads; other
-routes are writes; action names such as `delete`, `remove`, and `revoke` are marked destructive.
-Slack OAuth scopes and workspace policy remain the source of truth. Methods not classified as reads
-are deliberately treated as writes, even when a particular call may only create a temporary
-resource.
+`effect` describes the action independently of its HTTP transport. For example, sharing a file
+changes access, and search reads data. Consult the linked method documentation, Slack OAuth scopes
+and workspace policy before authorizing an action.
 
 Run `pnpm run catalog` after changing `tests/routing.spec.ts`. The normal build also refreshes the
 catalog.

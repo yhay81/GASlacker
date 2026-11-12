@@ -62,6 +62,22 @@ describe('util', () => {
   })
 
   describe('createFormPayload()', () => {
+    it('encodes structured arrays as JSON while preserving comma-separated scalar lists', () => {
+      const params = {
+        files: [{ id: 'F123' }],
+        blocks: [],
+        attachments: [],
+        channels: ['C1', 'C2'],
+      }
+      const expected = {
+        files: '[{"id":"F123"}]',
+        blocks: '[]',
+        attachments: '[]',
+        channels: 'C1,C2',
+      }
+      expect(createFormPayload(params)).toEqual(expected)
+      expect(Object.fromEntries(new URLSearchParams(queryEncode(params)))).toEqual(expected)
+    })
     it('can create form payload from object properly.', () => {
       const params = {
         a: 'a',

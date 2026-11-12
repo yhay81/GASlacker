@@ -7,25 +7,27 @@ function postDailyAgenda() {
   var properties = PropertiesService.getScriptProperties()
   var slack = GASlacker.methods(properties.getProperty('SLACK_ACCESS_TOKEN'))
   var channel = properties.getProperty('SLACK_CHANNEL_ID')
-  var timeZone = Session.getScriptTimeZone()
+  var calendar = CalendarApp.getDefaultCalendar()
+  var timeZone = calendar.getTimeZone()
   var now = new Date()
-  var events = CalendarApp.getDefaultCalendar().getEventsForDay(now)
+  var events = calendar.getEventsForDay(now)
 
   var lines = events.map(function (event) {
-    if (event.isAllDayEvent()) return '• All day — *' + event.getTitle() + '*'
+    if (event.isAllDayEvent()) return '• All day — ' + event.getTitle()
     var start = Utilities.formatDate(event.getStartTime(), timeZone, 'HH:mm')
     var end = Utilities.formatDate(event.getEndTime(), timeZone, 'HH:mm')
-    return '• ' + start + '–' + end + ' — *' + event.getTitle() + '*'
+    return '• ' + start + '–' + end + ' — ' + event.getTitle()
   })
 
   var date = Utilities.formatDate(now, timeZone, 'EEE, MMM d')
-  var agenda = lines.length ? lines.join('\n') : 'No events today :sparkles:'
+  var agenda = lines.length ? lines.join('\n') : 'No events today ✨'
+  var characters = Array.from(agenda)
+  if (characters.length > 3000) agenda = characters.slice(0, 2999).join('') + '…'
   var res = slack.chat.postMessage({
     channel: channel,
-    text: 'Agenda for ' + date,
     blocks: [
       { type: 'header', text: { type: 'plain_text', text: 'Today · ' + date } },
-      { type: 'section', text: { type: 'mrkdwn', text: agenda } },
+      { type: 'section', text: { type: 'plain_text', text: agenda } },
     ],
   })
 

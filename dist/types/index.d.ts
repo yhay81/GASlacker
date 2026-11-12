@@ -1,5 +1,6 @@
-import API from './methods/API';
+import Admin from './methods/Admin';
 import Agents from './methods/Agents';
+import API from './methods/API';
 import Apps from './methods/Apps';
 import Assistant from './methods/Assistant';
 import Auth from './methods/Auth';
@@ -13,15 +14,21 @@ import Conversations from './methods/Conversations';
 import Dialog from './methods/Dialog';
 import DND from './methods/DND';
 import Emoji from './methods/Emoji';
+import Enterprise from './methods/Enterprise';
 import Entity from './methods/Entity';
 import Files from './methods/Files';
 import Functions from './methods/Functions';
+import Links from './methods/Links';
+import Migration from './methods/Migration';
 import OAuth from './methods/OAuth';
 import OpenID from './methods/OpenID';
+import Oversight from './methods/Oversight';
 import Pins from './methods/Pins';
 import Reactions from './methods/Reactions';
 import Reminders from './methods/Reminders';
+import RTM from './methods/RTM';
 import Search from './methods/Search';
+import Slackbot from './methods/Slackbot';
 import SlackLists from './methods/SlackLists';
 import Stars from './methods/Stars';
 import Team from './methods/Team';
@@ -33,8 +40,9 @@ import Workflows from './methods/Workflows';
 import { type SlackParams } from './methods/BaseAPI';
 export type { SlackParams, SlackResponse } from './methods/BaseAPI';
 export declare class Methods {
-    api: API;
+    admin: Admin;
     agents: Agents;
+    api: API;
     apps: Apps;
     assistant: Assistant;
     auth: Auth;
@@ -48,15 +56,21 @@ export declare class Methods {
     dialog: Dialog;
     dnd: DND;
     emoji: Emoji;
+    enterprise: Enterprise;
     entity: Entity;
     files: Files;
     functions: Functions;
+    links: Links;
+    migration: Migration;
     oauth: OAuth;
     openid: OpenID;
+    oversight: Oversight;
     pins: Pins;
     reactions: Reactions;
     reminders: Reminders;
+    rtm: RTM;
     search: Search;
+    slackbot: Slackbot;
     slackLists: SlackLists;
     stars: Stars;
     team: Team;
@@ -67,5 +81,12 @@ export declare class Methods {
     workflows: Workflows;
     constructor(token: string | null, retries_limit?: number);
     call(api: string, params?: SlackParams, method?: 'get' | 'post' | 'form'): import(".").SlackResponse;
-    paginate(api: string, params?: SlackParams, method?: 'get' | 'post', max_pages?: number): import(".").SlackResponse[];
+    paginate(api: string, params?: SlackParams, method?: 'get' | 'post' | 'form', max_pages?: number): import(".").SlackResponse[];
 }
+/**
+ * Creates a Slack Web API client.
+ * @param {string|null} token Access token with the scopes required by the method, or null for token-free APIs.
+ * @param {number} [retries_limit] Extra retry attempts on HTTP 429 (integer 0-10; default 3)
+ * @return {Object} A client with one property per category (chat, conversations, files, etc.)
+ */
+export declare function methods(token: string | null, retries_limit?: number): Methods;

@@ -1,5 +1,6 @@
-import API from './methods/API'
+import Admin from './methods/Admin'
 import Agents from './methods/Agents'
+import API from './methods/API'
 import Apps from './methods/Apps'
 import Assistant from './methods/Assistant'
 import Auth from './methods/Auth'
@@ -13,15 +14,21 @@ import Conversations from './methods/Conversations'
 import Dialog from './methods/Dialog'
 import DND from './methods/DND'
 import Emoji from './methods/Emoji'
+import Enterprise from './methods/Enterprise'
 import Entity from './methods/Entity'
 import Files from './methods/Files'
 import Functions from './methods/Functions'
+import Links from './methods/Links'
+import Migration from './methods/Migration'
 import OAuth from './methods/OAuth'
 import OpenID from './methods/OpenID'
+import Oversight from './methods/Oversight'
 import Pins from './methods/Pins'
 import Reactions from './methods/Reactions'
 import Reminders from './methods/Reminders'
+import RTM from './methods/RTM'
 import Search from './methods/Search'
+import Slackbot from './methods/Slackbot'
 import SlackLists from './methods/SlackLists'
 import Stars from './methods/Stars'
 import Team from './methods/Team'
@@ -36,8 +43,9 @@ import { DEFAULT_RETRIES, type SlackParams } from './methods/BaseAPI'
 export type { SlackParams, SlackResponse } from './methods/BaseAPI'
 
 export class Methods {
-  public api
+  public admin
   public agents
+  public api
   public apps
   public assistant
   public auth
@@ -51,15 +59,21 @@ export class Methods {
   public dialog
   public dnd
   public emoji
+  public enterprise
   public entity
   public files
   public functions
+  public links
+  public migration
   public oauth
   public openid
+  public oversight
   public pins
   public reactions
   public reminders
+  public rtm
   public search
+  public slackbot
   public slackLists
   public stars
   public team
@@ -70,8 +84,9 @@ export class Methods {
   public workflows
 
   constructor(token: string | null, retries_limit: number = DEFAULT_RETRIES) {
-    this.api = new API(token, retries_limit)
+    this.admin = new Admin(token, retries_limit)
     this.agents = new Agents(token, retries_limit)
+    this.api = new API(token, retries_limit)
     this.apps = new Apps(token, retries_limit)
     this.assistant = new Assistant(token, retries_limit)
     this.auth = new Auth(token, retries_limit)
@@ -85,17 +100,23 @@ export class Methods {
     this.dialog = new Dialog(token, retries_limit)
     this.dnd = new DND(token, retries_limit)
     this.emoji = new Emoji(token, retries_limit)
+    this.enterprise = new Enterprise(token, retries_limit)
     this.entity = new Entity(token, retries_limit)
     this.files = new Files(token, retries_limit)
     this.functions = new Functions(token, retries_limit)
-    // oauth.v2.access needs no token (it uses client_id / client_secret), so pass null
-    this.oauth = new OAuth(null, retries_limit)
+    this.links = new Links(token, retries_limit)
+    this.migration = new Migration(token, retries_limit)
+    // OAuth code exchanges omit the bearer token. Token rotation can use it.
+    this.oauth = new OAuth(token, retries_limit)
     // openid.connect.userInfo needs the user token; the code exchange stays token-free (OpenID.ts)
     this.openid = new OpenID(token, retries_limit)
+    this.oversight = new Oversight(token, retries_limit)
     this.pins = new Pins(token, retries_limit)
     this.reactions = new Reactions(token, retries_limit)
     this.reminders = new Reminders(token, retries_limit)
+    this.rtm = new RTM(token, retries_limit)
     this.search = new Search(token, retries_limit)
+    this.slackbot = new Slackbot(token, retries_limit)
     this.slackLists = new SlackLists(token, retries_limit)
     this.stars = new Stars(token, retries_limit)
     this.team = new Team(token, retries_limit)
@@ -115,20 +136,19 @@ export class Methods {
   public paginate(
     api: string,
     params: SlackParams = {},
-    method: 'get' | 'post' = 'post',
+    method: 'get' | 'post' | 'form' = 'post',
     max_pages?: number,
   ) {
     return this.api.paginate(api, params, method, max_pages)
   }
 }
 
-declare const global: any
-
 /**
  * Creates a Slack Web API client.
- * @param {string|null} token Bot/User token (xoxb- / xoxp-). May be null if you only call token-free APIs.
+ * @param {string|null} token Access token with the scopes required by the method, or null for token-free APIs.
  * @param {number} [retries_limit] Extra retry attempts on HTTP 429 (integer 0-10; default 3)
  * @return {Object} A client with one property per category (chat, conversations, files, etc.)
  */
-global.methods = (token: string | null, retries_limit: number = DEFAULT_RETRIES) =>
-  new Methods(token, retries_limit)
+export function methods(token: string | null, retries_limit: number = DEFAULT_RETRIES): Methods {
+  return new Methods(token, retries_limit)
+}

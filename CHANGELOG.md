@@ -1,5 +1,31 @@
 # Changelog
 
+## 2.0.0 (2026-11-13)
+
+- Expose 391 named methods, including all 355 functional methods in Slack’s Web API index.
+  Support Enterprise administration, Slackbot Skills,
+  real-time search, datastores, workflow triggers and OAuth exchanges. Add named methods for
+  the separately documented Legal Holds and Admin Oversight APIs.
+- Compare the tested catalog with Slack’s official method index and Node SDK on pull requests
+  and every week.
+  Only the retired `files.upload` and non-functional `users.setActive` are excluded.
+- Restore reading and deleting historical file comments. The classic OAuth endpoint is available
+  at `oauth.v1.access`, preserving the existing `oauth.access` alias for the v2 exchange.
+
+- **Breaking:** remove `users.setActive`. Slack retired the ability to force a user active and
+  the endpoint performs no operation. Existing scripts should remove the call.
+
+- Add 15 verified endpoints from Slack's Node SDK, including agent conversations, sessions and
+  Block Kit validation. Expose `oauth.v2.access` and `apps.event.authorizations.list` under their
+  official names and retain the existing aliases.
+- Update development dependencies, including pnpm, TypeScript, Vite and Vitest. The shipped
+  Apps Script bundle has no runtime dependencies.
+- Correct request formats, remote file handling, upload retries and cursor pagination.
+  Dynamic API calls now reject URL paths and authenticated API requests do not follow redirects.
+- Expose both Apps Script entry points from the distributable and test the generated bundle.
+- Fix duplicate notification attempts, unbounded AI draft sends, and copy controls on the
+  multilingual quickstart.
+
 ## 1.4.0 (2026-07-22)
 
 ### Fixed
@@ -67,7 +93,7 @@
 
 - The three error messages `BaseAPI`/`Files.uploadV2` throw on invalid input are now in
   English (`params must be an object`, `Specify either file or content`, `file must be a
-Blob`) instead of Japanese. Behavior and conditions are unchanged; only the message text
+  Blob`) instead of Japanese. Behavior and conditions are unchanged; only the message text
   changed.
 
 ### Changed

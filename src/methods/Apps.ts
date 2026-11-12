@@ -8,7 +8,7 @@ class AppsConnections extends BaseAPI {
 
 class AppsEventAuthorizations extends BaseAPI {
   public list(params: SlackParams = {}) {
-    return this._get('apps.event.authorizations.list', params)
+    return this._post('apps.event.authorizations.list', params)
   }
 }
 
@@ -28,7 +28,7 @@ class AppsManifest extends BaseAPI {
   }
 
   public export(params: SlackParams = {}) {
-    return this._get('apps.manifest.export', params)
+    return this._post('apps.manifest.export', params)
   }
 
   public update(params: SlackParams = {}) {
@@ -41,6 +41,14 @@ class AppsManifest extends BaseAPI {
 }
 
 class AppsUserConnection extends BaseAPI {
+  public bulkUpdate(params: SlackParams = {}) {
+    return this._post_form('apps.user.connection.bulkUpdate', params)
+  }
+
+  public requestAuth(params: SlackParams = {}) {
+    return this._post_form('apps.user.connection.requestAuth', params)
+  }
+
   public update(params: SlackParams = {}) {
     return this._post('apps.user.connection.update', params)
   }
@@ -55,7 +63,50 @@ class AppsUser extends BaseAPI {
 }
 
 export default class Apps extends BaseAPI {
+  public activities = {
+    list: (params: SlackParams = {}) => this._post_form('apps.activities.list', params),
+  }
+
+  public auth = {
+    external: {
+      delete: (params: SlackParams = {}) => this._post('apps.auth.external.delete', params),
+      delete_: (params: SlackParams = {}) => this.auth.external.delete(params),
+      get: (params: SlackParams = {}) => this._post('apps.auth.external.get', params),
+    },
+  }
+
+  public datastore = {
+    bulkDelete: (params: SlackParams = {}) => this._post('apps.datastore.bulkDelete', params),
+    bulkGet: (params: SlackParams = {}) => this._post('apps.datastore.bulkGet', params),
+    bulkPut: (params: SlackParams = {}) => this._post('apps.datastore.bulkPut', params),
+    count: (params: SlackParams = {}) => this._post('apps.datastore.count', params),
+    delete: (params: SlackParams = {}) => this._post('apps.datastore.delete', params),
+    delete_: (params: SlackParams = {}) => this.datastore.delete(params),
+    get: (params: SlackParams = {}) => this._post('apps.datastore.get', params),
+    put: (params: SlackParams = {}) => this._post('apps.datastore.put', params),
+    query: (params: SlackParams = {}) => this._post('apps.datastore.query', params),
+    update: (params: SlackParams = {}) => this._post('apps.datastore.update', params),
+  }
+
+  public icon = {
+    set: (params: SlackParams = {}) => {
+      const { file, ...fields } = this._normalizeArgs(params, 'params')
+      return this._post_file('apps.icon.set', { file }, fields)
+    },
+  }
+
+  public links = {
+    toggle: (params: SlackParams = {}) => this._post_form('apps.links.toggle', params),
+  }
+
+  public managed = {
+    permissions: {
+      set: (params: SlackParams = {}) => this._post('apps.managed.permissions.set', params),
+    },
+  }
+
   public connections: AppsConnections
+  public event
   public eventAuthorizations: AppsEventAuthorizations
   public manifest: AppsManifest
   public user: AppsUser
@@ -63,6 +114,7 @@ export default class Apps extends BaseAPI {
     super(token, retries_limit)
     this.connections = new AppsConnections(token, retries_limit)
     this.eventAuthorizations = new AppsEventAuthorizations(token, retries_limit)
+    this.event = { authorizations: this.eventAuthorizations }
     this.manifest = new AppsManifest(token, retries_limit)
     this.user = new AppsUser(token, retries_limit)
   }

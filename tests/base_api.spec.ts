@@ -1,4 +1,5 @@
 import BaseAPI from '../src/methods/BaseAPI'
+import Files from '../src/methods/Files'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 type FetchParams = {
@@ -7,12 +8,13 @@ type FetchParams = {
   headers?: Record<string, string>
   payload?: unknown
   muteHttpExceptions?: boolean
+  followRedirects?: boolean
 }
 
 type FetchResponse = {
   getResponseCode: () => number
   getContentText: () => string
-  getHeaders: () => Record<string, string>
+  getHeaders: () => Record<string, string | number>
 }
 
 type UrlFetchAppLike = {
@@ -50,11 +52,11 @@ class TestAPI extends BaseAPI {
 const createResponse = (
   status: number,
   text: string,
-  headers: Record<string, string> = {},
+  headers: Record<string, string | number> = {},
 ): FetchResponse => ({
   getResponseCode: (): number => status,
   getContentText: (): string => text,
-  getHeaders: (): Record<string, string> => headers,
+  getHeaders: () => headers,
 })
 
 describe('BaseAPI', () => {
@@ -91,6 +93,7 @@ describe('BaseAPI', () => {
     expect(params.method).toBe('get')
     expect(params.contentType).toBe('application/x-www-form-urlencoded; charset=UTF-8')
     expect(params.headers).toEqual({ Authorization: 'Bearer token' })
+    expect(params.followRedirects).toBe(false)
   })
 
   it('does not set Authorization header when token is null', () => {
@@ -115,6 +118,37 @@ describe('BaseAPI', () => {
 
     const [, params] = fetch.mock.calls[0] as FetchCall
     expect(params.muteHttpExceptions).toBe(true)
+  })
+
+  it.each([
+    '../help/requests/new',
+    '%2e%2e/help',
+    'api.test?token=bad',
+    'api.test#fragment',
+    'https://example.com',
+    '',
+  ])('rejects non-method paths before sending credentials (%s)', (name) => {
+    const fetch = vi.fn()
+    globalAny.UrlFetchApp = { fetch }
+    const api = new TestAPI('token')
+    for (const send of [
+      () => api.get(name),
+      () => api.post(name),
+      () => api.postForm(name),
+      () => api.postFile(name, {}),
+    ]) {
+      expect(send).toThrow('api must be a Slack method name')
+    }
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('passes unknown single-segment method names through to Slack', () => {
+    const fetch = vi
+      .fn()
+      .mockReturnValue(createResponse(200, '{"ok":false,"error":"unknown_method"}'))
+    globalAny.UrlFetchApp = { fetch }
+    expect(new TestAPI('token').post('unknown')).toEqual({ ok: false, error: 'unknown_method' })
+    expect(fetch.mock.calls[0][0]).toBe('https://slack.com/api/unknown')
   })
 
   it('builds JSON POST request with filtered payload', () => {
@@ -168,18 +202,78 @@ describe('BaseAPI', () => {
     globalAny.Utilities = { sleep: vi.fn() }
 
     const api = new TestAPI('token')
-    const fileParams: Record<string, unknown> = { title: 'hello.txt' }
-    fileParams['channel_id'] = 'C123'
-    const res = api.postFile('files.uploadV2', { file: 'blob', content: null }, fileParams)
+    const res = api.postFile('users.setPhoto', { image: 'blob' }, { crop_w: 100, crop_x: null })
 
     expect(res).toEqual({ ok: true })
     const [, params] = fetch.mock.calls[0] as FetchCall
     const expectedPayload: Record<string, string> = {
-      file: 'blob',
-      title: 'hello.txt',
+      image: 'blob',
+      crop_w: '100',
     }
-    expectedPayload['channel_id'] = 'C123'
     expect(params.payload).toEqual(expectedPayload)
+  })
+
+  it.each(['add', 'update'] as const)('keeps file blobs intact for files.remote.%s', (method) => {
+    const fetch = vi.fn().mockReturnValue(createResponse(200, '{"ok":true}'))
+    globalAny.UrlFetchApp = { fetch }
+    const blob = { getBytes: () => [1, 2, 3] }
+    new Files('token').remote[method]({
+      preview_image: blob,
+      indexable_file_contents: blob,
+      external_id: '123',
+    })
+    const [url, params] = fetch.mock.calls[0]
+    expect(url).toBe(`https://slack.com/api/files.remote.${method}`)
+    expect(params.payload.preview_image).toBe(blob)
+    expect(params.payload.indexable_file_contents).toBe(blob)
+    expect(params.payload.external_id).toBe('123')
+    expect(params.contentType).toBeUndefined()
+  })
+
+  it('retries only the rate-limited upload and completes the uploaded file', () => {
+    const fetch = vi
+      .fn()
+      .mockReturnValueOnce(
+        createResponse(
+          200,
+          '{"ok":true,"upload_url":"https://files.slack.com/upload","file_id":"F1"}',
+        ),
+      )
+      .mockReturnValueOnce(createResponse(429, '', { 'Retry-After': 2 }))
+      .mockReturnValueOnce(createResponse(200, 'OK - 3'))
+      .mockReturnValueOnce(createResponse(200, '{"ok":true}'))
+    globalAny.UrlFetchApp = { fetch }
+    const sleep = vi.fn()
+    globalAny.Utilities = { sleep }
+    const blob = { getBytes: () => [1, 2, 3], getName: () => 'hello.txt' }
+    const response = new Files('token', 1).uploadV2({
+      file: blob,
+      files: [{ id: 'other' }],
+      highlight_type: 'text',
+      channel_id: 'C1',
+    })
+    expect(response).toEqual({ ok: true })
+    expect(sleep).toHaveBeenCalledWith(2000)
+    expect(fetch.mock.calls[1]).toEqual(fetch.mock.calls[2])
+    expect(fetch.mock.calls[1][1].headers).toBeUndefined()
+    expect(JSON.parse(fetch.mock.calls[3][1].payload)).toEqual({
+      files: [{ id: 'F1', title: 'hello.txt', highlight_type: 'text' }],
+      channel_id: 'C1',
+    })
+  })
+
+  it('stops before uploading bytes when Slack omits the new file ID', () => {
+    const fetch = vi
+      .fn()
+      .mockReturnValue(
+        createResponse(200, '{"ok":true,"upload_url":"https://files.slack.com/upload"}'),
+      )
+    globalAny.UrlFetchApp = { fetch }
+    expect(new Files('token').uploadV2({ file: { getBytes: () => [1] } })).toEqual({
+      ok: false,
+      error: 'invalid_response',
+    })
+    expect(fetch).toHaveBeenCalledTimes(1)
   })
 
   it('throws when params is not object', () => {
@@ -383,4 +477,16 @@ describe('BaseAPI', () => {
 
     expect(res).toEqual({ ok: false, error: 'invalid_json', raw: 'not json' })
   })
+
+  it.each(['null', '[]', '{"ok":"false"}'])(
+    'returns a Slack error for an invalid response shape (%s)',
+    (text) => {
+      globalAny.UrlFetchApp = { fetch: vi.fn().mockReturnValue(createResponse(200, text)) }
+      expect(new TestAPI('token').get('auth.test')).toEqual({
+        ok: false,
+        error: 'invalid_response',
+        raw: text,
+      })
+    },
+  )
 })

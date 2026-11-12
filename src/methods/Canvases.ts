@@ -34,6 +34,10 @@ export default class Canvases extends BaseAPI {
     return this._post('canvases.create', params)
   }
 
+  public getContent(params: SlackParams = {}) {
+    return this._post('canvases.getContent', params)
+  }
+
   public edit(params: SlackParams = {}) {
     return this._post('canvases.edit', params)
   }

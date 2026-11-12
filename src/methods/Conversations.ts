@@ -8,7 +8,7 @@ class ConversationsCanvases extends BaseAPI {
 
 class ConversationsExternalInvitePermissions extends BaseAPI {
   public set(params: SlackParams = {}) {
-    return this._post('conversations.externalInvitePermissions.set', params)
+    return this._post_form('conversations.externalInvitePermissions.set', params)
   }
 }
 
@@ -22,7 +22,7 @@ class ConversationsRequestSharedInvite extends BaseAPI {
   }
 
   public list(params: SlackParams = {}) {
-    return this._get('conversations.requestSharedInvite.list', params)
+    return this._post('conversations.requestSharedInvite.list', params)
   }
 }
 
@@ -50,7 +50,7 @@ export default class Conversations extends BaseAPI {
   }
 
   public declineSharedInvite(params: SlackParams = {}) {
-    return this._post('conversations.declineSharedInvite', params)
+    return this._get('conversations.declineSharedInvite', params)
   }
 
   public inviteShared(params: SlackParams = {}) {
@@ -58,7 +58,7 @@ export default class Conversations extends BaseAPI {
   }
 
   public listConnectInvites(params: SlackParams = {}) {
-    return this._get('conversations.listConnectInvites', params)
+    return this._post('conversations.listConnectInvites', params)
   }
 
   public archive(params: SlackParams = {}) {

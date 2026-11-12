@@ -1,7 +1,8 @@
 # Security Policy
 
 GASlacker sends requests only to `https://slack.com/api/` and to the
-short-lived upload URLs returned by `files.getUploadURLExternal`. Tokens are
+short-lived upload URLs returned by `files.getUploadURLExternal`. API calls accept Slack method
+names and disable redirects. The separate binary upload request carries no bearer token. Tokens are
 held in memory only — store them in Script Properties, never in code or in
 this repository.
 

@@ -2,7 +2,11 @@ import BaseAPI, { SlackParams, SlackResponse } from './BaseAPI'
 
 class FilesRemote extends BaseAPI {
   public add(params: SlackParams = {}) {
-    return this._post('files.remote.add', params)
+    const { preview_image, indexable_file_contents, ...fields } = this._normalizeArgs(
+      params,
+      'params',
+    )
+    return this._post_file('files.remote.add', { preview_image, indexable_file_contents }, fields)
   }
 
   public info(params: SlackParams = {}) {
@@ -14,19 +18,33 @@ class FilesRemote extends BaseAPI {
   }
 
   public remove(params: SlackParams = {}) {
-    return this._post('files.remote.remove', params)
+    return this._post_form('files.remote.remove', params)
   }
 
   public share(params: SlackParams = {}) {
-    return this._post('files.remote.share', params)
+    return this._get('files.remote.share', params)
   }
 
   public update(params: SlackParams = {}) {
-    return this._post('files.remote.update', params)
+    const { preview_image, indexable_file_contents, ...fields } = this._normalizeArgs(
+      params,
+      'params',
+    )
+    return this._post_file(
+      'files.remote.update',
+      { preview_image, indexable_file_contents },
+      fields,
+    )
   }
 }
 
 export default class Files extends BaseAPI {
+  public comments = {
+    delete: (params: SlackParams = {}) => this._post('files.comments.delete', params),
+    delete_: (params: SlackParams = {}) => this.comments.delete(params),
+    get: (params: SlackParams = {}) => this._get('files.comments.get', params),
+  }
+
   public remote
   constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
@@ -63,7 +81,16 @@ export default class Files extends BaseAPI {
   // Pass a GAS Blob as file, or a string as content.
   public uploadV2(params: SlackParams = {}): SlackResponse {
     const safeParams = this._normalizeArgs(params, 'params')
-    const { file, content, filename, snippet_type, alt_txt, title, ...completeArgs } = safeParams
+    const {
+      file,
+      content,
+      filename,
+      snippet_type,
+      alt_txt,
+      title,
+      highlight_type,
+      ...completeArgs
+    } = safeParams
     if (file == null && content == null) {
       throw new Error('Specify either file or content')
     }
@@ -72,25 +99,26 @@ export default class Files extends BaseAPI {
       throw new Error('file must be a Blob')
     }
     const name = filename ?? (typeof blob.getName === 'function' ? blob.getName() : null) ?? 'file'
-    // files.getUploadURLExternal rejects JSON bodies (form-encoded only; confirmed live)
-    const urlRes = this._post_form('files.getUploadURLExternal', {
+    const urlRes = this.getUploadURLExternal({
       filename: name,
       length: blob.getBytes().length,
       snippet_type,
       alt_txt,
     })
     if (!urlRes.ok) return urlRes
-    const uploadRes = UrlFetchApp.fetch(urlRes.upload_url, {
-      method: 'post',
-      payload: blob,
-      muteHttpExceptions: true,
-    })
-    if (uploadRes.getResponseCode() !== 200) {
-      return { ok: false, error: 'upload_failed', raw: uploadRes.getContentText() }
-    }
-    return this._post('files.completeUploadExternal', {
-      files: [{ id: urlRes.file_id, title: title ?? name }],
+    if (!urlRes.upload_url || !urlRes.file_id) return { ok: false, error: 'invalid_response' }
+    const uploadRes = this._fetch(
+      urlRes.upload_url,
+      { method: 'post', payload: blob },
+      (response) =>
+        response.getResponseCode() === 200
+          ? { ok: true }
+          : { ok: false, error: 'upload_failed', raw: response.getContentText() },
+    )
+    if (!uploadRes.ok) return uploadRes
+    return this.completeUploadExternal({
       ...completeArgs,
+      files: [{ id: urlRes.file_id, title: title ?? name, highlight_type }],
     })
   }
 

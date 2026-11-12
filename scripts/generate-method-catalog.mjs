@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from 'node:fs'
+import { parseSync } from 'vite'
 
 const ROUTING_URL = new URL('../tests/routing.spec.ts', import.meta.url)
 const OUTPUT_URL = new URL('../docs/methods.json', import.meta.url)
@@ -8,105 +9,115 @@ const TRANSPORTS = {
   post_form: 'form',
   post_file: 'multipart',
 }
+// Classify actions independently of their HTTP verb. Slack uses GET for some writes.
 const DESTRUCTIVE_ACTION =
-  /^(archive|decline|delete|disable|disconnect|end|kick|leave|remove|revoke|uninstall)/
+  /^(archive|bulkArchive|bulkDelete|clear|close|deactivate|decline|delete|deny|disable|disconnect|end|invalidate|kick|leave|remove|reset|restrict|revoke|tombstone|uninstall|unlink|unpublish)/
+const READ_ACTIONS = new Set([
+  'accessLogs',
+  'activity',
+  'all',
+  'billableInfo',
+  'bulkGet',
+  'context',
+  'conversations',
+  'count',
+  'fetch',
+  'files',
+  'get',
+  'getCanvas',
+  'getContent',
+  'getConversationPrefs',
+  'getCustomRetention',
+  'getEntities',
+  'getExpiration',
+  'getFile',
+  'getItem',
+  'getPermalink',
+  'getPresence',
+  'getSettings',
+  'getTeams',
+  'history',
+  'identity',
+  'info',
+  'integrationLogs',
+  'list',
+  'listAssignments',
+  'listChannels',
+  'listConnectInvites',
+  'listGroups',
+  'listOriginalConnectedChannelInfo',
+  'listViews',
+  'lookup',
+  'lookupByEmail',
+  'members',
+  'messages',
+  'metadata',
+  'query',
+  'replies',
+  'search',
+  'skills',
+  'teamInfo',
+  'test',
+  'tools',
+  'userInfo',
+  'validate',
+])
 
-const sourceText = readFileSync(ROUTING_URL, 'utf8')
-
-// Split TypeScript array literals without evaluating the test file. This only needs lexical
-// nesting because every catalog field is a string literal in the routing table.
-const splitTopLevel = (text) => {
-  const parts = []
-  const stack = []
-  let start = 0
-  let quote = null
-  let escaped = false
-  for (let index = 0; index < text.length; index++) {
-    const character = text[index]
-    if (quote) {
-      if (escaped) escaped = false
-      else if (character === '\\') escaped = true
-      else if (character === quote) quote = null
-      continue
-    }
-    if (character === "'" || character === '"' || character === '`') {
-      quote = character
-      continue
-    }
-    if (character === '[' || character === '(' || character === '{') stack.push(character)
-    else if (character === ']' || character === ')' || character === '}') stack.pop()
-    else if (character === ',' && stack.length === 0) {
-      parts.push(text.slice(start, index).trim())
-      start = index + 1
-    }
-  }
-  const finalPart = text.slice(start).trim()
-  if (finalPart) parts.push(finalPart)
-  return parts
+// Some public methods have their specification in a guide or SDK instead of a method page.
+const SDK_DOCS = {
+  'apps.user.connection.bulkUpdate': 'AppsUserConnectionBulkUpdateArguments',
+  'apps.user.connection.requestAuth': 'AppsUserConnectionRequestAuthArguments',
 }
 
-const casesDeclaration = sourceText.indexOf('const CASES:')
-const casesAssignment = sourceText.indexOf('= [', casesDeclaration)
-const casesStart = casesAssignment === -1 ? -1 : casesAssignment + 2
-let casesEnd = -1
-let squareDepth = 0
-let quote = null
-let escaped = false
-for (let index = casesStart; index < sourceText.length; index++) {
-  const character = sourceText[index]
-  if (quote) {
-    if (escaped) escaped = false
-    else if (character === '\\') escaped = true
-    else if (character === quote) quote = null
-    continue
-  }
-  if (character === "'" || character === '"' || character === '`') quote = character
-  else if (character === '[') squareDepth += 1
-  else if (character === ']' && --squareDepth === 0) {
-    casesEnd = index
-    break
-  }
-}
-if (casesDeclaration === -1 || casesStart === -1 || casesEnd === -1) {
-  throw new Error('Could not find the CASES routing table')
+function documentationURL(endpoint) {
+  if (SDK_DOCS[endpoint])
+    return `https://docs.slack.dev/tools/node-slack-sdk/reference/web-api/type-aliases/${SDK_DOCS[endpoint]}/`
+  const [, family, action] = endpoint.split('.')
+  if (endpoint.startsWith('admin.legalHold.'))
+    return `https://docs.slack.dev/reference/legal-holds-api-reference/#${endpoint.split('.').slice(2).join('_')}`
+  if (endpoint.startsWith('oversight.'))
+    return `https://docs.slack.dev/admins/admin-oversight-api/#${family}_${action}`
+  if (endpoint === 'links.accountLinkedResult' || endpoint === 'apps.links.toggle')
+    return `https://docs.slack.dev/authentication/sign-in-with-slack/setting-up-sign-in-with-slack-links/#${endpoint === 'apps.links.toggle' ? 'kill_switch' : 'metrics'}`
+  if (endpoint === 'files.comments.get')
+    return 'https://docs.slack.dev/changelog/2019/02/01/cemented-fate-for-file-comments/'
+  if (endpoint.startsWith('enterprise.auth.idpconfig.'))
+    return 'https://github.com/slackapi/deno-slack-api/blob/2.9.3/src/generated/method-types/enterprise.ts'
+  if (endpoint === 'workflows.triggers.info')
+    return 'https://github.com/slackapi/slack-cli/blob/v4.13.0/internal/api/workflows.go'
+  if (/^workflows\.triggers\.(create|delete|list|update)$/.test(endpoint))
+    return 'https://github.com/slackapi/deno-slack-api/blob/2.9.3/src/typed-method-types/workflows/triggers/mod.ts'
+  return `https://docs.slack.dev/reference/methods/${endpoint}/`
 }
 
-const stringValue = (value, field, index) => {
-  const match = value?.match(/^'([^']+)'$/)
-  if (!match) throw new Error(`Routing row ${index + 1} has a non-literal ${field}`)
-  return match[1]
-}
+const { program, errors } = parseSync(ROUTING_URL.pathname, readFileSync(ROUTING_URL, 'utf8'))
+if (errors.length) throw new Error(errors[0].message)
+const rows = program.body
+  .flatMap((node) => node.declarations ?? [])
+  .find((declaration) => declaration.id.name === 'CASES')?.init.elements
+if (!rows?.length) throw new Error('Could not find the CASES routing table')
 
-const rows = splitTopLevel(sourceText.slice(casesStart + 1, casesEnd))
-const methods = rows.map((row, index) => {
-  if (!row.startsWith('[') || !row.endsWith(']')) {
-    throw new Error(`Routing row ${index + 1} is not an array literal`)
-  }
-  const fields = splitTopLevel(row.slice(1, -1))
-  const path = stringValue(fields[0], 'path', index)
-  const routeType = stringValue(fields[2], 'transport', index)
-  const endpoint = fields[3] ? stringValue(fields[3], 'endpoint', index) : path
-  const transport = TRANSPORTS[routeType]
-  if (!transport) throw new Error(`Routing row ${index + 1} has unknown transport ${routeType}`)
-
+const methods = rows.map(({ elements: [name, , route] }, index) => {
+  const endpoint = name.value
+  const transport = TRANSPORTS[route.value]
+  if (typeof endpoint !== 'string' || !transport)
+    throw new Error(`Invalid routing row ${index + 1}`)
   const action = endpoint.split('.').at(-1)
-  const effect =
-    transport === 'get' ? 'read' : DESTRUCTIVE_ACTION.test(action) ? 'destructive' : 'write'
-
-  return {
-    path: `slack.${path}`,
-    endpoint,
-    transport,
-    effect,
-    docs: `https://docs.slack.dev/reference/methods/${endpoint}/`,
-  }
+  const effect = DESTRUCTIVE_ACTION.test(action)
+    ? 'destructive'
+    : READ_ACTIONS.has(action) || endpoint === 'apps.manifest.export'
+      ? 'read'
+      : 'write'
+  // oauth.access has historically been a v2 alias in GASlacker.
+  const path = endpoint === 'oauth.access' ? 'slack.oauth.v1.access' : `slack.${endpoint}`
+  return { path, endpoint, transport, effect, docs: documentationURL(endpoint) }
 })
 
 const catalog = {
   schema_version: 1,
   generated_from: 'tests/routing.spec.ts',
   effect_policy:
-    'GET routes are read; non-GET routes are write; destructive action-name prefixes are destructive.',
+    'Known reads are read. Destructive action names are destructive. All other actions are write.',
   method_count: methods.length,
   methods,
   helpers: [

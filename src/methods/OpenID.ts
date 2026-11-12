@@ -21,7 +21,7 @@ class OpenIDConnect extends BaseAPI {
 
   // Needs the user token returned by openid.connect.token, so pass it to methods()
   public userInfo(params: SlackParams = {}) {
-    return this._post('openid.connect.userInfo', params)
+    return this._post_form('openid.connect.userInfo', params)
   }
 }
 

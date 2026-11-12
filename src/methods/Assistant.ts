@@ -15,6 +15,11 @@ class AssistantThreads extends BaseAPI {
 }
 
 export default class Assistant extends BaseAPI {
+  public search = {
+    context: (params: SlackParams = {}) => this._post('assistant.search.context', params),
+    info: (params: SlackParams = {}) => this._post('assistant.search.info', params),
+  }
+
   public threads
   constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)

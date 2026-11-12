@@ -2,7 +2,7 @@ import BaseAPI, { SlackParams } from './BaseAPI'
 
 class AuthTeams extends BaseAPI {
   public list(params: SlackParams = {}) {
-    return this._get('auth.teams.list', params)
+    return this._post_form('auth.teams.list', params)
   }
 }
 
@@ -14,10 +14,10 @@ export default class Auth extends BaseAPI {
   }
 
   public revoke(params: SlackParams = {}) {
-    return this._post('auth.revoke', params)
+    return this._get('auth.revoke', params)
   }
 
   public test(params: SlackParams = {}) {
-    return this._get('auth.test', params)
+    return this._post('auth.test', params)
   }
 }

@@ -10,7 +10,7 @@ export default class Bookmarks extends BaseAPI {
   }
 
   public list(params: SlackParams = {}) {
-    return this._get('bookmarks.list', params)
+    return this._post('bookmarks.list', params)
   }
 
   public remove(params: SlackParams = {}) {

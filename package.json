@@ -1,6 +1,6 @@
 {
   "name": "gaslacker",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Slack Web API client library for Google Apps Script.",
   "keywords": [
@@ -28,23 +28,24 @@
     "test:coverage": "vitest run --coverage",
     "catalog": "node scripts/generate-method-catalog.mjs",
     "catalog:check": "node scripts/generate-method-catalog.mjs --check",
+    "parity": "node scripts/check-parity.mjs",
     "verify:live": "node scripts/verify-live.mjs",
-    "build": "pnpm run catalog && pnpm run lint && pnpm run typecheck && pnpm run test && node -e \"fs.rmSync('dist',{recursive:true,force:true})\" && vite build && tsc -p tsconfig.dts.json && node -e \"fs.copyFileSync('appsscript.json','dist/appsscript.json')\"",
+    "build": "pnpm run catalog && pnpm run lint && pnpm run typecheck && vite build && tsc -p tsconfig.dts.json && node -e \"fs.copyFileSync('appsscript.json','dist/appsscript.json')\" && pnpm run test",
     "deploy": "pnpm run build && pnpm dlx @google/clasp@3 push",
     "fmt": "oxfmt --write ."
   },
   "devDependencies": {
-    "@types/google-apps-script": "2.0.11",
-    "@vitest/coverage-v8": "^4.1.10",
-    "gas-entry-generator": "^3.0.0",
-    "oxfmt": "^0.60.0",
-    "oxlint": "^1.75.0",
+    "@types/google-apps-script": "2.0.15",
+    "@types/node": "^26.6.6",
+    "@vitest/coverage-v8": "^5.1.0",
+    "oxfmt": "^0.78.0",
+    "oxlint": "^1.93.0",
     "typescript": "^7.0.2",
-    "vite": "^8.1.5",
-    "vitest": "^4.1.10"
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
   },
   "engines": {
-    "node": ">=22.12"
+    "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
   },
-  "packageManager": "pnpm@11.15.1+sha512.81350b07e53c9538a02f1f2303b4290fa2d7be04e56e2a970c4cc4b417dc761de196edabd49d55c7dc9580db81007c44143e4e3d7e462b3000d23c255122d065"
+  "packageManager": "pnpm@12.18.0+sha512.9d7882d5dc82147ecfc4e062aa34834e0ad0296710a1837a1115ae012127d36b7109e321ac1598a1dd0a65597681b1e99917e12ed0d749eae91187943363beb3"
 }

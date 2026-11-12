@@ -8,12 +8,23 @@
 //   node scripts/verify-live.mjs                     # with token: real post + real upload
 //
 // The token value is never printed.
-import { execFileSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { runInThisContext } from 'node:vm'
+
+const token = process.env.SLACK_ACCESS_TOKEN || null
+const channel = process.env.SLACK_TEST_CHANNEL || null
+if (Boolean(token) !== Boolean(channel)) {
+  console.error(
+    'Set both SLACK_ACCESS_TOKEN and SLACK_TEST_CHANNEL, or leave both unset for the smoke test.',
+  )
+  process.exit(2)
+}
 
 const workDir = mkdtempSync(join(tmpdir(), 'gaslacker-verify-'))
+process.on('exit', () => rmSync(workDir, { recursive: true, force: true }))
 const bodyFile = join(workDir, 'body')
 const headerFile = join(workDir, 'headers')
 const blobFile = join(workDir, 'blob')
@@ -21,7 +32,10 @@ const blobFile = join(workDir, 'blob')
 // Synchronous HTTP compatible with UrlFetchApp.fetch (uses curl, zero dependencies)
 const fetchImpl = (url, params = {}) => {
   const args = [
-    '-s',
+    '--disable',
+    '--silent',
+    '--max-time',
+    '30',
     '-X',
     (params.method || 'get').toUpperCase(),
     '-o',
@@ -31,8 +45,9 @@ const fetchImpl = (url, params = {}) => {
     '-w',
     '%{http_code}',
   ]
-  for (const [key, value] of Object.entries(params.headers || {}))
-    args.push('-H', `${key}: ${value}`)
+  // Pass authorization over stdin so the token is absent from the process command line.
+  const headersIn = Object.entries(params.headers || {}).map(([key, value]) => `${key}: ${value}`)
+  if (headersIn.length) args.push('--header', '@-')
   if (params.contentType) args.push('-H', `Content-Type: ${params.contentType}`)
   const payload = params.payload
   if (payload != null) {
@@ -47,7 +62,11 @@ const fetchImpl = (url, params = {}) => {
     }
   }
   args.push(url)
-  const status = execFileSync('curl', args, { encoding: 'utf8' }).trim()
+  const result = spawnSync('curl', args, { encoding: 'utf8', input: headersIn.join('\n') })
+  // A child-process exception can include the full command, including bearer tokens.
+  if (result.status !== 0)
+    throw new Error(`curl failed (${result.error?.code ?? result.status ?? result.signal})`)
+  const status = Number(result.stdout.trim())
   const text = readFileSync(bodyFile, 'utf8')
   const headers = {}
   for (const line of readFileSync(headerFile, 'utf8').split('\r\n')) {
@@ -55,7 +74,7 @@ const fetchImpl = (url, params = {}) => {
     if (i > 0) headers[line.slice(0, i)] = line.slice(i + 1).trim()
   }
   return {
-    getResponseCode: () => parseInt(status, 10),
+    getResponseCode: () => status,
     getContentText: () => text,
     getHeaders: () => headers,
   }
@@ -74,12 +93,10 @@ globalThis.Utilities = {
   newBlob,
 }
 
-// Evaluate the distributable itself to obtain global.methods
-;(0, eval)(readFileSync(new URL('../dist/bundle.js', import.meta.url), 'utf8'))
+// Exercise the same top-level factory that Apps Script publishes.
+runInThisContext(readFileSync(new URL('../dist/bundle.js', import.meta.url), 'utf8'))
 const methods = globalThis.methods
 
-const token = process.env.SLACK_ACCESS_TOKEN || null
-const channel = process.env.SLACK_TEST_CHANNEL || null
 const slack = methods(token)
 
 let failed = 0
@@ -93,14 +110,18 @@ console.log(
   `Mode: ${token ? 'token provided (real post)' : 'no token (request-path smoke test)'}\n`,
 )
 
-// 1. GET route (no token required)
+// 1. Echo route (no token required)
 const apiTest = slack.api.test({ ping: 'pong' })
-check('api.test (GET)', apiTest.ok === true && apiTest.args?.ping === 'pong', `ok=${apiTest.ok}`)
+check(
+  'api.test (form POST)',
+  apiTest.ok === true && apiTest.args?.ping === 'pong',
+  `ok=${apiTest.ok}`,
+)
 
-// 2. Authorized GET route
+// 2. Authentication check
 const authTest = slack.auth.test()
 check(
-  'auth.test (GET + Authorization)',
+  'auth.test',
   token ? authTest.ok === true : authTest.error === 'not_authed',
   token ? `ok=${authTest.ok}` : `error=${authTest.error} (route alive)`,
 )
@@ -114,10 +135,10 @@ check(
 )
 
 // 4. Form POST route (oauth.v2.access needs no token and answers a JSON error)
-const oauth = slack.oauth.access({ code: 'verification-dummy' })
+const oauth = slack.oauth.v2.access({ code: 'verification-dummy' })
 check(
-  'oauth.access (form POST)',
-  oauth.ok === false && typeof oauth.error === 'string' && oauth.error !== 'invalid_json',
+  'oauth.v2.access (form POST)',
+  oauth.error === 'invalid_code',
   `error=${oauth.error} (answered as JSON)`,
 )
 
@@ -130,7 +151,7 @@ check(
 )
 
 // 6. JSON POST route
-if (token && channel) {
+if (token) {
   const post = slack.chat.postMessage({ channel, text: 'GASlacker verify-live: chat.postMessage' })
   check(
     'chat.postMessage (JSON POST)',
@@ -141,14 +162,14 @@ if (token && channel) {
   const post = slack.chat.postMessage({ channel: 'C000', text: 'x' })
   check(
     'chat.postMessage (JSON POST)',
-    token ? post.ok === false : post.error === 'not_authed',
+    post.error === 'not_authed',
     `error=${post.error} (route alive)`,
   )
 }
 
 // 7. File upload (3-step composite)
 const blob = newBlob('GASlacker verify-live upload\n', 'text/plain', 'gaslacker-verify.txt')
-if (token && channel) {
+if (token) {
   const upload = slack.files.uploadV2({
     channel_id: channel,
     file: blob,
@@ -171,4 +192,4 @@ if (token && channel) {
 console.log(`\n${failed === 0 ? 'Minimal verification set: all passed' : `Failed: ${failed}`}`)
 if (!token)
   console.log('(set SLACK_ACCESS_TOKEN and SLACK_TEST_CHANNEL to verify real posting too)')
-process.exit(failed === 0 ? 0 : 1)
+process.exitCode = failed === 0 ? 0 : 1

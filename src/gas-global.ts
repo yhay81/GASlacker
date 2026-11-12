@@ -10,5 +10,3 @@ declare global {
   // When bundle.js is pasted directly into a project
   function methods(token: string | null, retries_limit?: number): Methods
 }
-
-export {}

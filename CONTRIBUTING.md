@@ -9,7 +9,7 @@ pnpm install
 pnpm run lint && pnpm run typecheck && pnpm run test
 ```
 
-Node.js 22.12+ and pnpm are required.
+Use Node.js 22.12+ on the 22.x line, 24.x, or 26+ with pnpm.
 
 ## Design policy (KISS / YAGNI)
 
@@ -24,27 +24,27 @@ Node.js 22.12+ and pnpm are required.
 
 ## Adding a Slack API method
 
-1. **Verify the endpoint exists.** Without a token,
+1. Check the [official method index](https://docs.slack.dev/reference/methods.md) and the individual method’s current contract and retirement notices. Without a token,
    `curl -s -X POST https://slack.com/api/<method>` answers
-   `{"error":"not_authed"}` for real methods and `{"error":"unknown_method"}`
-   for dead ones. Do not add methods that answer `unknown_method`.
+   `not_authed` for most authenticated methods. Token-free methods can return success or a
+   method-specific validation error. A token-free response alone cannot establish whether a method still works.
 2. Add a one-line method to the matching class in `src/methods/`
-   (`PascalCase` class, `camelCase` method, `_get` for GET-style reads,
-   `_post` for JSON writes). Name methods exactly after Slack's — `delete` is
+   (`PascalCase` class, `camelCase` method). Use the transport Slack accepts, including form
+   encoding or multipart where required. Name methods exactly after Slack's — `delete` is
    a valid method name; add a `delete_` alias next to it for consistency with
    the existing ones.
 3. Register new top-level clients in `src/index.ts`.
 4. Add one row to the table in `tests/routing.spec.ts`.
 5. Update the API coverage table in `README.md` if you added a new family.
 6. Run `pnpm run catalog` to refresh the AI-readable `docs/methods.json` catalog.
-7. `pnpm run build` must pass (catalog + lint + typecheck + tests + bundle).
+7. Run `pnpm run build` and `pnpm run parity`. Parity checks the catalog against Slack’s official Web API index and Node SDK. A retired entry needs a method-specific exception with a link to Slack’s notice.
 
 ## Testing
 
 - Unit tests live in `tests/*.spec.ts` (Vitest). `tests/routing.spec.ts` pins
   every method to its endpoint name and HTTP style — keep it in sync.
 - For behavior that needs the real Slack API, follow
-  [docs/verification.md](docs/verification.md) and record the results in the PR.
+  [docs/verification.md](docs/verification.md) and add the results to its verification log.
 
 ## Commits and PRs
 

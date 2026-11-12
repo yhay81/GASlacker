@@ -17,7 +17,6 @@ export default class Users extends BaseAPI {
     info(params?: SlackParams): import("./BaseAPI").SlackResponse;
     list(params?: SlackParams): import("./BaseAPI").SlackResponse;
     lookupByEmail(params?: SlackParams): import("./BaseAPI").SlackResponse;
-    setActive(params?: SlackParams): import("./BaseAPI").SlackResponse;
     setPhoto(params?: SlackParams): import("./BaseAPI").SlackResponse;
     setPresence(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }

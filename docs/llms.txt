@@ -42,5 +42,5 @@ Basic usage:
     if (!res.ok) Logger.log('postMessage failed: ' + res.error)
 
 The method catalog describes each GASlacker path, Slack endpoint, request transport, and conservative
-effect classification. Consult the linked Slack method documentation for parameters, OAuth scopes,
-rate limits, and response fields.
+effect classification. Check the linked Slack method or SDK reference for parameters. Consult the
+Slack Web API documentation for OAuth scopes, rate limits, and response fields.

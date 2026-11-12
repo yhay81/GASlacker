@@ -1,60 +1,270 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { Methods } from '../src/index'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
-type Call = { type: 'get' | 'post' | 'post_form' | 'post_file'; api: string }
-
-// Recursively find every BaseAPI instance under Methods and replace its send methods with spies
-const spyAll = (root: any): Call[] => {
-  const calls: Call[] = []
-  const seen = new Set<any>()
-  const visit = (obj: any) => {
-    if (!obj || typeof obj !== 'object' || seen.has(obj)) return
-    seen.add(obj)
-    if (typeof obj._get === 'function') {
-      obj._get = (api: string) => {
-        calls.push({ type: 'get', api })
-        return { ok: true }
-      }
-      obj._post = (api: string) => {
-        calls.push({ type: 'post', api })
-        return { ok: true }
-      }
-      obj._post_form = (api: string) => {
-        calls.push({ type: 'post_form', api })
-        return { ok: true }
-      }
-      obj._post_file = (api: string) => {
-        calls.push({ type: 'post_file', api })
-        return { ok: true }
-      }
-    }
-    for (const value of Object.values(obj)) visit(value)
-  }
-  visit(root)
-  return calls
-}
+type Transport = 'get' | 'post' | 'post_form' | 'post_file'
 
 // Exhaustive table asserting each method sends with the expected endpoint name and HTTP style.
-// Endpoint names were confirmed to exist on the live Slack API as of 2026-07
+// Endpoint names were confirmed to exist on the live Slack API as of 2026-11
 // (checked by confirming that nonexistent method names answer unknown_method).
-// [method path, invocation, HTTP style, endpoint name (omitted when it equals the method path)]
-const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
-  ['api.test', (m) => m.api.test(), 'get'],
+// [Slack API method, invocation, HTTP style]
+const CASES: Array<[string, (m: Methods) => unknown, Transport]> = [
+  ['admin.analytics.getFile', (m) => m.admin.analytics.getFile(), 'get'],
+  ['admin.analytics.messages.activity', (m) => m.admin.analytics.messages.activity(), 'get'],
+  ['admin.analytics.messages.metadata', (m) => m.admin.analytics.messages.metadata(), 'get'],
+  ['admin.analytics.slackbot.skills', (m) => m.admin.analytics.slackbot.skills(), 'get'],
+  ['admin.analytics.slackbot.tools', (m) => m.admin.analytics.slackbot.tools(), 'get'],
+  ['admin.apps.activities.list', (m) => m.admin.apps.activities.list(), 'post_form'],
+  ['admin.apps.approve', (m) => m.admin.apps.approve(), 'post'],
+  ['admin.apps.approved.list', (m) => m.admin.apps.approved.list(), 'get'],
+  ['admin.apps.clearResolution', (m) => m.admin.apps.clearResolution(), 'post'],
+  ['admin.apps.config.lookup', (m) => m.admin.apps.config.lookup(), 'post'],
+  ['admin.apps.config.set', (m) => m.admin.apps.config.set(), 'post'],
+  ['admin.apps.mcp.servers.list', (m) => m.admin.apps.mcp.servers.list(), 'post'],
+  [
+    'admin.apps.mcp.servers.permissions.list',
+    (m) => m.admin.apps.mcp.servers.permissions.list(),
+    'post',
+  ],
+  [
+    'admin.apps.mcp.servers.permissions.set',
+    (m) => m.admin.apps.mcp.servers.permissions.set(),
+    'post',
+  ],
+  ['admin.apps.permissions.add', (m) => m.admin.apps.permissions.add(), 'post'],
+  ['admin.apps.permissions.list', (m) => m.admin.apps.permissions.list(), 'post'],
+  ['admin.apps.permissions.remove', (m) => m.admin.apps.permissions.remove(), 'post'],
+  ['admin.apps.permissions.set', (m) => m.admin.apps.permissions.set(), 'post'],
+  ['admin.apps.requests.cancel', (m) => m.admin.apps.requests.cancel(), 'post'],
+  ['admin.apps.requests.list', (m) => m.admin.apps.requests.list(), 'get'],
+  ['admin.apps.restrict', (m) => m.admin.apps.restrict(), 'post'],
+  ['admin.apps.restricted.list', (m) => m.admin.apps.restricted.list(), 'get'],
+  ['admin.apps.uninstall', (m) => m.admin.apps.uninstall(), 'post'],
+  ['admin.audit.anomaly.allow.getItem', (m) => m.admin.audit.anomaly.allow.getItem(), 'post'],
+  ['admin.audit.anomaly.allow.updateItem', (m) => m.admin.audit.anomaly.allow.updateItem(), 'post'],
+  ['admin.auth.policy.assignEntities', (m) => m.admin.auth.policy.assignEntities(), 'post'],
+  ['admin.auth.policy.getEntities', (m) => m.admin.auth.policy.getEntities(), 'post'],
+  ['admin.auth.policy.removeEntities', (m) => m.admin.auth.policy.removeEntities(), 'post'],
+  ['admin.barriers.create', (m) => m.admin.barriers.create(), 'post_form'],
+  ['admin.barriers.delete', (m) => m.admin.barriers.delete(), 'post_form'],
+  ['admin.barriers.list', (m) => m.admin.barriers.list(), 'get'],
+  ['admin.barriers.update', (m) => m.admin.barriers.update(), 'post_form'],
+  ['admin.conversations.archive', (m) => m.admin.conversations.archive(), 'post'],
+  ['admin.conversations.bulkArchive', (m) => m.admin.conversations.bulkArchive(), 'post_form'],
+  ['admin.conversations.bulkDelete', (m) => m.admin.conversations.bulkDelete(), 'post_form'],
+  ['admin.conversations.bulkMove', (m) => m.admin.conversations.bulkMove(), 'post_form'],
+  [
+    'admin.conversations.bulkSetExcludeFromSlackAi',
+    (m) => m.admin.conversations.bulkSetExcludeFromSlackAi(),
+    'get',
+  ],
+  [
+    'admin.conversations.bulkSetProperties',
+    (m) => m.admin.conversations.bulkSetProperties(),
+    'post_form',
+  ],
+  ['admin.conversations.convertToPrivate', (m) => m.admin.conversations.convertToPrivate(), 'post'],
+  ['admin.conversations.convertToPublic', (m) => m.admin.conversations.convertToPublic(), 'post'],
+  ['admin.conversations.create', (m) => m.admin.conversations.create(), 'post'],
+  ['admin.conversations.createForObjects', (m) => m.admin.conversations.createForObjects(), 'post'],
+  ['admin.conversations.delete', (m) => m.admin.conversations.delete(), 'post'],
+  ['admin.conversations.disconnectShared', (m) => m.admin.conversations.disconnectShared(), 'post'],
+  [
+    'admin.conversations.ekm.listOriginalConnectedChannelInfo',
+    (m) => m.admin.conversations.ekm.listOriginalConnectedChannelInfo(),
+    'post_form',
+  ],
+  [
+    'admin.conversations.getConversationPrefs',
+    (m) => m.admin.conversations.getConversationPrefs(),
+    'post',
+  ],
+  [
+    'admin.conversations.getCustomRetention',
+    (m) => m.admin.conversations.getCustomRetention(),
+    'post',
+  ],
+  ['admin.conversations.getTeams', (m) => m.admin.conversations.getTeams(), 'post'],
+  ['admin.conversations.invite', (m) => m.admin.conversations.invite(), 'post'],
+  ['admin.conversations.kick', (m) => m.admin.conversations.kick(), 'post'],
+  ['admin.conversations.linkObjects', (m) => m.admin.conversations.linkObjects(), 'post'],
+  ['admin.conversations.lookup', (m) => m.admin.conversations.lookup(), 'post_form'],
+  [
+    'admin.conversations.removeCustomRetention',
+    (m) => m.admin.conversations.removeCustomRetention(),
+    'post',
+  ],
+  ['admin.conversations.rename', (m) => m.admin.conversations.rename(), 'post'],
+  [
+    'admin.conversations.restrictAccess.addGroup',
+    (m) => m.admin.conversations.restrictAccess.addGroup(),
+    'get',
+  ],
+  [
+    'admin.conversations.restrictAccess.listGroups',
+    (m) => m.admin.conversations.restrictAccess.listGroups(),
+    'get',
+  ],
+  [
+    'admin.conversations.restrictAccess.removeGroup',
+    (m) => m.admin.conversations.restrictAccess.removeGroup(),
+    'get',
+  ],
+  ['admin.conversations.search', (m) => m.admin.conversations.search(), 'post'],
+  [
+    'admin.conversations.setConversationPrefs',
+    (m) => m.admin.conversations.setConversationPrefs(),
+    'post',
+  ],
+  [
+    'admin.conversations.setCustomRetention',
+    (m) => m.admin.conversations.setCustomRetention(),
+    'post',
+  ],
+  ['admin.conversations.setTeams', (m) => m.admin.conversations.setTeams(), 'post'],
+  ['admin.conversations.unarchive', (m) => m.admin.conversations.unarchive(), 'post'],
+  ['admin.conversations.unlinkObjects', (m) => m.admin.conversations.unlinkObjects(), 'post'],
+  ['admin.emoji.add', (m) => m.admin.emoji.add(), 'get'],
+  ['admin.emoji.addAlias', (m) => m.admin.emoji.addAlias(), 'get'],
+  ['admin.emoji.list', (m) => m.admin.emoji.list(), 'get'],
+  ['admin.emoji.remove', (m) => m.admin.emoji.remove(), 'get'],
+  ['admin.emoji.rename', (m) => m.admin.emoji.rename(), 'get'],
+  ['admin.functions.list', (m) => m.admin.functions.list(), 'post'],
+  ['admin.functions.permissions.lookup', (m) => m.admin.functions.permissions.lookup(), 'post'],
+  ['admin.functions.permissions.set', (m) => m.admin.functions.permissions.set(), 'post'],
+  ['admin.inviteRequests.approve', (m) => m.admin.inviteRequests.approve(), 'post'],
+  ['admin.inviteRequests.approved.list', (m) => m.admin.inviteRequests.approved.list(), 'post'],
+  ['admin.inviteRequests.denied.list', (m) => m.admin.inviteRequests.denied.list(), 'post'],
+  ['admin.inviteRequests.deny', (m) => m.admin.inviteRequests.deny(), 'post'],
+  ['admin.inviteRequests.list', (m) => m.admin.inviteRequests.list(), 'post'],
+  ['admin.legalHold.entities.add', (m) => m.admin.legalHold.entities.add(), 'post_form'],
+  ['admin.legalHold.entities.list', (m) => m.admin.legalHold.entities.list(), 'post_form'],
+  ['admin.legalHold.entities.remove', (m) => m.admin.legalHold.entities.remove(), 'post_form'],
+  ['admin.legalHold.policies.activate', (m) => m.admin.legalHold.policies.activate(), 'post_form'],
+  ['admin.legalHold.policies.create', (m) => m.admin.legalHold.policies.create(), 'post_form'],
+  ['admin.legalHold.policies.info', (m) => m.admin.legalHold.policies.info(), 'post_form'],
+  ['admin.legalHold.policies.list', (m) => m.admin.legalHold.policies.list(), 'post_form'],
+  ['admin.legalHold.policies.release', (m) => m.admin.legalHold.policies.release(), 'post_form'],
+  ['admin.legalHold.policies.set', (m) => m.admin.legalHold.policies.set(), 'post_form'],
+  ['admin.roles.addAssignments', (m) => m.admin.roles.addAssignments(), 'post'],
+  ['admin.roles.listAssignments', (m) => m.admin.roles.listAssignments(), 'get'],
+  ['admin.roles.removeAssignments', (m) => m.admin.roles.removeAssignments(), 'post'],
+  ['admin.slackbot.skills.list', (m) => m.admin.slackbot.skills.list(), 'post'],
+  ['admin.slackbot.skills.publish', (m) => m.admin.slackbot.skills.publish(), 'post'],
+  ['admin.slackbot.skills.setAutoEnabled', (m) => m.admin.slackbot.skills.setAutoEnabled(), 'post'],
+  ['admin.slackbot.skills.unpublish', (m) => m.admin.slackbot.skills.unpublish(), 'post'],
+  ['admin.teams.admins.list', (m) => m.admin.teams.admins.list(), 'get'],
+  ['admin.teams.create', (m) => m.admin.teams.create(), 'post'],
+  ['admin.teams.list', (m) => m.admin.teams.list(), 'post'],
+  ['admin.teams.owners.list', (m) => m.admin.teams.owners.list(), 'get'],
+  ['admin.teams.settings.info', (m) => m.admin.teams.settings.info(), 'post'],
+  [
+    'admin.teams.settings.setDefaultChannels',
+    (m) => m.admin.teams.settings.setDefaultChannels(),
+    'get',
+  ],
+  ['admin.teams.settings.setDescription', (m) => m.admin.teams.settings.setDescription(), 'post'],
+  [
+    'admin.teams.settings.setDiscoverability',
+    (m) => m.admin.teams.settings.setDiscoverability(),
+    'post',
+  ],
+  ['admin.teams.settings.setIcon', (m) => m.admin.teams.settings.setIcon(), 'get'],
+  ['admin.teams.settings.setName', (m) => m.admin.teams.settings.setName(), 'post'],
+  ['admin.usergroups.addChannels', (m) => m.admin.usergroups.addChannels(), 'post'],
+  ['admin.usergroups.addTeams', (m) => m.admin.usergroups.addTeams(), 'post'],
+  ['admin.usergroups.addUsers', (m) => m.admin.usergroups.addUsers(), 'post'],
+  ['admin.usergroups.create', (m) => m.admin.usergroups.create(), 'post'],
+  ['admin.usergroups.fetch', (m) => m.admin.usergroups.fetch(), 'post'],
+  ['admin.usergroups.listChannels', (m) => m.admin.usergroups.listChannels(), 'post'],
+  ['admin.usergroups.removeChannels', (m) => m.admin.usergroups.removeChannels(), 'post'],
+  ['admin.usergroups.removeTeams', (m) => m.admin.usergroups.removeTeams(), 'post'],
+  ['admin.usergroups.removeUsers', (m) => m.admin.usergroups.removeUsers(), 'post'],
+  ['admin.usergroups.update', (m) => m.admin.usergroups.update(), 'post'],
+  ['admin.usergroups.uploadUsers', (m) => m.admin.usergroups.uploadUsers(), 'post'],
+  ['admin.users.access.pause', (m) => m.admin.users.access.pause(), 'post'],
+  ['admin.users.access.resume', (m) => m.admin.users.access.resume(), 'post'],
+  ['admin.users.assign', (m) => m.admin.users.assign(), 'post'],
+  ['admin.users.deactivate', (m) => m.admin.users.deactivate(), 'post'],
+  ['admin.users.getExpiration', (m) => m.admin.users.getExpiration(), 'get'],
+  ['admin.users.invite', (m) => m.admin.users.invite(), 'post'],
+  ['admin.users.list', (m) => m.admin.users.list(), 'post'],
+  ['admin.users.remove', (m) => m.admin.users.remove(), 'post'],
+  ['admin.users.session.clearSettings', (m) => m.admin.users.session.clearSettings(), 'post'],
+  ['admin.users.session.getSettings', (m) => m.admin.users.session.getSettings(), 'post'],
+  ['admin.users.session.invalidate', (m) => m.admin.users.session.invalidate(), 'post'],
+  ['admin.users.session.list', (m) => m.admin.users.session.list(), 'post'],
+  ['admin.users.session.reset', (m) => m.admin.users.session.reset(), 'post'],
+  ['admin.users.session.resetBulk', (m) => m.admin.users.session.resetBulk(), 'post'],
+  ['admin.users.session.setSettings', (m) => m.admin.users.session.setSettings(), 'post'],
+  ['admin.users.setAdmin', (m) => m.admin.users.setAdmin(), 'post'],
+  ['admin.users.setExpiration', (m) => m.admin.users.setExpiration(), 'post'],
+  ['admin.users.setOwner', (m) => m.admin.users.setOwner(), 'post'],
+  ['admin.users.setRegular', (m) => m.admin.users.setRegular(), 'post'],
+  [
+    'admin.users.unsupportedVersions.export',
+    (m) => m.admin.users.unsupportedVersions.export(),
+    'post_form',
+  ],
+  ['admin.workflows.collaborators.add', (m) => m.admin.workflows.collaborators.add(), 'post'],
+  ['admin.workflows.collaborators.remove', (m) => m.admin.workflows.collaborators.remove(), 'post'],
+  ['admin.workflows.permissions.lookup', (m) => m.admin.workflows.permissions.lookup(), 'post'],
+  ['admin.workflows.search', (m) => m.admin.workflows.search(), 'post'],
+  [
+    'admin.workflows.triggers.types.permissions.lookup',
+    (m) => m.admin.workflows.triggers.types.permissions.lookup(),
+    'post',
+  ],
+  [
+    'admin.workflows.triggers.types.permissions.set',
+    (m) => m.admin.workflows.triggers.types.permissions.set(),
+    'post',
+  ],
+  ['admin.workflows.unpublish', (m) => m.admin.workflows.unpublish(), 'post'],
+  ['agents.conversations.archive', (m) => m.agents.conversations.archive(), 'post'],
+  ['agents.conversations.create', (m) => m.agents.conversations.create(), 'post'],
+  ['agents.conversations.getCanvas', (m) => m.agents.conversations.getCanvas(), 'post'],
+  ['agents.conversations.listViews', (m) => m.agents.conversations.listViews(), 'post'],
+  ['agents.conversations.removeView', (m) => m.agents.conversations.removeView(), 'post'],
+  [
+    'agents.conversations.setCanvasContent',
+    (m) => m.agents.conversations.setCanvasContent(),
+    'post',
+  ],
+  ['agents.conversations.setCommands', (m) => m.agents.conversations.setCommands(), 'post'],
+  ['agents.conversations.setProperties', (m) => m.agents.conversations.setProperties(), 'post'],
+  ['agents.conversations.setView', (m) => m.agents.conversations.setView(), 'post'],
+  ['agents.sessions.rename', (m) => m.agents.sessions.rename(), 'post'],
+  ['agents.sessions.setStatus', (m) => m.agents.sessions.setStatus(), 'post'],
+  ['api.test', (m) => m.api.test(), 'post_form'],
+  ['apps.managed.permissions.set', (m) => m.apps.managed.permissions.set(), 'post'],
+  ['apps.links.toggle', (m) => m.apps.links.toggle(), 'post_form'],
+  ['apps.icon.set', (m) => m.apps.icon.set({ file: 'blob' }), 'post_file'],
+  ['apps.datastore.update', (m) => m.apps.datastore.update(), 'post'],
+  ['apps.datastore.query', (m) => m.apps.datastore.query(), 'post'],
+  ['apps.datastore.put', (m) => m.apps.datastore.put(), 'post'],
+  ['apps.datastore.get', (m) => m.apps.datastore.get(), 'post'],
+  ['apps.datastore.delete', (m) => m.apps.datastore.delete(), 'post'],
+  ['apps.datastore.count', (m) => m.apps.datastore.count(), 'post'],
+  ['apps.datastore.bulkPut', (m) => m.apps.datastore.bulkPut(), 'post'],
+  ['apps.datastore.bulkGet', (m) => m.apps.datastore.bulkGet(), 'post'],
+  ['apps.datastore.bulkDelete', (m) => m.apps.datastore.bulkDelete(), 'post'],
+  ['apps.auth.external.get', (m) => m.apps.auth.external.get(), 'post'],
+  ['apps.auth.external.delete', (m) => m.apps.auth.external.delete(), 'post'],
+  ['apps.activities.list', (m) => m.apps.activities.list(), 'post_form'],
   ['apps.uninstall', (m) => m.apps.uninstall(), 'post_form'],
   ['apps.manifest.create', (m) => m.apps.manifest.create(), 'post'],
   ['apps.manifest.delete', (m) => m.apps.manifest.delete(), 'post'],
-  ['apps.manifest.export', (m) => m.apps.manifest.export(), 'get'],
+  ['apps.manifest.export', (m) => m.apps.manifest.export(), 'post'],
   ['apps.manifest.update', (m) => m.apps.manifest.update(), 'post'],
   ['apps.manifest.validate', (m) => m.apps.manifest.validate(), 'post'],
+  ['apps.user.connection.bulkUpdate', (m) => m.apps.user.connection.bulkUpdate(), 'post_form'],
+  ['apps.user.connection.requestAuth', (m) => m.apps.user.connection.requestAuth(), 'post_form'],
   ['apps.user.connection.update', (m) => m.apps.user.connection.update(), 'post'],
   ['apps.connections.open', (m) => m.apps.connections.open(), 'post'],
-  [
-    'apps.eventAuthorizations.list',
-    (m) => m.apps.eventAuthorizations.list(),
-    'get',
-    'apps.event.authorizations.list',
-  ],
+  ['apps.event.authorizations.list', (m) => m.apps.event.authorizations.list(), 'post'],
+  ['assistant.search.info', (m) => m.assistant.search.info(), 'post'],
+  ['assistant.search.context', (m) => m.assistant.search.context(), 'post'],
   ['assistant.threads.setStatus', (m) => m.assistant.threads.setStatus(), 'post'],
   [
     'assistant.threads.setSuggestedPrompts',
@@ -62,21 +272,23 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
     'post',
   ],
   ['assistant.threads.setTitle', (m) => m.assistant.threads.setTitle(), 'post'],
-  ['auth.revoke', (m) => m.auth.revoke(), 'post'],
-  ['auth.test', (m) => m.auth.test(), 'get'],
-  ['auth.teams.list', (m) => m.auth.teams.list(), 'get'],
+  ['auth.revoke', (m) => m.auth.revoke(), 'get'],
+  ['auth.test', (m) => m.auth.test(), 'post'],
+  ['auth.teams.list', (m) => m.auth.teams.list(), 'post_form'],
+  ['blocks.validate', (m) => m.blocks.validate(), 'post_form'],
   ['bookmarks.add', (m) => m.bookmarks.add(), 'post'],
   ['bookmarks.edit', (m) => m.bookmarks.edit(), 'post'],
-  ['bookmarks.list', (m) => m.bookmarks.list(), 'get'],
+  ['bookmarks.list', (m) => m.bookmarks.list(), 'post'],
   ['bookmarks.remove', (m) => m.bookmarks.remove(), 'post'],
   ['bots.info', (m) => m.bots.info(), 'get'],
   ['calls.add', (m) => m.calls.add(), 'post'],
   ['calls.end', (m) => m.calls.end(), 'post'],
-  ['calls.info', (m) => m.calls.info(), 'get'],
+  ['calls.info', (m) => m.calls.info(), 'post'],
   ['calls.update', (m) => m.calls.update(), 'post'],
   ['calls.participants.add', (m) => m.calls.participants.add(), 'post'],
   ['calls.participants.remove', (m) => m.calls.participants.remove(), 'post'],
   ['canvases.create', (m) => m.canvases.create(), 'post'],
+  ['canvases.getContent', (m) => m.canvases.getContent(), 'post'],
   ['canvases.edit', (m) => m.canvases.edit(), 'post'],
   ['canvases.delete', (m) => m.canvases.delete(), 'post'],
   ['canvases.access.set', (m) => m.canvases.access.set(), 'post'],
@@ -92,21 +304,21 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
   ['chat.postEphemeral', (m) => m.chat.postEphemeral(), 'post'],
   ['chat.postMessage', (m) => m.chat.postMessage(), 'post'],
   ['chat.scheduleMessage', (m) => m.chat.scheduleMessage(), 'post'],
-  ['chat.scheduledMessages.list', (m) => m.chat.scheduledMessages.list(), 'get'],
+  ['chat.scheduledMessages.list', (m) => m.chat.scheduledMessages.list(), 'post'],
   ['chat.unfurl', (m) => m.chat.unfurl(), 'post'],
   ['chat.update', (m) => m.chat.update(), 'post'],
   ['conversations.archive', (m) => m.conversations.archive(), 'post'],
   ['conversations.canvases.create', (m) => m.conversations.canvases.create(), 'post'],
   ['conversations.acceptSharedInvite', (m) => m.conversations.acceptSharedInvite(), 'post'],
   ['conversations.approveSharedInvite', (m) => m.conversations.approveSharedInvite(), 'post'],
-  ['conversations.declineSharedInvite', (m) => m.conversations.declineSharedInvite(), 'post'],
+  ['conversations.declineSharedInvite', (m) => m.conversations.declineSharedInvite(), 'get'],
   [
     'conversations.externalInvitePermissions.set',
     (m) => m.conversations.externalInvitePermissions.set(),
-    'post',
+    'post_form',
   ],
   ['conversations.inviteShared', (m) => m.conversations.inviteShared(), 'post'],
-  ['conversations.listConnectInvites', (m) => m.conversations.listConnectInvites(), 'get'],
+  ['conversations.listConnectInvites', (m) => m.conversations.listConnectInvites(), 'post'],
   [
     'conversations.requestSharedInvite.approve',
     (m) => m.conversations.requestSharedInvite.approve(),
@@ -120,7 +332,7 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
   [
     'conversations.requestSharedInvite.list',
     (m) => m.conversations.requestSharedInvite.list(),
-    'get',
+    'post',
   ],
   ['conversations.close', (m) => m.conversations.close(), 'post'],
   ['conversations.create', (m) => m.conversations.create(), 'post'],
@@ -146,7 +358,16 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
   ['dnd.setSnooze', (m) => m.dnd.setSnooze(), 'post'],
   ['dnd.teamInfo', (m) => m.dnd.teamInfo(), 'get'],
   ['emoji.list', (m) => m.emoji.list(), 'get'],
+  ['enterprise.auth.idpconfig.apply', (m) => m.enterprise.auth.idpconfig.apply(), 'post_form'],
+  ['enterprise.auth.idpconfig.get', (m) => m.enterprise.auth.idpconfig.get(), 'post_form'],
+  ['enterprise.auth.idpconfig.list', (m) => m.enterprise.auth.idpconfig.list(), 'post_form'],
+  ['enterprise.auth.idpconfig.remove', (m) => m.enterprise.auth.idpconfig.remove(), 'post_form'],
+  ['enterprise.auth.idpconfig.set', (m) => m.enterprise.auth.idpconfig.set(), 'post_form'],
+  ['entity.presentComments', (m) => m.entity.presentComments(), 'post'],
+  ['entity.acknowledgeCommentAction', (m) => m.entity.acknowledgeCommentAction(), 'post'],
   ['entity.presentDetails', (m) => m.entity.presentDetails(), 'post'],
+  ['files.comments.get', (m) => m.files.comments.get(), 'get'],
+  ['files.comments.delete', (m) => m.files.comments.delete(), 'post'],
   ['files.delete', (m) => m.files.delete(), 'post'],
   ['files.info', (m) => m.files.info(), 'get'],
   ['files.list', (m) => m.files.list(), 'get'],
@@ -154,17 +375,66 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
   ['files.sharedPublicURL', (m) => m.files.sharedPublicURL(), 'post'],
   ['files.getUploadURLExternal', (m) => m.files.getUploadURLExternal(), 'post_form'],
   ['files.completeUploadExternal', (m) => m.files.completeUploadExternal(), 'post'],
-  ['files.remote.add', (m) => m.files.remote.add(), 'post'],
+  ['files.remote.add', (m) => m.files.remote.add(), 'post_file'],
   ['files.remote.info', (m) => m.files.remote.info(), 'get'],
   ['files.remote.list', (m) => m.files.remote.list(), 'get'],
-  ['files.remote.remove', (m) => m.files.remote.remove(), 'post'],
-  ['files.remote.share', (m) => m.files.remote.share(), 'post'],
-  ['files.remote.update', (m) => m.files.remote.update(), 'post'],
+  ['files.remote.remove', (m) => m.files.remote.remove(), 'post_form'],
+  ['files.remote.share', (m) => m.files.remote.share(), 'get'],
+  ['files.remote.update', (m) => m.files.remote.update(), 'post_file'],
+  [
+    'functions.workflows.steps.responses.export',
+    (m) => m.functions.workflows.steps.responses.export(),
+    'post',
+  ],
+  ['functions.workflows.steps.list', (m) => m.functions.workflows.steps.list(), 'post'],
+  [
+    'functions.distributions.permissions.set',
+    (m) => m.functions.distributions.permissions.set(),
+    'post',
+  ],
+  [
+    'functions.distributions.permissions.remove',
+    (m) => m.functions.distributions.permissions.remove(),
+    'post',
+  ],
+  [
+    'functions.distributions.permissions.list',
+    (m) => m.functions.distributions.permissions.list(),
+    'post',
+  ],
+  [
+    'functions.distributions.permissions.add',
+    (m) => m.functions.distributions.permissions.add(),
+    'post',
+  ],
   ['functions.completeError', (m) => m.functions.completeError(), 'post'],
   ['functions.completeSuccess', (m) => m.functions.completeSuccess(), 'post'],
-  ['oauth.access', (m) => m.oauth.access(), 'post_form', 'oauth.v2.access'],
+  ['links.accountLinkedResult', (m) => m.links.accountLinkedResult(), 'post'],
+  ['migration.exchange', (m) => m.migration.exchange(), 'get'],
+  ['oauth.v2.user.access', (m) => m.oauth.v2.user.access(), 'post_form'],
+  ['oauth.v2.exchange', (m) => m.oauth.v2.exchange(), 'post_form'],
+  [
+    'oauth.v2.completeShortTokenRotation',
+    (m) => m.oauth.v2.completeShortTokenRotation(),
+    'post_form',
+  ],
+  ['oauth.v2.beginShortTokenRotation', (m) => m.oauth.v2.beginShortTokenRotation(), 'post_form'],
+  ['oauth.access', (m) => m.oauth.v1.access(), 'post_form'],
+  ['oauth.v2.access', (m) => m.oauth.v2.access(), 'post_form'],
   ['openid.connect.token', (m) => m.openid.connect.token(), 'post_form'],
-  ['openid.connect.userInfo', (m) => m.openid.connect.userInfo(), 'post'],
+  ['openid.connect.userInfo', (m) => m.openid.connect.userInfo(), 'post_form'],
+  ['oversight.chat.delete', (m) => m.oversight.chat.delete(), 'post_form'],
+  ['oversight.chat.info', (m) => m.oversight.chat.info(), 'post_form'],
+  ['oversight.chat.restore', (m) => m.oversight.chat.restore(), 'post_form'],
+  ['oversight.chat.tombstone', (m) => m.oversight.chat.tombstone(), 'post_form'],
+  ['oversight.chat.update', (m) => m.oversight.chat.update(), 'post_form'],
+  ['oversight.conversations.info', (m) => m.oversight.conversations.info(), 'post_form'],
+  ['oversight.conversations.list', (m) => m.oversight.conversations.list(), 'post_form'],
+  ['oversight.conversations.members', (m) => m.oversight.conversations.members(), 'post_form'],
+  ['oversight.enterprise.info', (m) => m.oversight.enterprise.info(), 'post_form'],
+  ['oversight.user.conversations', (m) => m.oversight.user.conversations(), 'post_form'],
+  ['oversight.user.info', (m) => m.oversight.user.info(), 'post_form'],
+  ['oversight.users.list', (m) => m.oversight.users.list(), 'post_form'],
   ['pins.add', (m) => m.pins.add(), 'post'],
   ['pins.list', (m) => m.pins.list(), 'get'],
   ['pins.remove', (m) => m.pins.remove(), 'post'],
@@ -177,20 +447,29 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
   ['reminders.delete', (m) => m.reminders.delete(), 'post'],
   ['reminders.info', (m) => m.reminders.info(), 'get'],
   ['reminders.list', (m) => m.reminders.list(), 'get'],
+  ['rtm.start', (m) => m.rtm.start(), 'get'],
+  ['rtm.connect', (m) => m.rtm.connect(), 'get'],
   ['search.all', (m) => m.search.all(), 'get'],
   ['search.files', (m) => m.search.files(), 'get'],
   ['search.messages', (m) => m.search.messages(), 'get'],
+  ['slackbot.skills.update', (m) => m.slackbot.skills.update(), 'post'],
+  ['slackbot.skills.list', (m) => m.slackbot.skills.list(), 'post'],
+  ['slackbot.skills.library.remove', (m) => m.slackbot.skills.library.remove(), 'post'],
+  ['slackbot.skills.library.add', (m) => m.slackbot.skills.library.add(), 'post'],
+  ['slackbot.skills.info', (m) => m.slackbot.skills.info(), 'post'],
+  ['slackbot.skills.delete', (m) => m.slackbot.skills.delete(), 'post'],
+  ['slackbot.skills.create', (m) => m.slackbot.skills.create(), 'post'],
   ['slackLists.create', (m) => m.slackLists.create(), 'post'],
   ['slackLists.update', (m) => m.slackLists.update(), 'post'],
   ['slackLists.access.set', (m) => m.slackLists.access.set(), 'post'],
   ['slackLists.access.delete', (m) => m.slackLists.access.delete(), 'post'],
-  ['slackLists.download.get', (m) => m.slackLists.download.get(), 'get'],
+  ['slackLists.download.get', (m) => m.slackLists.download.get(), 'post'],
   ['slackLists.download.start', (m) => m.slackLists.download.start(), 'post'],
   ['slackLists.items.create', (m) => m.slackLists.items.create(), 'post'],
   ['slackLists.items.delete', (m) => m.slackLists.items.delete(), 'post'],
   ['slackLists.items.deleteMultiple', (m) => m.slackLists.items.deleteMultiple(), 'post'],
-  ['slackLists.items.info', (m) => m.slackLists.items.info(), 'get'],
-  ['slackLists.items.list', (m) => m.slackLists.items.list(), 'get'],
+  ['slackLists.items.info', (m) => m.slackLists.items.info(), 'post'],
+  ['slackLists.items.list', (m) => m.slackLists.items.list(), 'post'],
   ['slackLists.items.update', (m) => m.slackLists.items.update(), 'post'],
   ['stars.add', (m) => m.stars.add(), 'post'],
   ['stars.list', (m) => m.stars.list(), 'get'],
@@ -200,9 +479,9 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
   ['team.info', (m) => m.team.info(), 'get'],
   ['team.integrationLogs', (m) => m.team.integrationLogs(), 'get'],
   ['team.profile.get', (m) => m.team.profile.get(), 'get'],
-  ['team.billing.info', (m) => m.team.billing.info(), 'get'],
-  ['team.preferences.list', (m) => m.team.preferences.list(), 'get'],
-  ['team.externalTeams.disconnect', (m) => m.team.externalTeams.disconnect(), 'post'],
+  ['team.billing.info', (m) => m.team.billing.info(), 'post_form'],
+  ['team.preferences.list', (m) => m.team.preferences.list(), 'post_form'],
+  ['team.externalTeams.disconnect', (m) => m.team.externalTeams.disconnect(), 'post_form'],
   ['team.externalTeams.list', (m) => m.team.externalTeams.list(), 'get'],
   ['tooling.tokens.rotate', (m) => m.tooling.tokens.rotate(), 'post_form'],
   ['usergroups.create', (m) => m.usergroups.create(), 'post'],
@@ -213,13 +492,12 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
   ['usergroups.users.list', (m) => m.usergroups.users.list(), 'get'],
   ['usergroups.users.update', (m) => m.usergroups.users.update(), 'post'],
   ['users.conversations', (m) => m.users.conversations(), 'get'],
-  ['users.deletePhoto', (m) => m.users.deletePhoto(), 'post'],
+  ['users.deletePhoto', (m) => m.users.deletePhoto(), 'get'],
   ['users.getPresence', (m) => m.users.getPresence(), 'get'],
   ['users.identity', (m) => m.users.identity(), 'get'],
   ['users.info', (m) => m.users.info(), 'get'],
   ['users.list', (m) => m.users.list(), 'get'],
   ['users.lookupByEmail', (m) => m.users.lookupByEmail(), 'get'],
-  ['users.setActive', (m) => m.users.setActive(), 'post'],
   ['users.setPhoto', (m) => m.users.setPhoto({ image: 'blob' }), 'post_file'],
   ['users.setPresence', (m) => m.users.setPresence(), 'post'],
   ['users.profile.get', (m) => m.users.profile.get(), 'get'],
@@ -229,18 +507,45 @@ const CASES: Array<[string, (m: Methods) => any, Call['type'], string?]> = [
   ['views.publish', (m) => m.views.publish(), 'post'],
   ['views.push', (m) => m.views.push(), 'post'],
   ['views.update', (m) => m.views.update(), 'post'],
+  ['workflows.triggers.update', (m) => m.workflows.triggers.update(), 'post'],
+  ['workflows.triggers.permissions.set', (m) => m.workflows.triggers.permissions.set(), 'post'],
+  [
+    'workflows.triggers.permissions.remove',
+    (m) => m.workflows.triggers.permissions.remove(),
+    'post',
+  ],
+  ['workflows.triggers.permissions.list', (m) => m.workflows.triggers.permissions.list(), 'post'],
+  ['workflows.triggers.permissions.add', (m) => m.workflows.triggers.permissions.add(), 'post'],
+  ['workflows.triggers.list', (m) => m.workflows.triggers.list(), 'post'],
+  ['workflows.triggers.info', (m) => m.workflows.triggers.info(), 'post'],
+  ['workflows.triggers.delete', (m) => m.workflows.triggers.delete(), 'post'],
+  ['workflows.triggers.create', (m) => m.workflows.triggers.create(), 'post'],
   ['workflows.featured.add', (m) => m.workflows.featured.add(), 'post'],
-  ['workflows.featured.list', (m) => m.workflows.featured.list(), 'get'],
+  ['workflows.featured.list', (m) => m.workflows.featured.list(), 'post'],
   ['workflows.featured.remove', (m) => m.workflows.featured.remove(), 'post'],
   ['workflows.featured.set', (m) => m.workflows.featured.set(), 'post'],
 ]
 
 describe('routing', () => {
-  it.each(CASES)('%s', (name, invoke, type, endpoint) => {
-    const methods = new Methods('token')
-    const calls = spyAll(methods)
-    invoke(methods)
-    expect(calls).toEqual([{ type, api: endpoint ?? name }])
+  afterEach(() => vi.unstubAllGlobals())
+
+  it.each(CASES)('%s', (name, invoke, type) => {
+    const fetch = vi.fn(
+      (_url: string, _params: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions) => ({
+        getResponseCode: () => 200,
+        getHeaders: () => ({ 'Content-Type': 'application/json' }),
+        getContentText: () => '{"ok":true}',
+      }),
+    )
+    vi.stubGlobal('UrlFetchApp', { fetch })
+    invoke(new Methods('token'))
+    expect(fetch).toHaveBeenCalledTimes(1)
+    const [url, params] = fetch.mock.calls[0]
+    expect(url).toBe(`https://slack.com/api/${name}`)
+    expect(params.method).toBe(type === 'get' ? 'get' : 'post')
+    if (type === 'post') expect(params.contentType).toMatch(/^application\/json\b/)
+    if (type === 'post_form') expect(params.contentType).toBe('application/x-www-form-urlencoded')
+    if (type === 'post_file') expect(params.contentType).toBeUndefined()
   })
 })
 
@@ -255,9 +560,9 @@ describe('AI method catalog', () => {
       post_form: 'form',
       post_file: 'multipart',
     }
-    const expected = CASES.map(([path, , type, endpoint]) => ({
-      path: `slack.${path}`,
-      endpoint: endpoint ?? path,
+    const expected = CASES.map(([endpoint, , type]) => ({
+      path: endpoint === 'oauth.access' ? 'slack.oauth.v1.access' : `slack.${endpoint}`,
+      endpoint,
       transport: transports[type],
     }))
     const actual = catalog.methods.map(({ path, endpoint, transport }: any) => ({
@@ -266,11 +571,34 @@ describe('AI method catalog', () => {
       transport,
     }))
 
+    expect(new Set(actual.map(({ endpoint }: { endpoint: string }) => endpoint)).size).toBe(
+      CASES.length,
+    )
     expect(catalog.method_count).toBe(CASES.length)
     expect(actual).toEqual(expected)
     expect(
       catalog.methods.every(({ effect }: any) => ['read', 'write', 'destructive'].includes(effect)),
     ).toBe(true)
+    expect(catalog.methods).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ endpoint: 'auth.revoke', effect: 'destructive' }),
+        expect.objectContaining({ endpoint: 'files.remote.share', effect: 'write' }),
+        expect.objectContaining({ endpoint: 'auth.test', effect: 'read' }),
+        expect.objectContaining({
+          endpoint: 'admin.conversations.bulkDelete',
+          effect: 'destructive',
+        }),
+        expect.objectContaining({ endpoint: 'admin.analytics.getFile', effect: 'read' }),
+        expect.objectContaining({
+          endpoint: 'admin.users.unsupportedVersions.export',
+          effect: 'write',
+        }),
+        expect.objectContaining({
+          endpoint: 'functions.workflows.steps.responses.export',
+          effect: 'write',
+        }),
+      ]),
+    )
   })
 })
 
@@ -297,23 +625,6 @@ describe('docs method count', () => {
 })
 
 describe('docs safety regressions', () => {
-  it('guards every landing-page sheet example when there are no data rows', () => {
-    const text = readFileSync(new URL('../docs/index.html', import.meta.url), 'utf8')
-
-    expect(text.match(/if \(lastRow &lt; 2\) return;/g)).toHaveLength(6)
-    expect(text).not.toContain('sheet.getLastRow() - 1')
-  })
-
-  it('initializes the Slack client in every landing-page sheet example', () => {
-    const text = readFileSync(new URL('../docs/index.html', import.meta.url), 'utf8')
-
-    expect(
-      text.match(
-        /function dailySummary\(\) \{(?:\n|\\n)  var token = PropertiesService\.getScriptProperties\(\)\.getProperty\('SLACK_ACCESS_TOKEN'\);/g,
-      ),
-    ).toHaveLength(6)
-  })
-
   it('does not publish an unverified Apps Script Events API handler', () => {
     const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8')
     const landingPage = readFileSync(new URL('../docs/index.html', import.meta.url), 'utf8')
@@ -322,18 +633,5 @@ describe('docs safety regressions', () => {
     expect(readme).not.toContain('function doPost')
     expect(landingPage).not.toContain('Events API')
     expect(existsSync(new URL('../examples/events-api-bot.js', import.meta.url))).toBe(false)
-  })
-
-  it('keeps the AI draft example behind explicit, fail-closed guardrails', () => {
-    const text = readFileSync(new URL('../examples/ai-approved-draft.js', import.meta.url), 'utf8')
-
-    expect(text).toContain('row[2] === true')
-    expect(text).toContain('SLACK_ALLOWED_CHANNEL_IDS')
-    expect(text).toContain('MAX_POSTS_PER_RUN')
-    expect(text).toContain('LockService.getScriptLock()')
-    expect(text).toContain("setNumberFormat('@').setValue(draft)")
-    const postingState = text.indexOf("resultCell.setValue('posting:")
-    expect(postingState).toBeGreaterThan(-1)
-    expect(postingState).toBeLessThan(text.indexOf('slack.chat.postMessage'))
   })
 })

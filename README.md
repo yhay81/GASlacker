@@ -14,7 +14,7 @@
 <p align="center">
   <a href="https://github.com/yhay81/GASlacker/actions/workflows/ci.yml"><img src="https://github.com/yhay81/GASlacker/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
   <a href="https://github.com/yhay81/GASlacker/releases/latest"><img src="https://img.shields.io/github/v/release/yhay81/GASlacker?label=release&color=287976" alt="Latest release" /></a>
-  <img src="https://img.shields.io/badge/Slack_API_methods-391-d84d39" alt="391 Slack API methods" />
+  <img src="https://img.shields.io/badge/Slack_API_methods-393-d84d39" alt="393 Slack API methods" />
   <img src="https://img.shields.io/badge/runtime_dependencies-0-287976" alt="Zero runtime dependencies" />
   <a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-e0a625" alt="MIT License" /></a>
 </p>
@@ -40,7 +40,7 @@
 GASlacker is a lightweight Slack Web API client designed specifically for the Apps Script V8
 runtime.
 
-- 391 Slack Web API methods organized like the official SDKs: `slack.chat.postMessage({...})` —
+- 393 Slack Web API methods organized like the official SDKs: `slack.chat.postMessage({...})` —
   see the [method catalog](docs/methods.json) for the complete list
 - Bearer authorization + JSON requests, with automatic retry on rate limits (HTTP 429, honoring `Retry-After`)
 - File uploads implemented with the current 3-step external upload flow (`files.uploadV2`)
@@ -223,7 +223,7 @@ Type definitions are generated into [`dist/types/`](dist/types/). In a
 clasp + TypeScript project, copy that folder in and include it in your
 `tsconfig.json` — [`gas-global.d.ts`](dist/types/gas-global.d.ts) declares the
 `GASlacker` global (library use) and the `methods` global (direct paste), so
-all 391 methods autocomplete.
+all 393 methods autocomplete.
 
 ### Rate-limit retries
 
@@ -311,8 +311,8 @@ aliases still work.
 
 ## Coverage and retired methods
 
-On November 13, 2026, the official Web API index listed 357 methods. This bundle implements
-all 355 functional entries, including all 131 indexed `admin.*` methods. The catalog also
+On November 19, 2026, the official Web API index listed 359 methods. This bundle implements
+all 357 functional entries, including all 133 indexed `admin.*` methods. The catalog also
 includes methods Slack documents separately, such as Legal Holds, Admin Oversight and workflow
 triggers. Enterprise SCIM and Audit Logs use separate HTTP APIs.
 

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "generated_from": "tests/routing.spec.ts",
   "effect_policy": "Known reads are read. Destructive action names are destructive. All other actions are write.",
-  "method_count": 391,
+  "method_count": 393,
   "methods": [
     {
       "path": "slack.admin.analytics.getFile",
@@ -10,6 +10,20 @@
       "transport": "get",
       "effect": "read",
       "docs": "https://docs.slack.dev/reference/methods/admin.analytics.getFile/"
+    },
+    {
+      "path": "slack.admin.analytics.members.activity",
+      "endpoint": "admin.analytics.members.activity",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.analytics.members.activity/"
+    },
+    {
+      "path": "slack.admin.analytics.members.metadata",
+      "endpoint": "admin.analytics.members.metadata",
+      "transport": "get",
+      "effect": "read",
+      "docs": "https://docs.slack.dev/reference/methods/admin.analytics.members.metadata/"
     },
     {
       "path": "slack.admin.analytics.messages.activity",

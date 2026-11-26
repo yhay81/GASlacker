@@ -163,6 +163,14 @@ var GASlacker = (function(exports) {
 			[arrayField]: JSON.stringify(value)
 		} : params;
 	}
+	var AdminAnalyticsMembers = class extends BaseAPI {
+		activity(params = {}) {
+			return this._get("admin.analytics.members.activity", params);
+		}
+		metadata(params = {}) {
+			return this._get("admin.analytics.members.metadata", params);
+		}
+	};
 	var AdminAnalyticsMessages = class extends BaseAPI {
 		activity(params = {}) {
 			return this._get("admin.analytics.messages.activity", params);
@@ -182,6 +190,7 @@ var GASlacker = (function(exports) {
 	var AdminAnalytics = class extends BaseAPI {
 		constructor(token, retries_limit) {
 			super(token, retries_limit);
+			this.members = new AdminAnalyticsMembers(token, retries_limit);
 			this.messages = new AdminAnalyticsMessages(token, retries_limit);
 			this.slackbot = new AdminAnalyticsSlackbot(token, retries_limit);
 		}

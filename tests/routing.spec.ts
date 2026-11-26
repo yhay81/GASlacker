@@ -10,6 +10,8 @@ type Transport = 'get' | 'post' | 'post_form' | 'post_file'
 // [Slack API method, invocation, HTTP style]
 const CASES: Array<[string, (m: Methods) => unknown, Transport]> = [
   ['admin.analytics.getFile', (m) => m.admin.analytics.getFile(), 'get'],
+  ['admin.analytics.members.activity', (m) => m.admin.analytics.members.activity(), 'get'],
+  ['admin.analytics.members.metadata', (m) => m.admin.analytics.members.metadata(), 'get'],
   ['admin.analytics.messages.activity', (m) => m.admin.analytics.messages.activity(), 'get'],
   ['admin.analytics.messages.metadata', (m) => m.admin.analytics.messages.metadata(), 'get'],
   ['admin.analytics.slackbot.skills', (m) => m.admin.analytics.slackbot.skills(), 'get'],

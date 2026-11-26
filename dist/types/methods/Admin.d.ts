@@ -1,4 +1,8 @@
 import BaseAPI, { type SlackParams } from './BaseAPI';
+declare class AdminAnalyticsMembers extends BaseAPI {
+    activity(params?: SlackParams): import("./BaseAPI").SlackResponse;
+    metadata(params?: SlackParams): import("./BaseAPI").SlackResponse;
+}
 declare class AdminAnalyticsMessages extends BaseAPI {
     activity(params?: SlackParams): import("./BaseAPI").SlackResponse;
     metadata(params?: SlackParams): import("./BaseAPI").SlackResponse;
@@ -8,6 +12,7 @@ declare class AdminAnalyticsSlackbot extends BaseAPI {
     tools(params?: SlackParams): import("./BaseAPI").SlackResponse;
 }
 declare class AdminAnalytics extends BaseAPI {
+    members: AdminAnalyticsMembers;
     messages: AdminAnalyticsMessages;
     slackbot: AdminAnalyticsSlackbot;
     constructor(token: string | null, retries_limit?: number);

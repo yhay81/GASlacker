@@ -6,6 +6,16 @@ function legalHoldParams(params: SlackParams, arrayField: string): SlackParams {
   return Array.isArray(value) ? { ...params, [arrayField]: JSON.stringify(value) } : params
 }
 
+class AdminAnalyticsMembers extends BaseAPI {
+  public activity(params: SlackParams = {}) {
+    return this._get('admin.analytics.members.activity', params)
+  }
+
+  public metadata(params: SlackParams = {}) {
+    return this._get('admin.analytics.members.metadata', params)
+  }
+}
+
 class AdminAnalyticsMessages extends BaseAPI {
   public activity(params: SlackParams = {}) {
     return this._get('admin.analytics.messages.activity', params)
@@ -27,10 +37,12 @@ class AdminAnalyticsSlackbot extends BaseAPI {
 }
 
 class AdminAnalytics extends BaseAPI {
+  public members
   public messages
   public slackbot
   constructor(token: string | null, retries_limit?: number) {
     super(token, retries_limit)
+    this.members = new AdminAnalyticsMembers(token, retries_limit)
     this.messages = new AdminAnalyticsMessages(token, retries_limit)
     this.slackbot = new AdminAnalyticsSlackbot(token, retries_limit)
   }

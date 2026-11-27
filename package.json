@@ -35,14 +35,14 @@
     "fmt": "oxfmt --write ."
   },
   "devDependencies": {
-    "@types/google-apps-script": "2.0.15",
-    "@types/node": "^26.6.6",
-    "@vitest/coverage-v8": "^5.1.0",
-    "oxfmt": "^0.78.0",
-    "oxlint": "^1.93.0",
+    "@types/google-apps-script": "2.0.16",
+    "@types/node": "^26.6.7",
+    "@vitest/coverage-v8": "^5.1.1",
+    "oxfmt": "^0.80.0",
+    "oxlint": "^1.95.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.8",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.1"
   },
   "engines": {
     "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
